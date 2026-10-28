@@ -1,9 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
+import { CATEGORIES } from "./types";
 
-export const CATEGORIES = ["top", "outerwear", "bottom", "shoes", "watch", "glasses", "accessory"] as const;
-export type Category = (typeof CATEGORIES)[number];
 
 export const StoreSchema = z.object({
   domain: z.string().min(1),

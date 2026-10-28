@@ -23,7 +23,9 @@ export type StructuredRequest<T extends z.ZodType> = {
  * fails validation (CLAUDE.md section 6).
  */
 export async function generateStructured<T extends z.ZodType>(req: StructuredRequest<T>): Promise<z.infer<T>> {
-  const { model, maxTokens } = LLM[req.task];
+  const config = LLM[req.task];
+  const { model, maxTokens } = config;
+  const thinking = "thinking" in config ? config.thinking : undefined;
   let lastError: unknown;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -32,6 +34,7 @@ export async function generateStructured<T extends z.ZodType>(req: StructuredReq
         max_tokens: maxTokens,
         system: req.system,
         messages: [{ role: "user", content: req.content }],
+        ...(thinking ? { thinking } : {}),
         output_config: { format: zodOutputFormat(req.schema), effort: req.effort },
       });
       if (process.env.NODE_ENV !== "production") {

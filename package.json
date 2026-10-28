@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "youcam:smoke": "tsx --conditions=react-server --env-file=.env.local scripts/youcam-smoke.ts",
     "photo:check": "tsx --conditions=react-server --env-file=.env.local scripts/check-photo.ts",
-    "stores:check": "tsx --conditions=react-server --env-file=.env.local scripts/check-stores.ts"
+    "stores:check": "tsx --conditions=react-server --env-file=.env.local scripts/check-stores.ts",
+    "catalog:fetch": "tsx --conditions=react-server --env-file=.env.local scripts/fetch-catalog.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",
