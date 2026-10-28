@@ -42,8 +42,8 @@ Put model names in `lib/llm/config.ts`, never inline. Log token usage per call i
 ```
 YOUCAM_API_KEY=
 ANTHROPIC_API_KEY=
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 SHOPIFY_STORES=            # comma-separated, from fixtures/stores.json
 MOCK_YOUCAM=true           # true during UI work

@@ -73,8 +73,8 @@ Fill in `.env.local`:
 |---|---|
 | `YOUCAM_API_KEY` | YouCam API console, API Keys page (the API key, not the secret key) |
 | `ANTHROPIC_API_KEY` | Claude Console |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase: Project Settings, then API |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Same page |
+| `SUPABASE_URL` | Supabase: Project Settings, then API |
+| `SUPABASE_ANON_KEY` | Same page |
 | `SUPABASE_SERVICE_ROLE_KEY` | Same page (keep this secret) |
 | `MOCK_YOUCAM` | `true` to use saved fixtures instead of live calls |
 | `YOUCAM_UNIT_LIMIT` | Hard cap on YouCam units (default 700) |
@@ -110,7 +110,7 @@ lib/
   hash.ts                Shared sha256 helper
   llm/                   Claude model config and JSON-output helper
   photo/                 Face box and crops for each YouCam API
-  supabase/              Server and browser clients
+  supabase/              Server client (service role)
   youcam/                YouCam client, unit guard, render cache, mock mode
 scripts/                 Command-line scripts (run with tsx)
 supabase/migrations/     Database schema

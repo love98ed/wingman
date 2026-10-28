@@ -4,8 +4,8 @@ import { parseServerEnv } from "@/lib/env";
 const base = {
   YOUCAM_API_KEY: "yc",
   ANTHROPIC_API_KEY: "sk",
-  NEXT_PUBLIC_SUPABASE_URL: "https://abc.supabase.co",
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon",
+  SUPABASE_URL: "https://abc.supabase.co",
+  SUPABASE_ANON_KEY: "anon",
   SUPABASE_SERVICE_ROLE_KEY: "service",
 };
 

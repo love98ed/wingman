@@ -8,8 +8,9 @@ const bool = z
 export const serverEnvSchema = z.object({
   YOUCAM_API_KEY: z.string().min(1),
   ANTHROPIC_API_KEY: z.string().min(1),
-  NEXT_PUBLIC_SUPABASE_URL: z.url(),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+  SUPABASE_URL: z.url(),
+  // Unused while all database access is server-side with the service role key.
+  SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   SHOPIFY_STORES: z
     .string()
