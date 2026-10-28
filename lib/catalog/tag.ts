@@ -51,7 +51,13 @@ const ImageVerdictSchema = z.object({
   single_garment: z.boolean(),
   front_view: z.boolean(),
   plain_background: z.boolean(),
+  colour: z.string(),
 });
+
+/** How Claude should name a garment's colour from its photo. Shared by the image check and the backfill. */
+const COLOUR_RULE =
+  "colour: the garment's colour as it appears in this photo, in one to four plain words. Name a pattern with its " +
+  'main colours, e.g. "navy", "olive green", "red and blue plaid", "white with navy stripes".';
 
 /** Haiku vision check of a candidate try-on image. */
 export async function judgeImage(url: string): Promise<ImageVerdict> {
@@ -67,8 +73,24 @@ export async function judgeImage(url: string): Promise<ImageVerdict> {
         text:
           "This is a product photo of a garment. Answer: is a person visible; is any bare arm, neck or other skin " +
           "of a person visible; does it show a single garment; is it a front view (not back or close-up detail); " +
-          "is the background plain.",
+          "is the background plain. " +
+          COLOUR_RULE,
       },
     ],
   });
+}
+
+/** Haiku vision: the colour of the garment in a product photo (used to backfill older catalog entries). */
+export async function garmentColour(url: string): Promise<string> {
+  const result = await generateStructured({
+    task: "tagging",
+    label: "garment-colour",
+    effort: "low",
+    schema: z.object({ colour: z.string() }),
+    content: [
+      { type: "image", source: { type: "url", url } },
+      { type: "text", text: `This is a product photo of a garment. Return ${COLOUR_RULE}` },
+    ],
+  });
+  return result.colour.trim().toLowerCase();
 }

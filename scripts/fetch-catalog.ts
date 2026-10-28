@@ -19,6 +19,7 @@ import { PoliteFetcher, RateLimitedError } from "@/lib/catalog/polite-fetch";
 import { deleteStoreProducts, loadCatalog, upsertProducts } from "@/lib/catalog/repo";
 import { fetchAllProducts, parseProductsPage } from "@/lib/catalog/shopify";
 import { appendRemoved, readStores, writeStores, type Store } from "@/lib/catalog/stores";
+import { pool } from "@/lib/pool";
 import { judgeImage, tagBatch, TAG_BATCH_SIZE, type ProductTag } from "@/lib/catalog/tag";
 import { assignTiers, tierCounts } from "@/lib/catalog/tiers";
 import { CATEGORIES, TIERS, type Category, type Product, type ShopifyProduct } from "@/lib/catalog/types";
@@ -36,33 +37,19 @@ const today = new Date().toISOString().slice(0, 10);
 
 type Summary = { store: string; fetched: number; prefiltered: number; menswear: number; kept: number; noImage: number; note?: string };
 
-/** Run async work with a small concurrency limit. */
-async function pool<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
-  const out: R[] = new Array(items.length);
-  let next = 0;
-  await Promise.all(
-    Array.from({ length: Math.min(limit, items.length) }, async () => {
-      while (next < items.length) {
-        const i = next++;
-        out[i] = await fn(items[i]);
-      }
-    }),
-  );
-  return out;
-}
-
 /** Width Claude sees when judging a photo; small is faster and plenty to spot bare skin. */
 const JUDGE_WIDTH = 640;
 
-async function chooseImage(product: ShopifyProduct, category: Category): Promise<string | null> {
+/** The try-on image, plus its colour as Claude saw it (try-on categories only). */
+async function chooseImage(product: ShopifyProduct, category: Category): Promise<{ image: string | null; colour?: string }> {
   const ranked = rankImages(product);
-  if (ranked.length === 0) return null;
-  if (!TRY_ON_CATEGORIES.includes(category)) return sizedUrl(ranked[0].src);
+  if (ranked.length === 0) return { image: null };
+  if (!TRY_ON_CATEGORIES.includes(category)) return { image: sizedUrl(ranked[0].src) };
   for (const candidate of ranked.slice(0, 2)) {
     const verdict = await judgeImage(sizedUrl(candidate.src, JUDGE_WIDTH)).catch(() => null);
-    if (verdict && usableForTryOn(verdict)) return sizedUrl(candidate.src);
+    if (verdict && usableForTryOn(verdict)) return { image: sizedUrl(candidate.src), colour: verdict.colour?.trim().toLowerCase() };
   }
-  return null;
+  return { image: null };
 }
 
 /**
@@ -71,7 +58,15 @@ async function chooseImage(product: ShopifyProduct, category: Category): Promise
  * stopped and later refreshes only pay for changed products.
  */
 /** name and url are for people reading the file; the pipeline keys on id and updatedAt. */
-type CacheEntry = { name: string; url: string; updatedAt: string; tag?: ProductTag; image?: string | null };
+type CacheEntry = {
+  name: string;
+  url: string;
+  updatedAt: string;
+  tag?: ProductTag;
+  image?: string | null;
+  /** Colour seen in the try-on image; wins over tag.colour (see scripts/backfill-colours.ts). */
+  imageColour?: string;
+};
 type StoreCache = Record<string, CacheEntry>;
 // Committed so teammates can resume a fetch on another machine.
 const CACHE_DIR = path.join(process.cwd(), "fixtures", "catalog-cache");
@@ -126,7 +121,9 @@ async function processStore(store: Store, raw: ShopifyProduct[]) {
   const undecided = menswear.filter((p) => entry(p).image === undefined);
   let judged = 0;
   await pool(undecided, 16, async (p) => {
-    entry(p).image = await chooseImage(p, entry(p).tag!.category!);
+    const { image, colour } = await chooseImage(p, entry(p).tag!.category!);
+    entry(p).image = image;
+    if (colour) entry(p).imageColour = colour;
     if (++judged % 20 === 0 || judged === undecided.length) {
       console.info(`  images ${judged}/${undecided.length}`);
       await saveCache(store.domain, cache);
@@ -136,12 +133,12 @@ async function processStore(store: Store, raw: ShopifyProduct[]) {
 
   const products: UntieredProduct[] = [];
   for (const p of menswear) {
-    const { tag, image } = entry(p);
+    const { tag, image, imageColour } = entry(p);
     if (!image) {
       summary.noImage++;
       continue;
     }
-    products.push(buildProduct(store, p, { ...tag!, category: tag!.category! }, image));
+    products.push(buildProduct(store, p, { ...tag!, category: tag!.category!, colour: imageColour ?? tag!.colour }, image));
   }
   summary.menswear = menswear.length;
   summary.kept = products.length;

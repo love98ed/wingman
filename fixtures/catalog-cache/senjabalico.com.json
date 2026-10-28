@@ -14,7 +14,8 @@
       ],
       "id": 8590311588074
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Ulu_LightBlue.png?v=1762232610&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Ulu_LightBlue.png?v=1762232610&width=1600",
+    "imageColour": "light blue"
   },
   "8590311555306": {
     "name": "Bermuda Blazer - Sand",
@@ -31,7 +32,8 @@
       ],
       "id": 8590311555306
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Sand_Beige_a1989dc9-9768-4bc1-ba90-67bcc81f6179.png?v=1762321932&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Sand_Beige_a1989dc9-9768-4bc1-ba90-67bcc81f6179.png?v=1762321932&width=1600",
+    "imageColour": "off-white"
   },
   "8590311489770": {
     "name": "Bermuda Blazer - Midnight",
@@ -49,7 +51,8 @@
       ],
       "id": 8590311489770
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Midnight_NavyBlue.png?v=1762232610&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Midnight_NavyBlue.png?v=1762232610&width=1600",
+    "imageColour": "navy blue"
   },
   "8590311260394": {
     "name": "Bermuda Blazer - Lapis",
@@ -66,7 +69,8 @@
       ],
       "id": 8590311260394
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Lapis_RoyalBlue_ccdc34bd-fd6f-4c58-a72a-f307a2745911.png?v=1762321853&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3-Lapis_RoyalBlue_ccdc34bd-fd6f-4c58-a72a-f307a2745911.png?v=1762321853&width=1600",
+    "imageColour": "bright cornflower blue"
   },
   "8590311194858": {
     "name": "Bermuda Blazer - Blanco",
@@ -83,7 +87,8 @@
       ],
       "id": 8590311194858
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3_5b5680d7-dae8-4434-833b-090d3e929fd4.png?v=1762321740&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/3_5b5680d7-dae8-4434-833b-090d3e929fd4.png?v=1762321740&width=1600",
+    "imageColour": "white"
   },
   "8359196655850": {
     "name": "The Maui Linen Shorts - Midnight",
@@ -252,7 +257,8 @@
       "occasions": [],
       "id": 8359193673962
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/21-min.png?v=1760398663&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/21-min.png?v=1760398663&width=1600",
+    "imageColour": "light blue with white stripes"
   },
   "8359190823146": {
     "name": "The Mustique Linen Shirt - Rosé",
@@ -266,7 +272,8 @@
       "occasions": [],
       "id": 8359190823146
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/31_2545031a-87a5-469c-b0a8-a26a58dd3037.png?v=1760398611&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/31_2545031a-87a5-469c-b0a8-a26a58dd3037.png?v=1760398611&width=1600",
+    "imageColour": "light pink"
   },
   "8359181484266": {
     "name": "The Mustique Linen Shirt - Midnight",
@@ -280,7 +287,8 @@
       "occasions": [],
       "id": 8359181484266
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/23-min.png?v=1760398584&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/23-min.png?v=1760398584&width=1600",
+    "imageColour": "navy"
   },
   "8359139901674": {
     "name": "The Mustique Linen Shirt - Blanco",
@@ -294,7 +302,8 @@
       "occasions": [],
       "id": 8359139901674
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/25.png?v=1760398527&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/25.png?v=1760398527&width=1600",
+    "imageColour": "white"
   },
   "8359137640682": {
     "name": "The Mustique Linen Shirt - Lapis",
@@ -308,7 +317,8 @@
       "occasions": [],
       "id": 8359137640682
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/27-min.png?v=1760398340&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/27-min.png?v=1760398340&width=1600",
+    "imageColour": "bright cobalt blue"
   },
   "8359135740138": {
     "name": "The Mustique Linen Shirt - Rouge",
@@ -322,6 +332,7 @@
       "occasions": [],
       "id": 8359135740138
     },
-    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/29.png?v=1760398496&width=1600"
+    "image": "https://cdn.shopify.com/s/files/1/0678/9991/6522/files/29.png?v=1760398496&width=1600",
+    "imageColour": "coral red"
   }
 }

@@ -57,6 +57,8 @@ export type ImageVerdict = {
   single_garment: boolean;
   front_view: boolean;
   plain_background: boolean;
+  /** Colour as seen in the photo; more reliable than the text tag for multi-colour products. */
+  colour?: string;
 };
 
 /**
