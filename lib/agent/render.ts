@@ -5,6 +5,7 @@ import { headShouldersFrom, type PreparedPhoto } from "@/lib/photo/prepare";
 import { YouCamError, type YouCamErrorCode } from "@/lib/youcam/errors";
 import { renderUrl, youcam } from "@/lib/youcam";
 import type { LookItems } from "./catalog";
+import type { RenderKind } from "./events";
 import { BEARD_TEMPLATES, HAIR_TEMPLATES } from "./grooming";
 
 export type LookRenders = {
@@ -28,6 +29,8 @@ export async function renderLook(args: {
   items: LookItems;
   hair: string | null;
   beard: string | null;
+  /** Called as each render lands, so the client can show the outfit before hair and beard finish. */
+  onRender?: (kind: RenderKind, url: string) => void;
 }): Promise<LookRenders> {
   const yc = youcam();
   const { photo } = args;
@@ -66,6 +69,7 @@ export async function renderLook(args: {
     : undefined;
   if (clothes) {
     out.outfit = await renderUrl(clothes);
+    if (out.outfit) args.onRender?.("outfit", out.outfit);
     // Mock fixtures show a different outfit, so the Fit Check would judge the wrong clothes.
     if (clothes.source !== "mock") out.outfitImage = clothes.image;
   }
@@ -82,9 +86,11 @@ export async function renderLook(args: {
       }),
     );
     if (hair) out.hair = await renderUrl(hair);
+    if (out.hair) args.onRender?.("hair", out.hair);
   }
 
   const beardResult = await beard;
   if (beardResult) out.beard = await renderUrl(beardResult);
+  if (out.beard) args.onRender?.("beard", out.beard);
   return out;
 }

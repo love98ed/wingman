@@ -104,7 +104,8 @@ export async function fitCheck(args: {
     schema: FitCheckSchema,
     system:
       "You are Wingman's Fit Check. For each look, in order, give an honest score out of 10 (one decimal) for how well it " +
-      "suits this man and the occasion, judged from the try-on render where there is one, and 1 to 2 short sentences of " +
+      "suits this man and the occasion, judged from the try-on render where there is one (otherwise from the pieces, " +
+      "without mentioning that there is no render), and 1 to 2 short sentences of " +
       "reasoning in second person. Talk about fit, colour against his skin tone, formality and the setting. " +
       "Never comment on his body, weight or face shape negatively. Ignore glasses.",
     content,

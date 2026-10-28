@@ -16,41 +16,10 @@ import {
   type Slot,
 } from "./catalog";
 import { BEARD_STYLES, HAIR_STYLES } from "./grooming";
-import { renderLook, type LookRenders } from "./render";
-import type { LookPick, ParsedOccasion, PrepPlan, StyleRequest } from "./schemas";
+import { renderLook } from "./render";
+import type { Look, LookItem, StyleEvent, StyleResult } from "./events";
+import type { LookPick, ParsedOccasion, StyleRequest } from "./schemas";
 import { fitCheck, parseOccasion, prepPlan, selectLooks } from "./steps";
-
-export type LookItem = {
-  slot: Slot;
-  id: string;
-  name: string;
-  store: string;
-  storeName: string;
-  price: number;
-  image: string;
-  url: string;
-  /** In-stock sizes only. */
-  sizes: { variantId: number; size: string }[];
-};
-
-export type Look = {
-  name: string;
-  why: string;
-  items: LookItem[];
-  hair: string | null;
-  beard: string | null;
-  renders: Omit<LookRenders, "outfitImage">;
-  fitCheck: { score: number; reasoning: string };
-  total: number;
-};
-
-export type StyleResult = {
-  occasion: ParsedOccasion;
-  looks: Look[];
-  prepPlan: PrepPlan;
-  /** False when skin analysis failed (e.g. glasses, angle); the prep plan is then general. */
-  skinAnalysed: boolean;
-};
 
 const toItem = (slot: Slot, p: Product): LookItem => ({
   slot,
@@ -72,12 +41,17 @@ function skinSummary(response: unknown): string | null {
   return output.map((o) => `${o.type.replace(/_v\d+$/, "").replace(/_/g, " ")} ${Math.round(o.ui_score)}`).join(", ");
 }
 
-/** CLAUDE.md section 6, steps 1 to 6. */
-export async function runStyle(photoBytes: Buffer, req: StyleRequest): Promise<StyleResult> {
+/** CLAUDE.md section 6, steps 1 to 6. `emit` receives each event as it happens. */
+export async function runStyle(
+  photoBytes: Buffer,
+  req: StyleRequest,
+  emit: (event: StyleEvent) => void = () => {},
+): Promise<StyleResult> {
   const started = Date.now();
   const lap = (label: string) => console.info(`[style] ${label} at ${((Date.now() - started) / 1000).toFixed(1)}s`);
 
   // 1. Occasion, and the photo crops (Claude finds the face)
+  emit({ type: "progress", step: "reading" });
   const [parsed, photo] = await Promise.all([parseOccasion(req.occasion), preparePhoto(photoBytes)]);
   const occasion: ParsedOccasion = { ...parsed, budgetTier: req.tier, maxBudget: req.maxBudget };
   lap(`parsed ${occasion.occasion}/${occasion.formality}`);
@@ -98,29 +72,57 @@ export async function runStyle(photoBytes: Buffer, req: StyleRequest): Promise<S
     categories: [...SLOTS],
     formalities: allowedFormalities(occasion.formality),
   });
+  emit({ type: "progress", step: "picking", detail: `${products.length} in-stock pieces` });
   const pool = buildPool(products, { ...occasion, seed: photo.hash });
   const rules = { maxBudget: req.maxBudget, hair: HAIR_STYLES, beard: BEARD_STYLES };
   let picks = await selectLooks({ occasion, sentence: req.occasion, pool, face: photo.closeFace });
-  let errors = pickErrors(picks, pool, rules);
+  const errors = pickErrors(picks, pool, rules);
   if (errors.length) {
     console.warn(`[style] retrying selection: ${errors.join(" ")}`);
     picks = await selectLooks({ occasion, sentence: req.occasion, pool, face: photo.closeFace, errors });
-    errors = pickErrors(picks, pool, rules);
   }
   // Keep only looks that pass on their own; a still-broken look is dropped rather than shown.
   const valid: LookPick[] = picks.filter((p) => pickErrors([p], pool, rules).length === 0);
   if (valid.length === 0) throw new Error("Could not build a look from the catalog for this request");
   lap(`selected ${valid.length} looks`);
 
-  // 4. Renders, with the prep plan written in parallel
-  const plans = skinPromise.then((skin) => prepPlan({ occasion, skin }).then((plan) => ({ plan, skin })));
+  const itemsByLook: LookItems[] = valid.map((pick) => lookItems(pick, pool));
+  const looks: Look[] = valid.map((pick, i) => ({
+    name: pick.name,
+    why: pick.why,
+    items: SLOTS.flatMap((slot) => (itemsByLook[i][slot] ? [toItem(slot, itemsByLook[i][slot]!)] : [])),
+    hair: pick.hair,
+    beard: pick.beard,
+    renders: { errors: [] },
+    fitCheck: null,
+    total: lookTotal(itemsByLook[i]),
+  }));
+  emit({ type: "looks", occasion, looks });
+
+  // 4. Renders, streamed one by one, with the prep plan written in parallel
+  emit({ type: "progress", step: "rendering" });
+  const plans = skinPromise
+    .then((skin) => prepPlan({ occasion, skin }).then((plan) => ({ plan, skin })))
+    .then((p) => {
+      emit({ type: "prep", prepPlan: p.plan, skinAnalysed: p.skin != null });
+      return p;
+    });
   const renders = await Promise.all(
-    valid.map((pick) => renderLook({ photo, items: lookItems(pick, pool), hair: pick.hair, beard: pick.beard })),
+    valid.map((pick, i) =>
+      renderLook({
+        photo,
+        items: itemsByLook[i],
+        hair: pick.hair,
+        beard: pick.beard,
+        onRender: (kind, url) => emit({ type: "render", look: i, kind, url }),
+      }),
+    ),
   );
+  renders.forEach(({ outfit, hair, beard, errors }, i) => (looks[i].renders = { outfit, hair, beard, errors }));
   lap("rendered");
 
   // 5. Fit Check on the renders
-  const itemsByLook: LookItems[] = valid.map((pick) => lookItems(pick, pool));
+  emit({ type: "progress", step: "scoring" });
   const checks = await fitCheck({
     occasion,
     looks: valid.map((pick, i) => ({
@@ -129,26 +131,12 @@ export async function runStyle(photoBytes: Buffer, req: StyleRequest): Promise<S
       render: renders[i].outfitImage,
     })),
   });
+  checks.forEach((c, i) => (looks[i].fitCheck = { score: Math.round(c.score * 10) / 10, reasoning: c.reasoning }));
+  emit({ type: "fitcheck", checks: looks.map((l) => l.fitCheck!) });
+
   const { plan, skin } = await plans;
   lap("done");
-
-  return {
-    occasion,
-    looks: valid.map((pick, i) => {
-      const { outfit, hair, beard, errors } = renders[i];
-      const items = itemsByLook[i];
-      return {
-        name: pick.name,
-        why: pick.why,
-        items: SLOTS.flatMap((slot) => (items[slot] ? [toItem(slot, items[slot]!)] : [])),
-        hair: pick.hair,
-        beard: pick.beard,
-        renders: { outfit, hair, beard, errors },
-        fitCheck: { score: Math.round(checks[i].score * 10) / 10, reasoning: checks[i].reasoning },
-        total: lookTotal(items),
-      };
-    }),
-    prepPlan: plan,
-    skinAnalysed: skin != null,
-  };
+  const result: StyleResult = { occasion, looks, prepPlan: plan, skinAnalysed: skin != null };
+  emit({ type: "result", result });
+  return result;
 }

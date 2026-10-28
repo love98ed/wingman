@@ -101,6 +101,7 @@ Open http://localhost:3000. The UI is designed for a 390px phone screen first.
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint |
 | `npm run style:demo` | Calls `POST /api/style` with the demo photo and prints the looks, Fit Checks and prep plan. Start `npm run dev` first; `MOCK_YOUCAM` decides mock or live renders. Flags: `--tier`, `--occasion`, `--max-budget`, `--photo`, `--url`. |
+| `npm run catalog:colours` | Re-tags the colour of tops and outerwear from their try-on photo (text tags miss multi-colour products). Safe to re-run; new catalog runs already do this. |
 | `npm run youcam:smoke` | One real call per YouCam API on `fixtures/selfies/demo.jpg`. Saves responses for mock mode and prints units used. A second run costs zero units. |
 
 ## Project structure
@@ -110,6 +111,7 @@ app/                     Routes (App Router): / home, /demo, /occasion
   fonts/                 Panchang and Switzer, self-hosted
   globals.css            Design tokens, type steps, motion
 components/
+  style/                 The style flow at /style: photo, occasion, loading (streamed progress), looks
   home/                  Home page sections: hero window, occasion list, look frames, Fit Check, how it works, footer
   shared/                Used across routes: placeholder screen, scroll-entrance helper
 lib/

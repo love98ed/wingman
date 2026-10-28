@@ -13,10 +13,11 @@ Read this first, then `CLAUDE.md` (the project rules) and `docs/STEP_PROMPTS.md`
 | 0. Plan | Done |
 | 1. Scaffold | Done |
 | 2. YouCam client | Done. 19 of 700 YouCam units used |
-| 3. Catalog | Done. 4,983 products from 17 stores in Supabase; every tier has 60+ in-stock tops, bottoms, shoes and watches. Known gap: colour tags come from product text, so multi-colour products can be tagged with a colour the try-on image doesn't show |
+| 3. Catalog | Done. 4,983 products from 17 stores in Supabase; every tier has 60+ in-stock tops, bottoms, shoes and watches. Tops and outerwear take their colour from the try-on photo |
 | Home page redesign | Done and live (design-taste-frontend direction) |
 | 4. Style agent | Done. `POST /api/style` returns 2 to 3 looks with renders, Fit Check, totals and prep plan. Try it with `npm run style:demo` |
-| 5 to 12 | Not started |
+| 5. Core screens | Done. `/style`: photo, occasion, streamed loading, swipeable looks with Fit Check. Works in mock mode and with real renders |
+| 6 to 12 | Not started |
 
 ## 1. Get set up (once)
 

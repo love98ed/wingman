@@ -54,6 +54,17 @@
   --radius-3xl: var(--radius);
 
   --animate-nudge: nudge 2.4s cubic-bezier(0.76, 0, 0.24, 1) 1.6s 2;
+  --animate-scan: scan 2.4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+/* Loading: a band of brass light passes over the photo */
+@keyframes scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(300%);
+  }
 }
 
 /* Slider hint: swing the handle once each way after load */

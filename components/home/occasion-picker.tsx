@@ -2,16 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { OCCASION_CHOICES } from "@/lib/occasions";
 import { cn } from "@/lib/utils";
 
-const OCCASIONS = [
-  { id: "date", label: "First date", cta: "a first date" },
-  { id: "interview", label: "Interview", cta: "the interview" },
-  { id: "wedding", label: "Wedding guest", cta: "the wedding" },
-  { id: "cny", label: "CNY visiting", cta: "CNY visiting" },
-  { id: "dnd", label: "Company D&D", cta: "the D&D" },
-  { id: "night-out", label: "Night out", cta: "a night out" },
-] as const;
+const OCCASIONS = OCCASION_CHOICES;
 
 /** The occasion list and the primary action it drives. */
 export function OccasionPicker() {
@@ -72,7 +66,7 @@ export function OccasionPicker() {
 function PrimaryAction({ id, cta }: { id: string; cta: string }) {
   return (
     <>
-      <Link href={`/occasion?o=${id}`} className="btn w-full md:w-auto">
+      <Link href={`/style?o=${id}`} className="btn w-full md:w-auto">
         Style me for {cta}
         <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
           <path d="M5 12h14m-6-6 6 6-6 6" />

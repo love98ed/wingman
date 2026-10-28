@@ -24,7 +24,7 @@ const PIECES = [
     price: "Show it to your barber",
     image: "/demo/after.jpg",
     imageAlt: "The full styled look with the slick back",
-    href: "/occasion",
+    href: "/style",
     action: "Try a cut on you",
     // Close on the hair and face
     crop: "object-[50%_12%]",

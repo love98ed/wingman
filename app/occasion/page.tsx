@@ -1,10 +1,7 @@
-import { ComingSoon } from "@/components/shared/coming-soon";
+import { redirect } from "next/navigation";
 
-export default function OccasionPage() {
-  return (
-    <ComingSoon
-      title="Your occasion"
-      body="Upload a photo, describe where you're headed and pick a budget. Wingman builds full looks from real Singapore stores, styled on you."
-    />
-  );
+/** Old entry point; the flow now lives at /style. */
+export default async function OccasionPage({ searchParams }: { searchParams: Promise<{ o?: string }> }) {
+  const { o } = await searchParams;
+  redirect(o ? `/style?o=${encodeURIComponent(o)}` : "/style");
 }

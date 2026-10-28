@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const MENU = [
-  { label: "Style me", href: "/occasion" },
+  { label: "Style me", href: "/style" },
   { label: "The occasion", href: "#start" },
   { label: "The look", href: "#look" },
   { label: "Fit check", href: "#fit" },
