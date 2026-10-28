@@ -59,7 +59,8 @@ export async function locateFace(jpeg: Buffer, width: number, height: number): P
           "Locate the single person's face in this photo. Return the tight face box from hairline to chin " +
           "and ear to ear as fractions (0 to 1) of image width and height, measured from the top-left corner. " +
           "Also return the centre of each pupil as fractions; left_eye is the eye on the left side of the image. " +
-          "Set face_found false if there is no clear front-facing face or more than one person.",
+          "Glasses or sunglasses are fine: they never make face_found false. " +
+          "Set face_found false only if there is no clear front-facing face or more than one person.",
       },
     ],
   });

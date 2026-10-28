@@ -169,6 +169,8 @@ Routes: `app/api/style`, `app/api/refine`, `app/api/swap`.
 5. Fit Check: score out of 10 plus 1 to 2 sentences of reasoning
 6. Prep plan: 3-step night-before grooming routine, no medical claims
 
+**Glasses in the photo:** never block, warn or ask the user to retake. Let them proceed. If skin analysis fails on a photo with glasses, carry on without it (skin-tone colour matching falls back to neutral choices, prep plan stays general).
+
 Refine re-runs steps 3 to 5 with updated constraints. Swap returns alternatives for one slot and re-renders. Retry once on invalid LLM JSON.
 
 ## 7. Checkout
