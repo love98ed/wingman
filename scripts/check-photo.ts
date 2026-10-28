@@ -21,7 +21,7 @@ async function main() {
     "head-shoulders.jpg": photo.headShoulders,
     "close-face.jpg": photo.closeFace,
   };
-  console.info(`Photo ${photo.size.width}x${photo.size.height}, face ${photo.face.width}x${photo.face.height}px at (${photo.face.x}, ${photo.face.y})`);
+  console.info(`Photo ${photo.size.width}x${photo.size.height}, face ${photo.face.width}x${photo.face.height}px at (${photo.face.x}, ${photo.face.y}), tilt ${photo.face.roll.toFixed(1)}°`);
   for (const [name, bytes] of Object.entries(outputs)) {
     await writeFile(path.join(outDir, name), bytes);
     const { width, height } = await sharp(bytes).metadata();

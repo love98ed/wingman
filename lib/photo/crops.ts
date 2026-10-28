@@ -12,7 +12,7 @@ export function cropBoxes(face: Box, imageWidth: number, imageHeight: number) {
   const cy = face.y + face.height / 2;
 
   const hairWidth = face.width * 3.2;
-  const hair = fit(
+  const hair = fitBox(
     { x: cx - hairWidth / 2, y: face.y - face.height * 0.7, width: hairWidth, height: hairWidth * 1.25 },
     imageWidth,
     imageHeight,
@@ -20,7 +20,7 @@ export function cropBoxes(face: Box, imageWidth: number, imageHeight: number) {
 
   const faceWidth = face.width * 1.5;
   const faceHeight = faceWidth * 1.25;
-  const faceBox = fit(
+  const faceBox = fitBox(
     { x: cx - faceWidth / 2, y: cy - faceHeight * 0.48, width: faceWidth, height: faceHeight },
     imageWidth,
     imageHeight,
@@ -29,10 +29,32 @@ export function cropBoxes(face: Box, imageWidth: number, imageHeight: number) {
   return { hair, face: faceBox };
 }
 
-function fit(box: Box, imageWidth: number, imageHeight: number): Box {
+/** Clamp a box to the image, shifting it inward before shrinking it. */
+export function fitBox(box: Box, imageWidth: number, imageHeight: number): Box {
   const width = Math.min(box.width, imageWidth);
   const height = Math.min(box.height, imageHeight);
   const x = Math.min(Math.max(box.x, 0), imageWidth - width);
   const y = Math.min(Math.max(box.y, 0), imageHeight - height);
   return { x: Math.round(x), y: Math.round(y), width: Math.round(width), height: Math.round(height) };
+}
+
+type Point = { x: number; y: number };
+
+/** Head tilt in degrees from the two eye centres (image-left eye first). Positive = tilted clockwise. */
+export function rollDegrees(leftEye: Point, rightEye: Point): number {
+  return (Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x) * 180) / Math.PI;
+}
+
+/**
+ * Where a point lands after rotating a `width` x `height` image clockwise by
+ * `degrees` about its centre (as sharp.rotate does), on the expanded canvas.
+ */
+export function rotatePoint(p: Point, width: number, height: number, degrees: number, outWidth: number, outHeight: number): Point {
+  const t = (degrees * Math.PI) / 180;
+  const dx = p.x - width / 2;
+  const dy = p.y - height / 2;
+  return {
+    x: dx * Math.cos(t) - dy * Math.sin(t) + outWidth / 2,
+    y: dx * Math.sin(t) + dy * Math.cos(t) + outHeight / 2,
+  };
 }

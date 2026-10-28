@@ -42,7 +42,7 @@ async function save(name: string, result: { response: unknown; image?: Buffer })
 /** Use the preferred template if present, else the first one. */
 function pickTemplate(templates: Template[], preferred: RegExp, override?: string): Template | undefined {
   if (override) return templates.find((t) => t.id === override) ?? { id: override, title: "(from --flag)" };
-  return templates.find((t) => preferred.test(`${t.title} ${t.category_name ?? ""}`)) ?? templates[0];
+  return templates.find((t) => preferred.test(t.title)) ?? templates[0];
 }
 
 type Row = { step: string; outcome: string };
