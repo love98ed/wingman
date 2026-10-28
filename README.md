@@ -46,7 +46,7 @@ Claude finds the face so the crops land in the right place. Location data is str
 | Layer | Choice |
 |---|---|
 | Framework | Next.js 15 (App Router), TypeScript strict |
-| Styling | Tailwind CSS 4 + shadcn/ui, dark theme, Geist fonts |
+| Styling | Tailwind CSS 4 + shadcn/ui, dark luxe theme, Instrument Serif + Geist fonts |
 | Database and storage | Supabase Postgres + private storage buckets |
 | AI | Claude via `@anthropic-ai/sdk` (Sonnet 5.5 for styling, Haiku 5.5 for product tagging) |
 | Vision | YouCam API, server-side only |

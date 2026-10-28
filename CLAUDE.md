@@ -177,11 +177,13 @@ Refine re-runs steps 3 to 5 with updated constraints. Swap returns alternatives 
 
 ## 8. Design direction
 
-- **Feel:** confident, clean, premium menswear editorial. Think Mr Porter's editorial calm, Linear's UI precision, Apple Fitness cards
-- **Theme:** dark by default
-- **Palette:** background `#0E0F11`, surface `#17191C`, border `#26292E`, text `#F2F2F0`, muted `#9A9DA3`, accent `#C8A96A` (muted brass), success `#5FB58A`, danger `#E06C5F`
-- **Type:** Geist Sans for UI, Geist Mono for prices; headings tight tracking, weight 600
-- **Layout:** designed at 390px first; large tap targets (min 44px); bottom-anchored primary actions; swipeable look cards
+- **Feel:** dark luxe. A premium fashion app at night: confident, editorial, alive. Lead with real try-on imagery (before/after), not text
+- **Theme:** dark only
+- **Palette:** background `#0A0A0B`, surface `#141416`, raised `#1C1C1F`, border white at 9%, text ivory `#F4EFE6`, muted `#9C978E`, brass `#C8A96A` with bright brass `#E3C78D` for gradients and highlights, success `#5FB58A`, danger `#E06C5F`
+- **Type:** Instrument Serif for display headings (italic brass gradient for emphasis), Geist Sans for UI, Geist Mono for prices and scores
+- **Surfaces:** frosted glass cards (`.glass`) over imagery and a soft ambient brass glow; rounded 24 to 28px
+- **Motion:** subtle rise-in on load, slider hint nudge; respect reduced motion
+- **Layout:** designed at 390px first, centred phone-width column on desktop; large tap targets (min 44px); bottom-anchored brass gradient primary action; swipeable look cards and chip rows
 - No brand logos in our UI. Store names as plain text only
 
 ## 9. Privacy and content rules

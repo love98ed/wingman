@@ -7,7 +7,10 @@
 @theme inline {
   /* Wingman tokens (CLAUDE.md section 8) */
   --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-brass: var(--brass);
+  --color-brass-bright: var(--brass-bright);
+  --color-ivory: var(--text);
   --color-success: var(--success);
   --color-danger: var(--danger);
 
@@ -33,7 +36,8 @@
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-heading: var(--font-sans);
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-heading: var(--font-display);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -41,19 +45,48 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
+
+  --animate-rise: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-nudge: nudge 2.4s ease-in-out 1.2s 2;
 }
 
-/* Dark is the only theme */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Slider hint: swing the handle once each way after load */
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-18px);
+  }
+  65% {
+    transform: translateX(18px);
+  }
+}
+
+/* Dark luxe is the only theme */
 :root {
   color-scheme: dark;
 
-  --bg: #0e0f11;
-  --surface: #17191c;
-  --surface-raised: #1f2226;
-  --line: #26292e;
-  --text: #f2f2f0;
-  --text-muted: #9a9da3;
+  --bg: #0a0a0b;
+  --surface: #141416;
+  --surface-raised: #1c1c1f;
+  --line: rgb(255 255 255 / 0.09);
+  --text: #f4efe6;
+  --text-muted: #9c978e;
   --brass: #c8a96a;
+  --brass-bright: #e3c78d;
   --success: #5fb58a;
   --danger: #e06c5f;
 
@@ -75,7 +108,7 @@
   --border: var(--line);
   --input: var(--line);
   --ring: var(--brass);
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 }
 
 @layer base {
@@ -84,6 +117,7 @@
   }
   html {
     @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     @apply bg-background text-foreground antialiased;
@@ -91,6 +125,37 @@
   h1,
   h2,
   h3 {
-    @apply font-semibold tracking-tight;
+    @apply font-display font-normal tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Frosted card over imagery or the ambient glow */
+  .glass {
+    background: rgb(20 20 22 / 0.62);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+  }
+  .brass-text {
+    background: linear-gradient(100deg, var(--brass-bright), var(--brass) 55%, #a8874a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
