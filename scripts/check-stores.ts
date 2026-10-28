@@ -11,7 +11,7 @@
  */
 import { appendRemoved, readStores, writeStores, type Store } from "@/lib/catalog/stores";
 import { FetchFailedError, PoliteFetcher, RateLimitedError } from "@/lib/catalog/polite-fetch";
-import { currencyFrom, permalinkResolves, ProductsFeedSchema, shopifyFingerprint } from "@/lib/catalog/verify";
+import { currencyFrom, describeLocation, permalinkResolves, ProductsFeedSchema, shopifyFingerprint } from "@/lib/catalog/verify";
 
 type Outcome =
   | { kind: "kept"; store: Store }
@@ -59,7 +59,8 @@ async function check(store: Store): Promise<Outcome> {
     const variant = variants.find((v) => v.available) ?? variants[0];
     const cart = await http.get(`https://${host}/cart/${variant.id}:1`, { redirect: "manual" });
     if (!permalinkResolves(cart.status, cart.headers.get("location"))) {
-      throw new Fail(`cart permalink returned HTTP ${cart.status}`);
+      const where = cart.status >= 300 && cart.status < 400 ? ` to ${describeLocation(cart.headers.get("location"))}` : "";
+      throw new Fail(`cart permalink returned HTTP ${cart.status}${where}`);
     }
 
     // Currency (needed for SGD conversion). Not a removal reason on its own.

@@ -44,7 +44,9 @@ describe("permalinkResolves", () => {
     [200, null, true],
     [302, "https://shop.com/cart", true],
     [302, "/checkouts/cn/abc", true],
+    [302, "https://shop.app/checkout/9861988414/cn/abc/en-sg/shoppay", true],
     [302, "https://shop.com/password", false],
+    [302, "https://shop.com/challenge", false],
     [404, null, false],
     [302, null, false],
   ])("status %s to %s -> %s", (status, location, expected) => {

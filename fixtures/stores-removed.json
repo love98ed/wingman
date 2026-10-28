@@ -10,5 +10,23 @@
     "name": "ORSQ",
     "reason": "HTTP 402 (Shopify store unavailable); orsq.store checked instead",
     "removedAt": "2026-10-28"
+  },
+  {
+    "domain": "benjaminbarker.co",
+    "name": "Benjamin Barker",
+    "reason": "products.json returned HTTP 404",
+    "removedAt": "2026-10-28"
+  },
+  {
+    "domain": "the-shirt-bar.com",
+    "name": "The Shirt Bar",
+    "reason": "products.json returned HTTP 404",
+    "removedAt": "2026-10-28"
+  },
+  {
+    "domain": "orsq.store",
+    "name": "ORSQ",
+    "reason": "products.json is not JSON",
+    "removedAt": "2026-10-28"
   }
 ]

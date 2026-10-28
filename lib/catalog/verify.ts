@@ -33,14 +33,25 @@ export function shopifyFingerprint(headers: Headers, html?: string): string | nu
   return null;
 }
 
-/** CLAUDE.md 5b check 3: a cart permalink resolves with 200 or a redirect to /cart or /checkouts/. */
+/**
+ * CLAUDE.md 5b check 3: a cart permalink resolves with 200 or a redirect to the
+ * cart or checkout. Shopify may send it to the store's /checkouts/... or to Shop
+ * Pay at shop.app/checkout/..., both of which are working checkouts.
+ */
 export function permalinkResolves(status: number, location: string | null): boolean {
   if (status === 200) return true;
   if (status >= 300 && status < 400 && location) {
     const pathname = new URL(location, "https://store.invalid").pathname;
-    return pathname.startsWith("/cart") || pathname.includes("/checkouts/");
+    return pathname.startsWith("/cart") || /\/checkouts?\//.test(pathname);
   }
   return false;
+}
+
+/** Short "host/path" of a redirect target, for logs. */
+export function describeLocation(location: string | null): string {
+  if (!location) return "no Location header";
+  const url = new URL(location, "https://store.invalid");
+  return `${url.host === "store.invalid" ? "" : url.host}${url.pathname}`.slice(0, 80);
 }
 
 /** Store currency from /cart.js, or from Shopify's currency object in the homepage HTML. */
