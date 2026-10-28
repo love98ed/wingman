@@ -1,0 +1,14 @@
+[
+  {
+    "domain": "earnestcollective.com",
+    "name": "Earnest & Collective",
+    "reason": "Domain does not resolve; company registered as closed in 2022",
+    "removedAt": "2026-10-28"
+  },
+  {
+    "domain": "orsq-official.com",
+    "name": "ORSQ",
+    "reason": "HTTP 402 (Shopify store unavailable); orsq.store checked instead",
+    "removedAt": "2026-10-28"
+  }
+]

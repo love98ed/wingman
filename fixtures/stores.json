@@ -1,0 +1,23 @@
+[
+  { "domain": "duxton.com", "name": "DUXTON", "fills": ["top"] },
+  { "domain": "ingoodcompany.asia", "name": "In Good Company", "fills": ["top", "bottom", "outerwear"] },
+  { "domain": "kerbside-co.com", "name": "Kerbside & Co.", "fills": ["top", "bottom"] },
+  { "domain": "pharaohshorses.co", "name": "Pharaoh's Horses", "fills": ["top", "bottom"] },
+  { "domain": "colonyclothing.net", "name": "Colony Clothing", "fills": ["top", "bottom"] },
+  { "domain": "benjaminbarker.co", "name": "Benjamin Barker", "fills": ["top", "bottom"] },
+  { "domain": "the-shirt-bar.com", "name": "The Shirt Bar", "fills": ["top"] },
+  { "domain": "white-ginger.com", "name": "White Ginger", "fills": ["top", "bottom"] },
+  { "domain": "senjabalico.com", "name": "Senja Bali Co.", "fills": ["top"] },
+  { "domain": "kevinseah.com", "name": "Kevin Seah", "fills": ["top", "bottom", "outerwear", "shoes"] },
+  { "domain": "ruggedgentlemenshoppe.com", "name": "Rugged Gentlemen Shoppe", "fills": ["bottom", "outerwear", "shoes", "accessory"] },
+  { "domain": "cufflinks.com.sg", "name": "Cufflinks.com.sg", "fills": ["accessory"] },
+  { "domain": "boldrsupply.co", "name": "BOLDR", "fills": ["watch"] },
+  { "domain": "orsq.store", "name": "ORSQ", "fills": ["shoes"] },
+  { "domain": "whyandco.com", "name": "WHY&CO", "fills": ["shoes"] },
+  { "domain": "ardenteal.com", "name": "Arden Teal", "fills": ["shoes"] },
+  { "domain": "thejacketmaker.sg", "name": "The Jacket Maker", "fills": ["outerwear", "shoes"] },
+  { "domain": "radrussel.com", "name": "Rad Russel", "fills": ["shoes"] },
+  { "domain": "zeloswatches.com", "name": "Zelos", "fills": ["watch"] },
+  { "domain": "vario.sg", "name": "Vario", "fills": ["watch"] },
+  { "domain": "redarmywatches.com", "name": "Red Army Watches", "fills": ["watch"] }
+]
