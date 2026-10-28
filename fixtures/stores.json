@@ -5,8 +5,11 @@
     "fills": [
       "top"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "97",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "ingoodcompany.asia",
@@ -42,8 +45,11 @@
       "top",
       "bottom"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "111",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "colonyclothing.net",
@@ -52,8 +58,11 @@
       "top",
       "bottom"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "white-ginger.com",
@@ -62,8 +71,11 @@
       "top",
       "bottom"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "senjabalico.com",
@@ -71,8 +83,11 @@
     "fills": [
       "top"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "USD",
+    "productCountEstimate": "21",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "kevinseah.com",
@@ -98,8 +113,11 @@
       "shoes",
       "accessory"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "cufflinks.com.sg",
@@ -107,8 +125,11 @@
     "fills": [
       "accessory"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "boldrsupply.co",
@@ -116,8 +137,11 @@
     "fills": [
       "watch"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "209",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "whyandco.com",
@@ -125,8 +149,11 @@
     "fills": [
       "shoes"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "115",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "ardenteal.com",
@@ -134,8 +161,11 @@
     "fills": [
       "shoes"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "thejacketmaker.sg",
@@ -144,17 +174,11 @@
       "outerwear",
       "shoes"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
-  },
-  {
-    "domain": "radrussel.com",
-    "name": "Rad Russel",
-    "fills": [
-      "shoes"
-    ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "zeloswatches.com",
@@ -174,8 +198,11 @@
     "fills": [
       "watch"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   },
   {
     "domain": "redarmywatches.com",
@@ -183,7 +210,10 @@
     "fills": [
       "watch"
     ],
-    "verified": false,
-    "pendingReason": "restored: cart check bug (Shop Pay redirect), re-check"
+    "verified": true,
+    "shopifyProof": "header powered-by",
+    "currency": "SGD",
+    "productCountEstimate": "250+",
+    "checkedAt": "2026-10-28"
   }
 ]

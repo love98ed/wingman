@@ -28,5 +28,11 @@
     "name": "ORSQ",
     "reason": "products.json is not JSON",
     "removedAt": "2026-10-28"
+  },
+  {
+    "domain": "radrussel.com",
+    "name": "Rad Russel",
+    "reason": "cart permalink returned HTTP 302 to radrussel.com/account/login",
+    "removedAt": "2026-10-28"
   }
 ]
