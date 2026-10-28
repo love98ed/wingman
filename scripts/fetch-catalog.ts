@@ -84,7 +84,7 @@ async function loadCache(domain: string): Promise<StoreCache> {
 
 async function saveCache(domain: string, cache: StoreCache) {
   await mkdir(CACHE_DIR, { recursive: true });
-  await writeFile(path.join(CACHE_DIR, `${domain}.json`), JSON.stringify(cache));
+  await writeFile(path.join(CACHE_DIR, `${domain}.json`), JSON.stringify(cache, null, 2));
 }
 
 async function processStore(store: Store, raw: ShopifyProduct[]) {
