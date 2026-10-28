@@ -14,7 +14,8 @@
     "youcam:smoke": "tsx --conditions=react-server --env-file=.env.local scripts/youcam-smoke.ts",
     "photo:check": "tsx --conditions=react-server --env-file=.env.local scripts/check-photo.ts",
     "stores:check": "tsx --conditions=react-server --env-file=.env.local scripts/check-stores.ts",
-    "catalog:fetch": "tsx --conditions=react-server --env-file=.env.local scripts/fetch-catalog.ts"
+    "catalog:fetch": "tsx --conditions=react-server --env-file=.env.local scripts/fetch-catalog.ts",
+    "style:demo": "tsx scripts/style-demo.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

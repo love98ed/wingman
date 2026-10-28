@@ -100,6 +100,7 @@ Open http://localhost:3000. The UI is designed for a 390px phone screen first.
 | `npm run test:e2e` | Smoke test in a phone-sized browser (Playwright) |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint |
+| `npm run style:demo` | Calls `POST /api/style` with the demo photo and prints the looks, Fit Checks and prep plan. Start `npm run dev` first; `MOCK_YOUCAM` decides mock or live renders. Flags: `--tier`, `--occasion`, `--max-budget`, `--photo`, `--url`. |
 | `npm run youcam:smoke` | One real call per YouCam API on `fixtures/selfies/demo.jpg`. Saves responses for mock mode and prints units used. A second run costs zero units. |
 
 ## Project structure
@@ -112,6 +113,7 @@ components/
   home/                  Home page sections: hero window, occasion list, look frames, Fit Check, how it works, footer
   shared/                Used across routes: placeholder screen, scroll-entrance helper
 lib/
+  agent/                 Style agent: occasion parsing, candidate pool, look selection, renders, Fit Check, prep plan
   catalog/               Shopify feeds: fetch, filter, Claude tagging, prices in SGD, relative tiers, store checks
   youcam/                YouCam client, unit guard, render cache, mock mode (index.ts is the entry point)
   llm/                   Claude model config and JSON-output helper

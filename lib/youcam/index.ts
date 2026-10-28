@@ -2,7 +2,7 @@ import "server-only";
 
 import { getServerEnv } from "@/lib/env.server";
 import { supabaseAdmin } from "@/lib/supabase/server";
-import { YouCamClient } from "./client";
+import { YouCamClient, type YouCamResult } from "./client";
 import { UnitGuard } from "./guard";
 import { YouCamHttp } from "./http";
 import { SupabaseRenderCache, SupabaseUsageStore } from "./supabase-stores";
@@ -26,4 +26,14 @@ export function youcam(): YouCamClient {
     });
   }
   return instance;
+}
+
+/**
+ * A URL the browser can load for a render: a 1-hour signed URL for stored renders,
+ * or an inline data URL for mock fixtures (never stored).
+ */
+export async function renderUrl(result: YouCamResult): Promise<string | undefined> {
+  if (result.imagePath) return new SupabaseRenderCache(supabaseAdmin()).signedUrl(result.imagePath);
+  if (result.image) return `data:image/jpeg;base64,${result.image.toString("base64")}`;
+  return undefined;
 }

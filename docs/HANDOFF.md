@@ -13,9 +13,10 @@ Read this first, then `CLAUDE.md` (the project rules) and `docs/STEP_PROMPTS.md`
 | 0. Plan | Done |
 | 1. Scaffold | Done |
 | 2. YouCam client | Done. 19 of 700 YouCam units used |
-| 3. Catalog | **In progress.** 17 stores verified. Catalog fetch paused: 8 of 17 stores fully tagged and cached, Rugged Gentlemen about half done, 8 not started. Nothing is in the database yet |
-| Home page redesign | Done and live (dark luxe theme) |
-| 4 to 12 | Not started |
+| 3. Catalog | Done. 4,983 products from 17 stores in Supabase; every tier has 60+ in-stock tops, bottoms, shoes and watches. Known gap: colour tags come from product text, so multi-colour products can be tagged with a colour the try-on image doesn't show |
+| Home page redesign | Done and live (design-taste-frontend direction) |
+| 4. Style agent | Done. `POST /api/style` returns 2 to 3 looks with renders, Fit Check, totals and prep plan. Try it with `npm run style:demo` |
+| 5 to 12 | Not started |
 
 ## 1. Get set up (once)
 
