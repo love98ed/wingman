@@ -8,9 +8,10 @@
  *   npm run catalog:fetch -- --store duxton.com --from-file fixtures/shopify/duxton.com.json
  *   add --dry-run to skip all writes (database and store files)
  */
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { parseArgs } from "node:util";
-import { buildProduct, inStock, productId, type UntieredProduct } from "@/lib/catalog/build";
+import { buildProduct, inStock, type UntieredProduct } from "@/lib/catalog/build";
 import { prefilterMenswear } from "@/lib/catalog/filter";
 import { UnknownCurrencyError } from "@/lib/catalog/fx";
 import { rankImages, sizedUrl, TRY_ON_CATEGORIES, usableForTryOn } from "@/lib/catalog/images";
@@ -50,43 +51,91 @@ async function pool<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>
   return out;
 }
 
+/** Width Claude sees when judging a photo; small is faster and plenty to spot bare skin. */
+const JUDGE_WIDTH = 640;
+
 async function chooseImage(product: ShopifyProduct, category: Category): Promise<string | null> {
   const ranked = rankImages(product);
   if (ranked.length === 0) return null;
   if (!TRY_ON_CATEGORIES.includes(category)) return sizedUrl(ranked[0].src);
-  for (const candidate of ranked.slice(0, 3)) {
-    const url = sizedUrl(candidate.src);
-    const verdict = await judgeImage(url).catch(() => null);
-    if (verdict && usableForTryOn(verdict)) return url;
+  for (const candidate of ranked.slice(0, 2)) {
+    const verdict = await judgeImage(sizedUrl(candidate.src, JUDGE_WIDTH)).catch(() => null);
+    if (verdict && usableForTryOn(verdict)) return sizedUrl(candidate.src);
   }
   return null;
 }
 
-async function processStore(store: Store, raw: ShopifyProduct[], cached: Map<string, Product>) {
+/**
+ * Per-store cache of tags and image decisions, keyed by Shopify product id and
+ * updated_at. Saved as work progresses, so an interrupted run resumes where it
+ * stopped and later refreshes only pay for changed products.
+ */
+type CacheEntry = { updatedAt: string; tag?: ProductTag; image?: string | null };
+type StoreCache = Record<string, CacheEntry>;
+const CACHE_DIR = path.join(process.cwd(), ".cache", "catalog");
+
+async function loadCache(domain: string): Promise<StoreCache> {
+  try {
+    return JSON.parse(await readFile(path.join(CACHE_DIR, `${domain}.json`), "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+async function saveCache(domain: string, cache: StoreCache) {
+  await mkdir(CACHE_DIR, { recursive: true });
+  await writeFile(path.join(CACHE_DIR, `${domain}.json`), JSON.stringify(cache));
+}
+
+async function processStore(store: Store, raw: ShopifyProduct[]) {
   const summary: Summary = { store: store.domain, fetched: raw.length, prefiltered: 0, menswear: 0, kept: 0, noImage: 0 };
   const candidates = raw.filter((p) => prefilterMenswear(p).keep);
   summary.prefiltered = candidates.length;
 
-  // Reuse tags and images for products unchanged since the last refresh.
-  const fresh = candidates.filter((p) => cached.get(productId(store, p))?.updatedAt !== p.updated_at);
-  const tags = new Map<number, ProductTag>();
-  for (let i = 0; i < fresh.length; i += TAG_BATCH_SIZE) {
-    for (const tag of await tagBatch(fresh.slice(i, i + TAG_BATCH_SIZE))) tags.set(tag.id, tag);
-  }
+  const cache = await loadCache(store.domain);
+  const entry = (p: ShopifyProduct) => {
+    const e = cache[p.id];
+    return e && e.updatedAt === p.updated_at ? e : (cache[p.id] = { updatedAt: p.updated_at });
+  };
 
-  const built = await pool(candidates, 4, async (p): Promise<UntieredProduct | "skip" | "no-image"> => {
-    const prior = cached.get(productId(store, p));
-    if (prior && prior.updatedAt === p.updated_at) return prior;
-    const tag = tags.get(p.id);
-    if (!tag?.menswear || !tag.category) return "skip";
-    const image = await chooseImage(p, tag.category);
-    if (!image) return "no-image";
-    return buildProduct(store, p, { ...tag, category: tag.category }, image);
+  // 1. Tag products without a current tag, 4 batches at a time.
+  const untagged = candidates.filter((p) => !entry(p).tag);
+  const batches: ShopifyProduct[][] = [];
+  for (let i = 0; i < untagged.length; i += TAG_BATCH_SIZE) batches.push(untagged.slice(i, i + TAG_BATCH_SIZE));
+  let tagged = 0;
+  await pool(batches, 4, async (batch) => {
+    for (const tag of await tagBatch(batch)) {
+      const product = batch.find((p) => p.id === tag.id);
+      if (product) entry(product).tag = tag;
+    }
+    tagged += batch.length;
+    console.info(`  tagged ${tagged}/${untagged.length}`);
+    await saveCache(store.domain, cache);
   });
 
-  const products = built.filter((b): b is UntieredProduct => typeof b === "object");
-  summary.menswear = built.filter((b) => b !== "skip").length;
-  summary.noImage = built.filter((b) => b === "no-image").length;
+  // 2. Pick images for menswear products without a decision, 16 at a time.
+  const menswear = candidates.filter((p) => entry(p).tag?.menswear && entry(p).tag?.category);
+  const undecided = menswear.filter((p) => entry(p).image === undefined);
+  let judged = 0;
+  await pool(undecided, 16, async (p) => {
+    entry(p).image = await chooseImage(p, entry(p).tag!.category!);
+    if (++judged % 20 === 0 || judged === undecided.length) {
+      console.info(`  images ${judged}/${undecided.length}`);
+      await saveCache(store.domain, cache);
+    }
+  });
+  await saveCache(store.domain, cache);
+
+  const products: UntieredProduct[] = [];
+  for (const p of menswear) {
+    const { tag, image } = entry(p);
+    if (!image) {
+      summary.noImage++;
+      continue;
+    }
+    products.push(buildProduct(store, p, { ...tag!, category: tag!.category! }, image));
+  }
+  summary.menswear = menswear.length;
   summary.kept = products.length;
   return { products, summary };
 }
@@ -114,7 +163,6 @@ async function main() {
   if (targets.length === 0) throw new Error("No verified stores. Run npm run stores:check first.");
 
   const existing = await loadCatalog(db);
-  const cached = new Map(existing.map((p) => [p.id, p]));
   const http = new PoliteFetcher({ log: console.info });
   const refreshed = new Map<string, UntieredProduct[]>();
   const summaries: Summary[] = [];
@@ -134,7 +182,8 @@ async function main() {
       continue;
     }
     try {
-      const { products, summary } = await processStore(store, raw, cached);
+      console.info(`  ${raw.length} products fetched`);
+      const { products, summary } = await processStore(store, raw);
       summaries.push(summary);
       if (products.length === 0) {
         stores = await removeStore(store, "zero menswear products after filtering", stores);
