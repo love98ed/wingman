@@ -1,0 +1,1895 @@
+{
+  "10820506911029": {
+    "name": "Murray Suede Navy",
+    "url": "https://whyandco.com/products/murray-suede-navy",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "navy",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10820506911029
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MurrayNavy.jpg?v=1790304607&width=1600"
+  },
+  "10820506812725": {
+    "name": "Murray Suede Green",
+    "url": "https://whyandco.com/products/murray-suede-green",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "green",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10820506812725
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MurrayGreen.jpg?v=1790304574&width=1600"
+  },
+  "10820506779957": {
+    "name": "Murray Suede Sand",
+    "url": "https://whyandco.com/products/murray-suede-sand",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "sand",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10820506779957
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MurraySand.jpg?v=1790304533&width=1600"
+  },
+  "10820506714421": {
+    "name": "Murray Suede Brown",
+    "url": "https://whyandco.com/products/murray-suede-brown",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10820506714421
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MurrayBrown.jpg?v=1790304482&width=1600"
+  },
+  "10820506616117": {
+    "name": "Murray Pebble Brown",
+    "url": "https://whyandco.com/products/murray-pebble-brown",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10820506616117
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MurrayPebbleBrown.jpg?v=1792483745&width=1600"
+  },
+  "10820505698613": {
+    "name": "Murray Pebble Black",
+    "url": "https://whyandco.com/products/murray-pebble-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10820505698613
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MurrayPebbleBlack.jpg?v=1790303884&width=1600"
+  },
+  "10819625517365": {
+    "name": "Ocean Suede Midnight",
+    "url": "https://whyandco.com/products/ocean-suede-midnight",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "midnight blue",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819625517365
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanSuedeMidnightSide.jpg?v=1792201030&width=1600"
+  },
+  "10819625255221": {
+    "name": "Ocean Suede Forest",
+    "url": "https://whyandco.com/products/ocean-suede-forest",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "forest green",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819625255221
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanSuedeForestSide.jpg?v=1792201008&width=1600"
+  },
+  "10819624894773": {
+    "name": "Ocean Suede Sand",
+    "url": "https://whyandco.com/products/ocean-suede-sand",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "sand",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819624894773
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanSuedeSand_6e56522b-7a74-43a3-9817-967357768dc9.jpg?v=1792200983&width=1600"
+  },
+  "10819624370485": {
+    "name": "Ocean Suede Earth",
+    "url": "https://whyandco.com/products/ocean-suede-earth",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "earth brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819624370485
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanSuedeEarth_4bbba2a6-af65-4cba-aae9-5be3016aefdf.jpg?v=1792200962&width=1600"
+  },
+  "10819624141109": {
+    "name": "Ocean Suede Espresso",
+    "url": "https://whyandco.com/products/ocean-suede-espresso",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "espresso",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819624141109
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanSuedeEspressoSide.jpg?v=1792200935&width=1600"
+  },
+  "10819623616821": {
+    "name": "Ocean Suede Black",
+    "url": "https://whyandco.com/products/ocean-suede-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819623616821
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanSuedeBlack.jpg?v=1792200919&width=1600"
+  },
+  "10819622666549": {
+    "name": "Ocean Espresso",
+    "url": "https://whyandco.com/products/ocean-espresso",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "espresso",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819622666549
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanEspresso_50bbc928-97e3-48a9-b7ba-40d262d10a36.jpg?v=1792200894&width=1600"
+  },
+  "10819622469941": {
+    "name": "Ocean Black",
+    "url": "https://whyandco.com/products/ocean-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10819622469941
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OceanBlack.jpg?v=1792200860&width=1600"
+  },
+  "10410106454325": {
+    "name": "Tras Ash",
+    "url": "https://whyandco.com/products/tras-ash",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "ash grey",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10410106454325
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/TrasAGR1.webp?v=1771760273&width=1600"
+  },
+  "10410105340213": {
+    "name": "Stanley Suede Coffee",
+    "url": "https://whyandco.com/products/stanley-suede-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10410105340213
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Stanley_Suede_Coffee_2x_4a8f92e3-ac50-426c-959e-9407ae81ce03.webp?v=1785232749&width=1600"
+  },
+  "10410104553781": {
+    "name": "Philip Ash",
+    "url": "https://whyandco.com/products/philip-ash",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "ash grey",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 10410104553781
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/2eyeletderbyagr1.webp?v=1771759326&width=1600"
+  },
+  "10410103406901": {
+    "name": "Marina Oxblood",
+    "url": "https://whyandco.com/products/marina-oxblood",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "oxblood",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 10410103406901
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MarinaOxblood2.webp?v=1771758766&width=1600"
+  },
+  "10410102980917": {
+    "name": "Marina Oak",
+    "url": "https://whyandco.com/products/marina-oak",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "oak brown",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 10410102980917
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MarinaOak2.webp?v=1771758560&width=1600"
+  },
+  "10410099802421": {
+    "name": "Duxton Coffee",
+    "url": "https://whyandco.com/products/duxton-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "interview",
+        "date"
+      ],
+      "id": 10410099802421
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Duxton_Coffee_Side.png?v=1791605026&width=1600"
+  },
+  "10410098295093": {
+    "name": "Chulia Coffee",
+    "url": "https://whyandco.com/products/chulia-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10410098295093
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/2eyeletderbyCOF1_69a3b7bb-d9be-4122-a50e-e7be05718891.webp?v=1771756895&width=1600"
+  },
+  "10410097672501": {
+    "name": "Chancery Sky",
+    "url": "https://whyandco.com/products/chancery-sky",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "sky blue",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10410097672501
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/ChanceryinSkyBlue.jpg?v=1771756605&width=1600"
+  },
+  "10410097246517": {
+    "name": "Chancery Khaki Green",
+    "url": "https://whyandco.com/products/chancery-khaki-green",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "khaki green",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10410097246517
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/ChanceryinKhakiGreen1.jpg?v=1771756442&width=1600"
+  },
+  "10410095739189": {
+    "name": "Chancery Camel",
+    "url": "https://whyandco.com/products/chancery-camel",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "camel",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10410095739189
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/ChanceryinCamel1.jpg?v=1771756002&width=1600"
+  },
+  "10410094756149": {
+    "name": "Central Oak",
+    "url": "https://whyandco.com/products/central-oak",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "oak brown",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 10410094756149
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Central_Oak.webp?v=1785234523&width=1600"
+  },
+  "10410094362933": {
+    "name": "Central Midnight",
+    "url": "https://whyandco.com/products/central-midnight",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10410094362933
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Central_Midnight.webp?v=1785234505&width=1600"
+  },
+  "10410093936949": {
+    "name": "Carpenter Oxblood",
+    "url": "https://whyandco.com/products/carpenter-oxblood",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "oxblood",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10410093936949
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/ComingSoonPlaceholder.jpg?v=1771752877&width=1600"
+  },
+  "10410087186741": {
+    "name": "Canning Ash",
+    "url": "https://whyandco.com/products/canning-ash",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "ash grey",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10410087186741
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/ChukkaAGR1.webp?v=1771832423&width=1600"
+  },
+  "10410085417269": {
+    "name": "Anson Oxblood",
+    "url": "https://whyandco.com/products/anson-oxblood",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "oxblood",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10410085417269
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Oxford-Anson-Oxblood.webp?v=1785233383&width=1600"
+  },
+  "10363401961781": {
+    "name": "Shoe & Bag Fresh",
+    "url": "https://whyandco.com/products/shoe-bag-fresh",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "mint",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10363401961781
+    }
+  },
+  "10358584738101": {
+    "name": "Park Oak",
+    "url": "https://whyandco.com/products/park-oak",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "oak brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10358584738101
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/BOOT-PARK-OAK-1.webp?v=1766052182&width=1600"
+  },
+  "10358192341301": {
+    "name": "Space Grey Noshow Sock",
+    "url": "https://whyandco.com/products/space-grey-noshow-sock",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "space grey",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10358192341301
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/grey_edit_1_1.jpg?v=1765969752&width=1600"
+  },
+  "10358192439605": {
+    "name": "Beige Noshow Sock",
+    "url": "https://whyandco.com/products/beige-noshow-sock",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "beige",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10358192439605
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/beige_edited_1_1.jpg?v=1765969776&width=1600"
+  },
+  "10358191685941": {
+    "name": "Black Noshow Sock",
+    "url": "https://whyandco.com/products/black-noshow-sock",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "black",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10358191685941
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/black_edit_1_1.jpg?v=1765969359&width=1600"
+  },
+  "10356753432885": {
+    "name": "Signature Pigmented Cream",
+    "url": "https://whyandco.com/products/complimentary-pigmented-cream",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "cream",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10356753432885
+    }
+  },
+  "10342151192885": {
+    "name": "Shoe Mat",
+    "url": "https://whyandco.com/products/shoe-mat",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "grey",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10342151192885
+    }
+  },
+  "10342151061813": {
+    "name": "Travel Metal Shoe Horn",
+    "url": "https://whyandco.com/products/travel-metal-shoe-horn",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "silver",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10342151061813
+    }
+  },
+  "10276610638133": {
+    "name": "Canning Coffee",
+    "url": "https://whyandco.com/products/canning-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10276610638133
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/BOOT-CANNING-COFFEE-1.webp?v=1762076614&width=1600"
+  },
+  "10276608573749": {
+    "name": "Central Rosewood",
+    "url": "https://whyandco.com/products/central-rosewood",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "rosewood",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10276608573749
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-CENTRAL-ROSEWOOD-1.webp?v=1761989979&width=1600"
+  },
+  "10276608049461": {
+    "name": "Carpenter Rosewood",
+    "url": "https://whyandco.com/products/carpenter-rosewood",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "rosewood",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10276608049461
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MONKSTRAP-CARPENTER-ROSEWOOD-1.webp?v=1761990009&width=1600"
+  },
+  "10276607721781": {
+    "name": "George Rosewood",
+    "url": "https://whyandco.com/products/george-rosewood",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "rosewood",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10276607721781
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-GEORGE-ROSEWOOD-1.webp?v=1761990024&width=1600"
+  },
+  "10252341084469": {
+    "name": "Filo di Scozia - Zaffiro",
+    "url": "https://whyandco.com/products/filo-di-scozia-zaffiro",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "sapphire blue",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview"
+      ],
+      "id": 10252341084469
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Zaffiro.webp?v=1764746926&width=1600"
+  },
+  "10252340691253": {
+    "name": "Filo di Scozia - Navy",
+    "url": "https://whyandco.com/products/filo-di-scozia-navy",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "navy",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview"
+      ],
+      "id": 10252340691253
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Navy.webp?v=1764746906&width=1600"
+  },
+  "10252335677749": {
+    "name": "Sheares Pebble Black",
+    "url": "https://whyandco.com/products/sheares-pebble-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10252335677749
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SNEAKER-SHEARES-BLACK-1.webp?v=1761990043&width=1600"
+  },
+  "10252334989621": {
+    "name": "Sheares Pebble White",
+    "url": "https://whyandco.com/products/sheares-pebble-white",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "white",
+      "formality": "casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10252334989621
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SNEAKER-SHEARES-WHITE-1.webp?v=1762083205&width=1600"
+  },
+  "10252326994229": {
+    "name": "Tras Pebble Black",
+    "url": "https://whyandco.com/products/tras-pebble-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "night-out"
+      ],
+      "id": 10252326994229
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-TRAS-PEBBLEGRAIN-1.webp?v=1761990061&width=1600"
+  },
+  "10187136565557": {
+    "name": "Chulia Black",
+    "url": "https://whyandco.com/products/chulia-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10187136565557
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/DERBY-CHULIA-BLACK-1.webp?v=1762078518&width=1600"
+  },
+  "10187135353141": {
+    "name": "Chulia Suede Coffee",
+    "url": "https://whyandco.com/products/chulia-suede-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 10187135353141
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/DERBY-CHULIA-COFFEE-1.webp?v=1762078521&width=1600"
+  },
+  "10083655844149": {
+    "name": "Church Mid Tan",
+    "url": "https://whyandco.com/products/church-mid-tan",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "tan",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10083655844149
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-CHURCH-MIDTAN-1.webp?v=1762076310&width=1600"
+  },
+  "10083654074677": {
+    "name": "Church Coffee",
+    "url": "https://whyandco.com/products/church-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10083654074677
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-CHURCH-COFFEE-1.webp?v=1762076315&width=1600"
+  },
+  "10076086272309": {
+    "name": "Carpenter Black",
+    "url": "https://whyandco.com/products/carpenter-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 10076086272309
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MONKSTRAP-CARPENTER-BLACK-1.webp?v=1771727905&width=1600"
+  },
+  "10021999903029": {
+    "name": "Cardholder",
+    "url": "https://whyandco.com/products/cardholder",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [],
+      "id": 10021999903029
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/DSC5860copy.webp?v=1741576555&width=1600"
+  },
+  "9967206924597": {
+    "name": "Waxed Laces",
+    "url": "https://whyandco.com/products/waxed-laces",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "black",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9967206924597
+    }
+  },
+  "9950075224373": {
+    "name": "Saphir Mirror Gloss 75ml",
+    "url": "https://whyandco.com/products/saphir-mirror-gloss-75ml",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "black",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9950075224373
+    }
+  },
+  "9950072406325": {
+    "name": "Saphir Shoe Wax 50ml",
+    "url": "https://whyandco.com/products/saphir-shoe-wax-50ml",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "brown",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9950072406325
+    }
+  },
+  "9653557166389": {
+    "name": "Neil Suede Midnight",
+    "url": "https://whyandco.com/products/neil-suede-midnight",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "midnight blue",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653557166389
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-NEIL-MIDNIGHT-1.webp?v=1762081310&width=1600"
+  },
+  "9799878017333": {
+    "name": "Bayfront Black",
+    "url": "https://whyandco.com/products/bayfront-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9799878017333
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SNEAKER-BAYFRONT-BLACK-1.webp?v=1762078935&width=1600"
+  },
+  "9660887531829": {
+    "name": "Bayfront White",
+    "url": "https://whyandco.com/products/bayfront-white",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "white",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9660887531829
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SNEAKER-BAYFRONT-WHITE-1.webp?v=1762083196&width=1600"
+  },
+  "9776283025717": {
+    "name": "Shenton Tan",
+    "url": "https://whyandco.com/products/shenton-tan",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "tan",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9776283025717
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-SHENTON-TAN-1.webp?v=1762076519&width=1600"
+  },
+  "9776285942069": {
+    "name": "Shenton Midnight",
+    "url": "https://whyandco.com/products/shenton-midnight",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "midnight blue",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9776285942069
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-SHENTON-MIDNIGHT-1.webp?v=1762076514&width=1600"
+  },
+  "9775983067445": {
+    "name": "McCallum Black",
+    "url": "https://whyandco.com/products/mccallum-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9775983067445
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MONKSTRAP-MCCALLUM-BLACK-1.webp?v=1762076695&width=1600"
+  },
+  "9775976808757": {
+    "name": "Havelock Midnight",
+    "url": "https://whyandco.com/products/havelock-midnight",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "midnight blue",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9775976808757
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-HAVELOCK-MIDNIGHT-1.webp?v=1762076439&width=1600"
+  },
+  "9775971631413": {
+    "name": "George Coffee",
+    "url": "https://whyandco.com/products/george-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9775971631413
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-GEORGE-COFFEE-1.webp?v=1766996975&width=1600"
+  },
+  "9778895126837": {
+    "name": "Garden Nubuck Burgundy",
+    "url": "https://whyandco.com/products/garden-nubuck-burgundy",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "burgundy",
+      "formality": "smart-casual",
+      "occasions": [
+        "date"
+      ],
+      "id": 9778895126837
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SANDAL-GARDEN-BURGUNDY-1.webp?v=1762081664&width=1600"
+  },
+  "9775962784053": {
+    "name": "Garden Nubuck Midnight",
+    "url": "https://whyandco.com/products/garden-nubuck-midnight",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "midnight blue",
+      "formality": "smart-casual",
+      "occasions": [
+        "date"
+      ],
+      "id": 9775962784053
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SANDAL-GARDEN-MIDNIGHT-1.webp?v=1762081669&width=1600"
+  },
+  "9775965929781": {
+    "name": "Garden Nubuck Ash",
+    "url": "https://whyandco.com/products/garden-nubuck-ash",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "ash grey",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9775965929781
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SANDAL-GARDEN-ASH-1.webp?v=1762078848&width=1600"
+  },
+  "9775945744693": {
+    "name": "Collyer Coffee",
+    "url": "https://whyandco.com/products/collyer-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9775945744693
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-COLLYER-COFFEE-1_86d3f620-81b4-4765-a0f7-76378d557327.webp?v=1762075910&width=1600"
+  },
+  "9776276242741": {
+    "name": "Anson Brown Red",
+    "url": "https://whyandco.com/products/anson-brown-red",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "brown red",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9776276242741
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-ANSON-BROWNRED-1.webp?v=1762076079&width=1600"
+  },
+  "9776270836021": {
+    "name": "Anson Black",
+    "url": "https://whyandco.com/products/anson-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9776270836021
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-ANSON-BLACK-1.webp?v=1762076092&width=1600"
+  },
+  "9661138272565": {
+    "name": "Vanisé Classic Scarf - Nero Zaffiro",
+    "url": "https://whyandco.com/products/vanise-classic-scarf-nero-zaffiro",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "navy",
+      "formality": "smart-casual",
+      "occasions": [
+        "interview",
+        "date"
+      ],
+      "id": 9661138272565
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/VaniseClassicScarf-NeroZaffiro.jpg?v=1718883030&width=1600"
+  },
+  "9654251454773": {
+    "name": "Vanisé Classic Scarf - Oliva Acqua",
+    "url": "https://whyandco.com/products/scarfs",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "olive green",
+      "formality": "smart-casual",
+      "occasions": [
+        "interview",
+        "date"
+      ],
+      "id": 9654251454773
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/VaniseClassicScarf-OlivaAcqua.jpg?v=1718882953&width=1600"
+  },
+  "9657691865397": {
+    "name": "Filo di Scozia - Rosa",
+    "url": "https://whyandco.com/products/filo-di-scozia-rosa",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "pink",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9657691865397
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo_di_Scozia_-_Rosa.jpg?v=1718941906&width=1600"
+  },
+  "9657687507253": {
+    "name": "Filo di Scozia - Rosso",
+    "url": "https://whyandco.com/products/filo-di-scozia-rosso",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "red",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9657687507253
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo_di_Scozia_-_Rosso_Scarlatto.jpg?v=1718941960&width=1600"
+  },
+  "9657684951349": {
+    "name": "Filo di Scozia - Viola",
+    "url": "https://whyandco.com/products/filo-di-scozia-viola",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "purple",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9657684951349
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo_di_Scozia_-_Viola.jpg?v=1718941976&width=1600"
+  },
+  "9653555036469": {
+    "name": "Wallich Coffee",
+    "url": "https://whyandco.com/products/wallich-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "formal",
+      "occasions": [
+        "wedding",
+        "dnd",
+        "interview"
+      ],
+      "id": 9653555036469
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-WALLICH-COFFEE-1.webp?v=1762075241&width=1600"
+  },
+  "9653554905397": {
+    "name": "Wallich Black",
+    "url": "https://whyandco.com/products/wallich-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653554905397
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-WALLICH-BLACK-1_bfe8397d-3b20-41da-8483-30810eb337f6.webp?v=1766996998&width=1600"
+  },
+  "9653557723445": {
+    "name": "Tras Suede Coffee",
+    "url": "https://whyandco.com/products/tras-suede-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653557723445
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-TRAS-COFFEE-1.webp?v=1762078733&width=1600"
+  },
+  "9653557625141": {
+    "name": "Tras Black",
+    "url": "https://whyandco.com/products/tras-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653557625141
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-TRAS-BLACK-1.webp?v=1762078728&width=1600"
+  },
+  "9653552415029": {
+    "name": "Total Protector",
+    "url": "https://whyandco.com/products/total-protector",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "clear",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9653552415029
+    }
+  },
+  "9653552447797": {
+    "name": "Suede Brush",
+    "url": "https://whyandco.com/products/suede-brush-classic",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "brown",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9653552447797
+    }
+  },
+  "9653557002549": {
+    "name": "Neil Suede Olive Brown",
+    "url": "https://whyandco.com/products/neil-suede-olive-brown",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "olive brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653557002549
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-NEIL-OLIVE-1.webp?v=1762078662&width=1600"
+  },
+  "9653557821749": {
+    "name": "Neil Suede Coffee",
+    "url": "https://whyandco.com/products/neil-suede-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653557821749
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-NEIL-COFFEE-1.webp?v=1762076858&width=1600"
+  },
+  "9653554446645": {
+    "name": "Merino - Bosco",
+    "url": "https://whyandco.com/products/merino-bosco",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "dark brown",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653554446645
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Merino-Bosco.jpg?v=1718516881&width=1600"
+  },
+  "9653554282805": {
+    "name": "Merino - Bordeaux",
+    "url": "https://whyandco.com/products/merino-bordeaux",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "burgundy",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653554282805
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Merino-Bordo.jpg?v=1718516877&width=1600"
+  },
+  "9653554512181": {
+    "name": "Merino - Blue Navy",
+    "url": "https://whyandco.com/products/merino-blue-navy",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "navy",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653554512181
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Merino-Blu.jpg?v=1718516885&width=1600"
+  },
+  "9653556543797": {
+    "name": "McCallum Coffee",
+    "url": "https://whyandco.com/products/mccallum-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653556543797
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/MONKSTRAP-MCCALLUM-COFFEE-1.webp?v=1762076689&width=1600"
+  },
+  "9653555790133": {
+    "name": "Marina Suede Tan",
+    "url": "https://whyandco.com/products/marina-suede-tan",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "tan",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653555790133
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/DERBY-MARINA-TAN-1.webp?v=1762078579&width=1600"
+  },
+  "9653555691829": {
+    "name": "Marina Coffee",
+    "url": "https://whyandco.com/products/marina-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "night-out"
+      ],
+      "id": 9653555691829
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/DERBY-MARINA-COFFEE-1.webp?v=1762078584&width=1600"
+  },
+  "9653551923509": {
+    "name": "Horse Hair Brush",
+    "url": "https://whyandco.com/products/horse-hair-brush",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "brown",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9653551923509
+    }
+  },
+  "9653556248885": {
+    "name": "Havelock Coffee",
+    "url": "https://whyandco.com/products/havelock-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653556248885
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-HAVELOCK-COFFEE-1.webp?v=1762076445&width=1600"
+  },
+  "9653556085045": {
+    "name": "Havelock Black",
+    "url": "https://whyandco.com/products/havelock-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653556085045
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-HAVELOCK-BLACK-1.webp?v=1762076450&width=1600"
+  },
+  "9653555921205": {
+    "name": "George Black",
+    "url": "https://whyandco.com/products/george-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653555921205
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-GEORGE-BLACK-1.webp?v=1762075447&width=1600"
+  },
+  "9653558149429": {
+    "name": "Garden Nubuck Mid Tan",
+    "url": "https://whyandco.com/products/garden-nubuck-mid-tan",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "tan",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653558149429
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SANDAL-GARDEN-MIDTAN-1.webp?v=1762078854&width=1600"
+  },
+  "9653558018357": {
+    "name": "Garden Box Black",
+    "url": "https://whyandco.com/products/garden-box-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653558018357
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/SANDAL-GARDEN-BLACK-1.webp?v=1762078858&width=1600"
+  },
+  "9653554217269": {
+    "name": "Filo di Scozia Cotton Vanisse - Limone Verde",
+    "url": "https://whyandco.com/products/filo-di-scozia-cotton-vanisse-limone-verde",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "lime green",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653554217269
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Vanise-Limone.jpg?v=1718516874&width=1600"
+  },
+  "9653554118965": {
+    "name": "Filo di Scozia Cotton Vanisse - Blu Limone",
+    "url": "https://whyandco.com/products/filo-di-scozia-cotton-vanisse-blu-limone",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "blue",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653554118965
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Vanise-Blue.jpg?v=1718516870&width=1600"
+  },
+  "9653553987893": {
+    "name": "Filo di Scozia Cotton Vanisse - Arancia Giallo",
+    "url": "https://whyandco.com/products/filo-di-scozia-cotton-vanisse-arancia-giallo",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "orange",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653553987893
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Vanise-Arancia.jpg?v=1718516867&width=1600"
+  },
+  "9653553398069": {
+    "name": "Filo di Scozia - Verdone",
+    "url": "https://whyandco.com/products/filo-di-scozia-verdone",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "green",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653553398069
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Verdone.jpg?v=1718516841&width=1600"
+  },
+  "9653553627445": {
+    "name": "Filo di Scozia - Tabacco",
+    "url": "https://whyandco.com/products/filo-di-scozia-tabacco",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "tan",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653553627445
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Tabacco.jpg?v=1718516853&width=1600"
+  },
+  "9653553824053": {
+    "name": "Filo di Scozia - Oliva",
+    "url": "https://whyandco.com/products/filo-di-scozia-oliva",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "olive green",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653553824053
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Oliva.jpg?v=1718516859&width=1600"
+  },
+  "9653553299765": {
+    "name": "Filo di Scozia - Nero",
+    "url": "https://whyandco.com/products/filo-di-scozia-nero",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "wedding",
+        "cny",
+        "dnd",
+        "night-out"
+      ],
+      "id": 9653553299765
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Nero.jpg?v=1718516837&width=1600"
+  },
+  "9653553561909": {
+    "name": "Filo di Scozia - Moro",
+    "url": "https://whyandco.com/products/filo-di-scozia-moro",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "wedding",
+        "cny",
+        "dnd",
+        "night-out"
+      ],
+      "id": 9653553561909
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Moro.jpg?v=1718516849&width=1600"
+  },
+  "9653553463605": {
+    "name": "Filo di Scozia - Bordeaux",
+    "url": "https://whyandco.com/products/filo-di-scozia-bordeaux",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "burgundy",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "wedding",
+        "cny",
+        "dnd",
+        "night-out"
+      ],
+      "id": 9653553463605
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Bordeaux.jpg?v=1718516845&width=1600"
+  },
+  "9653553692981": {
+    "name": "Filo di Scozia - Blu",
+    "url": "https://whyandco.com/products/filo-di-scozia-blu",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "blue",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "wedding",
+        "cny",
+        "dnd",
+        "night-out"
+      ],
+      "id": 9653553692981
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/Filo-di-Scozia-Blu.jpg?v=1718516856&width=1600"
+  },
+  "9653556838709": {
+    "name": "Duxton Suede Coffee",
+    "url": "https://whyandco.com/products/duxton-suede-coffee",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "coffee brown",
+      "formality": "casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 9653556838709
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-DUXTON-COFFEE-1.webp?v=1762081238&width=1600"
+  },
+  "9653556707637": {
+    "name": "Duxton Black",
+    "url": "https://whyandco.com/products/duxton-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653556707637
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/LOAFER-DUXTON-BLACK-1.webp?v=1766996988&width=1600"
+  },
+  "9653552578869": {
+    "name": "Creams & Gels",
+    "url": "https://whyandco.com/products/creams-gels",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "neutral",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9653552578869
+    }
+  },
+  "9653553004853": {
+    "name": "Combi Foam Cleaner",
+    "url": "https://whyandco.com/products/combi-foam-cleaner",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "neutral",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9653553004853
+    }
+  },
+  "9653555265845": {
+    "name": "Collyer Oxblood",
+    "url": "https://whyandco.com/products/collyer-oxblood",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "oxblood",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "wedding",
+        "cny",
+        "dnd",
+        "night-out"
+      ],
+      "id": 9653555265845
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-COLLYER-BROWNRED-1.webp?v=1762081396&width=1600"
+  },
+  "9653555200309": {
+    "name": "Collyer Black",
+    "url": "https://whyandco.com/products/collyer-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "formal",
+      "occasions": [
+        "interview",
+        "wedding",
+        "dnd"
+      ],
+      "id": 9653555200309
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/OXFORD-COLLYER-BLACK-1.webp?v=1762075924&width=1600"
+  },
+  "9653554708789": {
+    "name": "Clarke Black",
+    "url": "https://whyandco.com/products/clarke-black",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "shoes",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "night-out"
+      ],
+      "id": 9653554708789
+    },
+    "image": "https://cdn.shopify.com/s/files/1/0887/0232/0949/files/BOOT-CLARKE-BLACK-1.webp?v=1762076576&width=1600"
+  },
+  "9653551989045": {
+    "name": "Cedar Shoe Tree",
+    "url": "https://whyandco.com/products/cedar-shoe-tree",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "neutral",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9653551989045
+    }
+  },
+  "9653552546101": {
+    "name": "Chamois Shoe Polishing Cloth",
+    "url": "https://whyandco.com/products/chamois-shoe-polishing-cloth",
+    "updatedAt": "2026-10-28T18:26:31+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "neutral",
+      "formality": "casual",
+      "occasions": [],
+      "id": 9653552546101
+    }
+  }
+}
