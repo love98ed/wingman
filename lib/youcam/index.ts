@@ -9,7 +9,6 @@ import { SupabaseRenderCache, SupabaseUsageStore } from "./supabase-stores";
 
 export { YouCamClient, type YouCamResult, type Template } from "./client";
 export { YouCamError, friendlyMessage, type YouCamErrorCode } from "./errors";
-export { preparePhoto, headShouldersFrom, type PreparedPhoto } from "./photo";
 
 let instance: YouCamClient | undefined;
 

@@ -15,7 +15,7 @@ import { YouCamClient, type Template, type YouCamResult } from "@/lib/youcam/cli
 import { UnitGuard } from "@/lib/youcam/guard";
 import { YouCamHttp } from "@/lib/youcam/http";
 import { FIXTURE_DIR } from "@/lib/youcam/mock";
-import { headShouldersFrom, preparePhoto } from "@/lib/youcam/photo";
+import { headShouldersFrom, preparePhoto } from "@/lib/photo/prepare";
 import { SupabaseRenderCache, SupabaseUsageStore } from "@/lib/youcam/supabase-stores";
 
 const DEMO_PHOTO = path.join(process.cwd(), "fixtures", "selfies", "demo.jpg");

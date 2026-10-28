@@ -1,8 +1,4 @@
-import { createHash } from "node:crypto";
-
-export function sha256(data: Buffer | string): string {
-  return createHash("sha256").update(data).digest("hex");
-}
+import { sha256 } from "@/lib/hash";
 
 /** JSON with sorted keys, so equal params always hash the same. */
 export function stableStringify(value: unknown): string {

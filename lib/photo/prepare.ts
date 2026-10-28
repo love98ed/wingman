@@ -3,9 +3,9 @@ import "server-only";
 import sharp from "sharp";
 import { z } from "zod";
 import { generateStructured } from "@/lib/llm/client";
-import { sha256 } from "./cache";
+import { sha256 } from "@/lib/hash";
 import { cropBoxes, type Box } from "./crops";
-import { YouCamError } from "./errors";
+import { YouCamError } from "@/lib/youcam/errors";
 
 /** One user photo, prepared into the framings each YouCam API needs. */
 export type PreparedPhoto = {

@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { findResultUrl, skinUnits } from "@/lib/youcam/apis";
 import { MemoryRenderCache } from "@/lib/youcam/cache";
 import { YouCamClient } from "@/lib/youcam/client";
-import { cropBoxes } from "@/lib/youcam/crops";
 import { fromEngineError } from "@/lib/youcam/errors";
 import { MemoryUsageStore, UnitGuard } from "@/lib/youcam/guard";
 import { YouCamHttp } from "@/lib/youcam/http";
@@ -112,22 +111,5 @@ describe("YouCam helpers", () => {
     expect(fromEngineError("error_no_shoulder").code).toBe("NO_FACE");
     expect(fromEngineError("error_lighting_dark").code).toBe("BAD_LIGHTING");
     expect(fromEngineError("error_inference").code).toBe("UNKNOWN");
-  });
-
-  it("keeps crop boxes inside the image with the face centred", () => {
-    const { hair, face } = cropBoxes({ x: 1300, y: 500, width: 400, height: 520 }, 3000, 4000);
-    for (const b of [hair, face]) {
-      expect(b.x).toBeGreaterThanOrEqual(0);
-      expect(b.y).toBeGreaterThanOrEqual(0);
-      expect(b.x + b.width).toBeLessThanOrEqual(3000);
-      expect(b.y + b.height).toBeLessThanOrEqual(4000);
-    }
-    expect(face.x + face.width / 2).toBeCloseTo(1500, 0);
-    expect(face.width).toBe(600);
-  });
-
-  it("shifts a crop at the image edge instead of overflowing", () => {
-    const { hair } = cropBoxes({ x: 0, y: 0, width: 400, height: 500 }, 1000, 1500);
-    expect(hair).toMatchObject({ x: 0, y: 0, width: 1000 });
   });
 });

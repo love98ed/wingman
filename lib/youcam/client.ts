@@ -1,5 +1,6 @@
 import { YOUCAM_APIS, findResultUrl, skinUnits, TEMPLATE_PATHS, DEFAULT_SKIN_CONCERNS, type SdConcern, type YouCamApi } from "./apis";
-import { renderCacheKey, sha256, type RenderCacheStore } from "./cache";
+import { sha256 } from "@/lib/hash";
+import { renderCacheKey, type RenderCacheStore } from "./cache";
 import { YouCamError } from "./errors";
 import type { UnitGuard } from "./guard";
 import type { YouCamHttp, PollOptions } from "./http";
