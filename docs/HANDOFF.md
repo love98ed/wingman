@@ -1,6 +1,6 @@
 # Wingman: handoff for teammates
 
-Read this first, then `CLAUDE.md` (the project rules) and `STEP_PROMPTS.md` (the build plan).
+Read this first, then `CLAUDE.md` (the project rules) and `docs/STEP_PROMPTS.md` (the build plan).
 
 **Deadline:** 3 Nov 2026, 12:45am SGT
 **Live site:** https://wingman-eight-beta.vercel.app
@@ -36,7 +36,7 @@ Read this first, then `CLAUDE.md` (the project rules) and `STEP_PROMPTS.md` (the
    npm test          # all unit tests should pass
    npm run dev       # open http://localhost:3000 at phone width in DevTools
    ```
-5. **Optional, for building with Claude Code:** install Claude Code and open it in the `wingman` folder. It reads `CLAUDE.md` automatically. Paste one prompt from `STEP_PROMPTS.md` at a time and check the result before the next.
+5. **Optional, for building with Claude Code:** install Claude Code and open it in the `wingman` folder. It reads `CLAUDE.md` automatically. Paste one prompt from `docs/STEP_PROMPTS.md` at a time and check the result before the next.
 
 ## 2. Next job: finish the catalog (step 3)
 
@@ -68,7 +68,7 @@ Read this first, then `CLAUDE.md` (the project rules) and `STEP_PROMPTS.md` (the
 
 ## 3. After that: steps 4 to 12
 
-Work through `STEP_PROMPTS.md` in order. Each step ends with a commit and a list of things to check by hand. Pull before you start and push when you finish. Tell the group which step you're on so two people don't do the same one.
+Work through `docs/STEP_PROMPTS.md` in order. Each step ends with a commit and a list of things to check by hand. Pull before you start and push when you finish. Tell the group which step you're on so two people don't do the same one.
 
 ## Rules that matter
 
