@@ -70,7 +70,8 @@ async function chooseImage(product: ShopifyProduct, category: Category): Promise
  * updated_at. Saved as work progresses, so an interrupted run resumes where it
  * stopped and later refreshes only pay for changed products.
  */
-type CacheEntry = { updatedAt: string; tag?: ProductTag; image?: string | null };
+/** name and url are for people reading the file; the pipeline keys on id and updatedAt. */
+type CacheEntry = { name: string; url: string; updatedAt: string; tag?: ProductTag; image?: string | null };
 type StoreCache = Record<string, CacheEntry>;
 const CACHE_DIR = path.join(process.cwd(), ".cache", "catalog");
 
@@ -93,9 +94,15 @@ async function processStore(store: Store, raw: ShopifyProduct[]) {
   summary.prefiltered = candidates.length;
 
   const cache = await loadCache(store.domain);
+  // Always return the same object for a product: parallel work assigns into it.
   const entry = (p: ShopifyProduct) => {
     const e = cache[p.id];
-    return e && e.updatedAt === p.updated_at ? e : (cache[p.id] = { updatedAt: p.updated_at });
+    if (e && e.updatedAt === p.updated_at) {
+      e.name ??= p.title; // backfill entries cached before name and url existed
+      e.url ??= `https://${store.domain}/products/${p.handle}`;
+      return e;
+    }
+    return (cache[p.id] = { name: p.title, url: `https://${store.domain}/products/${p.handle}`, updatedAt: p.updated_at });
   };
 
   // 1. Tag products without a current tag, 4 batches at a time.
