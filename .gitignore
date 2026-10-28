@@ -49,3 +49,7 @@ next-env.d.ts
 /playwright-report/
 /playwright/.cache/
 
+
+# design-taste-frontend inspector output (screenshots, reports)
+/.taste-skill/*
+!/.taste-skill/direction.json

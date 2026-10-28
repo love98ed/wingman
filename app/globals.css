@@ -9,7 +9,7 @@
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-brass: var(--brass);
-  --color-brass-bright: var(--brass-bright);
+  --color-brass-strong: var(--brass-strong);
   --color-ivory: var(--text);
   --color-success: var(--success);
   --color-danger: var(--danger);
@@ -34,31 +34,26 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  /* Two faces: Panchang for display, Switzer for everything else */
+  --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-panchang), var(--font-switzer), ui-sans-serif, sans-serif;
   --font-heading: var(--font-display);
 
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  /* Five type steps */
+  --text-small: var(--step-small);
+  --text-body: var(--step-body);
+  --text-lead: var(--step-lead);
+  --text-head: var(--step-head);
+  --text-display: var(--step-display);
+
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
 
-  --animate-rise: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  --animate-nudge: nudge 2.4s ease-in-out 1.2s 2;
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  --animate-nudge: nudge 2.4s cubic-bezier(0.76, 0, 0.24, 1) 1.6s 2;
 }
 
 /* Slider hint: swing the handle once each way after load */
@@ -75,7 +70,7 @@
   }
 }
 
-/* Dark luxe is the only theme */
+/* Dark is the only theme */
 :root {
   color-scheme: dark;
 
@@ -83,10 +78,10 @@
   --surface: #141416;
   --surface-raised: #1c1c1f;
   --line: rgb(255 255 255 / 0.09);
-  --text: #f4efe6;
+  --text: #ecebe8;
   --text-muted: #9c978e;
   --brass: #c8a96a;
-  --brass-bright: #e3c78d;
+  --brass-strong: #d9bd85;
   --success: #5fb58a;
   --danger: #e06c5f;
 
@@ -108,7 +103,25 @@
   --border: var(--line);
   --input: var(--line);
   --ring: var(--brass);
-  --radius: 0.875rem;
+  --radius: 0px;
+
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(1.75rem, 1.2rem + 2.4vw, 3.25rem);
+  --step-display: clamp(2.5rem, 1.2rem + 5.4vw, 6.5rem);
+
+  /* One pair of page margins */
+  --margin: clamp(1.25rem, 0.9rem + 1.2vw, 2rem);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-reveal: 800ms;
 }
 
 @layer base {
@@ -121,33 +134,186 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    font-size: var(--step-body);
+    line-height: 1.5;
   }
   h1,
   h2,
   h3 {
-    @apply font-display font-normal tracking-tight;
+    @apply font-display uppercase;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  :focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--brass);
+    color: var(--bg);
   }
 }
 
-@layer utilities {
-  /* Frosted card over imagery or the ambient glow */
-  .glass {
-    background: rgb(20 20 22 / 0.62);
-    border: 1px solid rgb(255 255 255 / 0.1);
-    backdrop-filter: blur(18px) saturate(140%);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
+@layer components {
+  /* The one button: flat brass, square corners */
+  .btn {
+    display: inline-flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 0 1.5rem;
+    background: var(--brass);
+    color: var(--bg);
+    font-weight: 500;
+    transition:
+      transform var(--t-press) var(--ease-out),
+      background-color var(--t-hover) ease;
   }
-  .brass-text {
-    background: linear-gradient(100deg, var(--brass-bright), var(--brass) 55%, #a8874a);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .btn:active {
+    transform: scale(0.97);
   }
-  .no-scrollbar {
-    scrollbar-width: none;
+  .btn svg {
+    transition: transform 240ms var(--ease-out);
   }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  .text-link {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.25em;
+    text-decoration-thickness: 0.07em;
+    transition:
+      text-decoration-color var(--t-hover) ease,
+      color var(--t-hover) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      background: var(--brass-strong);
+    }
+    .btn:hover svg {
+      transform: translateX(4px);
+    }
+    .text-link:hover {
+      text-decoration-color: currentColor;
+      color: var(--text);
+    }
+  }
+}
+
+/* Hero: a window onto the render that opens to the edges as the page scrolls.
+   --p (0 to 1) is set from script; without script the window stays as first drawn. */
+.hero {
+  --p: 0;
+  --win-w: min(78vw, 40svh);
+  --win-h: calc(var(--win-w) * 1.25);
+  --win-top: calc(env(safe-area-inset-top) + 9.75rem);
+  --side: calc((100% - var(--win-w)) / 2);
+  --bottom: calc(100% - var(--win-top) - var(--win-h));
+  --k: calc(1 - var(--p));
+  height: 190svh;
+}
+@media (min-width: 900px) {
+  .hero {
+    --win-w: min(36vw, 62svh);
+    --win-top: calc((100svh - var(--win-h)) / 2);
+    height: 220svh;
+  }
+}
+.hero__window {
+  clip-path: inset(
+    calc(var(--win-top) * var(--k)) calc(var(--side) * var(--k)) calc(var(--bottom) * var(--k))
+      calc(var(--side) * var(--k))
+  );
+}
+/* Where the window is right now, for the slider and the corner labels */
+.hero__frame {
+  position: absolute;
+  top: calc(var(--win-top) * var(--k));
+  bottom: calc(var(--bottom) * var(--k));
+  left: calc(var(--side) * var(--k));
+  right: calc(var(--side) * var(--k));
+}
+.hero__picture {
+  transform: scale(calc(1 + 0.06 * var(--k)));
+  transform-origin: 50% 30%;
+}
+.hero__text {
+  opacity: clamp(0, 1 - var(--p) * 2.4, 1);
+  transform: translateY(calc(var(--p) * -48px));
+}
+.hero[data-open] .hero__text {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    height: auto;
+    --p: 0 !important;
+  }
+}
+
+/* Entrances, once, in reading order. Content is visible without script. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .rise-line > span {
+    display: block;
+    transform: translateY(105%);
+    animation: line-up var(--t-reveal) var(--ease-expo) forwards;
+    animation-delay: calc(120ms + var(--i, 0) * 90ms);
+  }
+  .js [data-load] {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: load-rise 520ms var(--ease-out) forwards;
+    animation-delay: var(--d, 420ms);
+  }
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 900ms var(--ease-expo);
+    transition-delay: var(--d, 0ms);
+  }
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+  /* A ground-coloured blind lifts off the picture while it settles from a slight scale */
+  .js [data-shutter]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    transform-origin: 50% 0;
+    transition: transform 1100ms var(--ease-in-out);
+    transition-delay: var(--d, 0ms);
+  }
+  .js [data-shutter] img {
+    scale: 1.12;
+    transition: scale 1500ms var(--ease-soft);
+    transition-delay: var(--d, 0ms);
+  }
+  .js [data-shutter].is-in::after {
+    transform: scaleY(0);
+  }
+  .js [data-shutter].is-in img {
+    scale: 1;
+  }
+}
+.rise-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+@keyframes line-up {
+  to {
+    transform: none;
+  }
+}
+@keyframes load-rise {
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

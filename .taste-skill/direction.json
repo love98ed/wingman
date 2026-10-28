@@ -1,0 +1,507 @@
+{
+ "version": 1,
+ "at": "2026-10-28T13:11:14.896Z",
+ "seed": 1984358791,
+ "redraws": 0,
+ "input": {
+  "brief": "AI occasion stylist for men in Singapore: selfie plus one sentence about the event, returns full looks from real local Shopify stores rendered on your photo, scored, one tap to checkout. Mobile-first app home.",
+  "sector": "fashion",
+  "tone": null,
+  "have": [
+   "photography",
+   "product-photo"
+  ],
+  "keep": [
+   "palette"
+  ],
+  "avoid": [],
+  "sections": [
+   "showcase",
+   "how-it-works",
+   "footer"
+  ],
+  "direction": "hero-object"
+ },
+ "imagery": "own",
+ "allow": [],
+ "direction": {
+  "id": "hero-object",
+  "name": "The object, large",
+  "sectors": [
+   "physical-product",
+   "ecommerce",
+   "consumer-app",
+   "fashion",
+   "finance",
+   "health",
+   "restaurant",
+   "music"
+  ],
+  "tones": [
+   "bold",
+   "luxury",
+   "quiet"
+  ],
+  "needs": [
+   "product-photo"
+  ],
+  "idea": "Show the thing, bigger than seems reasonable. One photographed object fills the first screen, scaled until the viewport crops it, with the text small and tucked beside or behind it. The crop is the idea: a record whose edge leaves the top-right corner, a bottle whose shoulder runs off the bottom, a chair seen so close you read its grain. Being that close reads as confidence in the object. Everything else on the page serves it: details as tight close-ups, facts as short lines, one way to buy.",
+  "composition": "First screen: the object occupies 55–75% of the viewport and breaks at least one edge. It sits on a flat field (ground colour or one bold colour), never in a box. The headline is short and either very large and partly hidden behind the object (10–13vw, the object overlapping two or three letters) or small (28–36px) in the opposite corner with a one-line description. No navigation bar beyond a wordmark and one action. Following sections: a row of three or four close-up details at different crop ratios (not equal tiles), a single wide photograph of the object in use, a plain list of facts set large (materials, size, price) aligned to one edge, then the purchase action. The object returns once at the end from a different angle.",
+  "typography": "Either very large and structural or very small and precise; pick one for the headline and hold it. Facts are set in the text face at 22–28px, not in a table.",
+  "typeClasses": [
+   "grotesk-light",
+   "grotesk-tight",
+   "extended-heavy",
+   "serif-light-large"
+  ],
+  "colour": "A flat field chosen to make the object's own colour sing (its complement, or a tone darker than its shadow side). One field for the whole page, or a second for the facts section.",
+  "paletteTags": [
+   "single-field",
+   "light-neutral",
+   "pastel-fields",
+   "dark-neutral"
+  ],
+  "imagery": "Use the product's own photographs if they exist. Otherwise use a still-life from the dealt set as a stand-in and say so. Prefer images with a plain background; use `mix-blend-mode: multiply` on light fields so a white studio background disappears into the page colour.",
+  "photoTreatment": "Scale the main image well past its container (`width: 120–160%`) and let `overflow: hidden` on the section do the cropping.",
+  "sectionTags": [
+   "object-led",
+   "photo-led",
+   "colour-field"
+  ],
+  "motion": "shutter-image",
+  "richness": "The object's surface at close range, and the tension of the crop.",
+  "pitfalls": "A small centred product shot with space all round is a catalogue thumbnail, not this direction. If the image has a busy background it cannot sit on a field; crop tighter or change image. Keep text off the object's focal area.",
+  "seenIn": [
+   "opl-when-you-wish-upon-a-starboy",
+   "opl-plastic",
+   "opl-archiv",
+   "aww-moto-finance",
+   "aww-the-watch",
+   "opl-aevion"
+  ],
+  "allow": []
+ },
+ "hero": {
+  "id": "window-opens-to-the-edges",
+  "name": "Window that opens to the edges",
+  "archetype": "pinned-stage",
+  "directions": [
+   "pinned-poster",
+   "place-carries-it",
+   "hero-object"
+  ],
+  "needs": [],
+  "blueprint": "A flat paper or pale ground, and one picture seen through a small window that becomes the whole screen as the page scrolls. The hero is a wrapper 200svh tall holding a stage with `position: sticky; top: 0; height: 100svh`. On the first frame the window is a 4:5 portrait opening 36% of the viewport wide (518×648px), centred, its top and bottom 126px from the edges, square corners; give it a shape from the subject if it has one (an arch, a rounded diamond, a lens). Build it as `clip-path: inset(126px 461px)` on a layer that is itself 100vw by 100svh, so the photograph or muted film inside is laid out full-bleed and never moves: only the opening grows. The headline sits left of the window on columns 1–3: two lines at clamp(44px, 4.4vw, 64px), leading 0.95, flush to the 32px margin, its last baseline level with the window's lower edge. Right of the window on columns 10–12, bottom-aligned to the same line: one supporting sentence at 18px, max 26ch, and the single action as a solid rectangular button. Wordmark top-left and three text links top-right at 15px on the same margin; nothing else sits on the ground. Over the first 100svh of scroll the inset runs to zero on a scroll-linked timeline while the text, which sits above the picture layer, rises and fades out before the opening reaches it; the picture then holds full-bleed for 50svh before the next section slides over it. Without scroll timelines, or under reduced motion, show the open picture with the headline over a neutral scrim in its bottom-left corner.",
+  "mobile": "The stage stays sticky. The window starts 78vw wide at 4:5, centred, its top at 30% of the height, leaving about a quarter of the screen below it. The headline sits above it at 10vw on two lines inside 20px margins, 72px down; the supporting sentence at 16px and a full-width action sit under the window. The opening reaches the edges within 70svh of scroll. The links fold behind a menu word.",
+  "headline": "Two short lines of up to about 9 characters each: the name with what it is, or a 2–4 word claim. It scrolls away as the picture takes the screen.",
+  "motion": "pinned-story",
+  "seenIn": [
+   "aww-decathlon-yestalgia",
+   "aww-leo-parpeix-portfolio-2026",
+   "aww-revelatio-studio",
+   "aww-vero-new-york"
+  ]
+ },
+ "type": {
+  "id": "panchang-switzer",
+  "name": "Panchang / Switzer",
+  "class": "extended-heavy",
+  "display": {
+   "family": "Panchang",
+   "source": "fontshare",
+   "slug": "panchang",
+   "weights": [
+    700
+   ],
+   "italic": false,
+   "settings": "weight 700 · tracking -0.02em · leading 1.0 · uppercase; four words or fewer per line because the face is very wide",
+   "css": "<link rel=\"preconnect\" href=\"https://api.fontshare.com\">\n<link rel=\"preconnect\" href=\"https://cdn.fontshare.com\" crossorigin>\n<link href=\"https://api.fontshare.com/v2/css?f[]=panchang@700&display=swap\" rel=\"stylesheet\">\n<link href=\"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\" rel=\"stylesheet\">"
+  },
+  "text": {
+   "family": "Switzer",
+   "source": "fontshare",
+   "slug": "switzer",
+   "weights": [
+    400,
+    500
+   ],
+   "italic": false,
+   "settings": "400 for body, 500 for emphasis · leading 1.5 · tracking 0",
+   "css": "<link rel=\"preconnect\" href=\"https://api.fontshare.com\">\n<link rel=\"preconnect\" href=\"https://cdn.fontshare.com\" crossorigin>\n<link href=\"https://api.fontshare.com/v2/css?f[]=panchang@700&display=swap\" rel=\"stylesheet\">\n<link href=\"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\" rel=\"stylesheet\">"
+  },
+  "standsInFor": [
+   "Monument Extended",
+   "Owners Wide",
+   "Nimbus Sans Extended"
+  ],
+  "note": "A flat-sided extended grotesk in heavy capitals, wide enough that two words fill the screen, with a neutral sans kept small. Suits portfolios, real estate, travel and brand sites that want a broad, confident wordmark.",
+  "seenIn": [
+   "opl-belen-jones",
+   "aww-lxl-creative",
+   "aww-realevate",
+   "aww-the-tuscan-journey-begins"
+  ],
+  "links": [
+   "https://api.fontshare.com/v2/css?f[]=panchang@700&display=swap",
+   "https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap"
+  ],
+  "scale": {
+   "step-small": "clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)",
+   "step-body": "clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem)",
+   "step-lead": "clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem)",
+   "step-head": "clamp(2rem, 1.3rem + 3.2vw, 4rem)"
+  }
+ },
+ "palette": null,
+ "photos": {
+  "set": "people",
+  "title": "People",
+  "note": "figures, silhouettes and portraits, mostly unposed",
+  "treatment": "Scale the main image well past its container (`width: 120–160%`) and let `overflow: hidden` on the section do the cropping.",
+  "others": [
+   "city-day",
+   "interior-and-table",
+   "animals",
+   "fog-and-quiet"
+  ],
+  "photos": [
+   {
+    "id": 669,
+    "alt": "Person in a mustard jacket and grey beanie seen from behind in fog",
+    "tone": "light",
+    "colours": [
+     "mustard",
+     "pale grey",
+     "white"
+    ],
+    "mono": false,
+    "calm": "left",
+    "quality": 5,
+    "ratio": 1.41,
+    "by": "Luke Pamer",
+    "page": "https://unsplash.com/photos/oUhr-qMTJoc"
+   },
+   {
+    "id": 338,
+    "alt": "Person in a hooded coat seen from behind facing a misty sea",
+    "tone": "mid",
+    "colours": [
+     "slate blue",
+     "grey",
+     "charcoal"
+    ],
+    "mono": false,
+    "calm": "left",
+    "quality": 5,
+    "ratio": 1.5,
+    "by": "Patryk Sobczak",
+    "page": "https://unsplash.com/photos/9VPtNW84vGI"
+   },
+   {
+    "id": 177,
+    "alt": "Hiker with a backpack looking over a hazy mountain valley",
+    "tone": "mid",
+    "colours": [
+     "warm tan",
+     "hazy gold",
+     "olive"
+    ],
+    "mono": false,
+    "calm": "left",
+    "quality": 5,
+    "ratio": 1.37,
+    "by": "Danka & Peter",
+    "page": "https://unsplash.com/photos/tvicgTdh7Fg"
+   },
+   {
+    "id": 685,
+    "alt": "Man sitting on a rock looking over a sea of clouds",
+    "tone": "mid",
+    "colours": [
+     "pale gold",
+     "grey",
+     "dark brown"
+    ],
+    "mono": false,
+    "calm": "right",
+    "quality": 5,
+    "ratio": 1.5,
+    "by": "Joshua Earle",
+    "page": "https://unsplash.com/photos/Dwheufds6kQ"
+   },
+   {
+    "id": 473,
+    "alt": "Person in dark clothes standing on a jetty facing misty mountains",
+    "tone": "mid",
+    "colours": [
+     "slate blue",
+     "black",
+     "pale grey"
+    ],
+    "mono": false,
+    "calm": "right",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Todd Quackenbush",
+    "page": "https://unsplash.com/photos/Nk5rSNq13sM"
+   },
+   {
+    "id": 768,
+    "alt": "Person sitting alone on a bench facing sandy dunes",
+    "tone": "light",
+    "colours": [
+     "sand beige",
+     "pale blue",
+     "soft white"
+    ],
+    "mono": false,
+    "calm": "top",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Mikael Kristenson",
+    "page": "https://unsplash.com/photos/3f4sQIums6k"
+   },
+   {
+    "id": 1014,
+    "alt": "Woman seen from behind facing a misty sea, a ribbon across her head",
+    "tone": "light",
+    "colours": [
+     "pale teal",
+     "soft grey",
+     "black"
+    ],
+    "mono": false,
+    "calm": "left",
+    "quality": 4,
+    "ratio": 1.5,
+    "by": "Oscar Keys",
+    "page": "https://unsplash.com/photos/AmPRUnRb6N0"
+   },
+   {
+    "id": 281,
+    "alt": "Skateboarder in mid-air at a concrete skatepark with palm trees",
+    "tone": "mid",
+    "colours": [
+     "warm grey",
+     "teal",
+     "tan"
+    ],
+    "mono": false,
+    "calm": "bottom",
+    "quality": 4,
+    "ratio": 1.51,
+    "by": "Victor Erixon",
+    "page": "https://unsplash.com/photos/_poRbNNfcE8"
+   }
+  ]
+ },
+ "motion": {
+  "id": "pinned-story",
+  "name": "Pinned story",
+  "description": "One element holds its place with `position: sticky` (a title, a frame, a product fragment) while the items that belong to it scroll past or swap inside it. The page's ordinary scrolling does the work; nothing is hijacked. Hold it for about one screen per step and three screens at most, two held stages per page at most, with a line of text on every held screen. Recipe: 'Pinned story' in references/motion.md."
+ },
+ "sections": [
+  {
+   "id": "showcase-close-up-with-column-card",
+   "role": "showcase",
+   "name": "Close-up with column card",
+   "shape": "full-bleed",
+   "tags": [
+    "photo-led",
+    "object-led"
+   ],
+   "directions": [
+    "hero-object",
+    "place-carries-it",
+    "dark-room",
+    "borrowed-category",
+    "pinned-poster"
+   ],
+   "needs": [],
+   "blueprint": "A full-bleed close-up photograph, 100vw by 100svh, with nothing over most of it. A four-column grid lies on top. One solid card in the ink colour, exactly one grid column wide (about 22vw) and 52svh tall, sits in the second column, vertically centred. Inside it, centred: the item's name at 30–36px, a variant line at 17px, the price or key fact at 17px, a small 3:2 photograph of the whole object (the card shows the whole, the background shows the detail), and at the foot a square-cornered action filling the card's width. The card is opaque, radius 0–6px, with no blur. When the section presents two or three items, each gets its own full-bleed frame and its card moves one column to the right each time, so position carries the sequence. The first card's name is the section heading.",
+   "mobile": "The photograph fills 100svh, cropped to its most detailed area. The card becomes a full-width block docked to the bottom, 46svh tall, left-aligned inside with 20px padding; the small whole-object photograph sits to the right of the name at 96px wide.",
+   "seenIn": [
+    "aww-longbow"
+   ]
+  },
+  {
+   "id": "how-it-works-tiles-that-grow",
+   "role": "how-it-works",
+   "name": "Tiles that grow",
+   "shape": "grid",
+   "tags": [
+    "object-led",
+    "colour-field"
+   ],
+   "directions": [
+    "specimen-catalogue",
+    "hero-object",
+    "colour-chapters",
+    "one-motif",
+    "dense-tiles"
+   ],
+   "needs": [],
+   "blueprint": "Order is carried by size. Three flat colour tiles stand in one row, bottom-aligned (align-items: end) with 10px gaps, each larger than the one before: columns 1–3 at 30vh tall, columns 4–7 at 44vh, columns 8–12 at 60vh. Each tile holds one photograph of the subject at that stage (raw, in progress, finished), centred and scaled so the object grows from tile to tile; on light tiles mix-blend-mode: multiply removes a white studio background. One palette colour per tile. Text sits under the tiles, outside them, aligned to each tile's left edge: a stage name at 20px medium whose wording carries the order ('Picked', 'Pressed', 'Poured') and two lines at 16px in the soft ink. The heading, two to four words at 40–52px, occupies the empty ground above the two smaller tiles, top-aligned with the tallest tile. A fourth stage is possible with spans of 2, 3, 3 and 4 columns.",
+   "mobile": "Tiles stack in order and grow in height instead: 34vw, 46vw and 62vw tall, each at full width. The name and text sit under each tile at 18px and 16px. The heading comes first at 30px. 28px between stages.",
+   "seenIn": [
+    "aww-aspen-search",
+    "aww-noho"
+   ]
+  },
+  {
+   "id": "footer-photograph-and-large-menu",
+   "role": "footer",
+   "name": "Photograph half, menu half",
+   "shape": "split",
+   "tags": [
+    "photo-led",
+    "type-led"
+   ],
+   "directions": [
+    "split-stage",
+    "loud-flat-poster",
+    "hero-object",
+    "uneven-photographs",
+    "pinned-poster",
+    "place-carries-it"
+   ],
+   "needs": [],
+   "blueprint": "A split footer one viewport tall. The left half is a single photograph filling columns 1–6 edge to edge, cropped hard by the left and bottom viewport edges: a close crop of the page's main subject, larger than it appeared anywhere above. The right half, on a flat field, is the site's menu set large: five or six section names stacked as links at about 2.6vw bold, 28px apart, starting at column 8 and 80px from the top. Rows are separated by space only; on hover a row's label shifts right by 12px and the others drop to the softer ink. Under the menu, 64px lower, two short blocks at 15px side by side: contact and social. The legal line runs along the very bottom of the right half at 12px. The wordmark sits small at the top of the right half, on the menu's left edge.",
+   "mobile": "The photograph leads at full width and 50svh, cropped tight. The menu follows on the flat field at 8vw per item with 20px between items, then contact and social stacked at 15px, then the legal line at 12px. The wordmark sits small above the menu.",
+   "seenIn": [
+    "aww-trevor-noah",
+    "aww-monolog"
+   ]
+  }
+ ],
+ "references": [
+  {
+   "id": "opl-when-you-wish-upon-a-starboy",
+   "name": "starboy",
+   "url": "https://lilguy.net/",
+   "source": "One Page Love",
+   "kind": "physical-product",
+   "score": 7.7,
+   "idea": "A tiny gadget shown enormous: product renders so large the screen crops them, wrapped around a nursery-rhyme headline in fat lowercase.",
+   "mood": [
+    "playful",
+    "glossy",
+    "loud",
+    "toy-like",
+    "deadpan"
+   ],
+   "archetype": "split-text-media",
+   "hero": "No nav, logo or button. Off-white ground. The right half holds the headline: five stacked lines of very bold rounded lowercase at 13vw (187px), right-aligned and almost touching the right edge, with tight negative tracking and leading under 0.9, so the stack runs from 5% below the top to past the fold and the last line's descenders are cut off. The left 60% is one transparent-shelled, star-shaped device rendered at huge scale (yellow circuit board, round black screen), rotated and cropped by the top, left and bottom edges, its right-hand points tucking behind the letters. A chrome keyring loop peeks in at bottom-right.",
+   "type": "Milling Triplex 1mm, bold, for the headline at 187px in lowercase with -0.055em tracking, one or two words per line over eleven lines; the same family at about 13px for body copy, product names and footer links, all lowercase. Two sizes only, a 14:1 jump.",
+   "colour": "#f9f9f9 #2a2b2d #f5d900 #8d8e96 #b8a45c #2f6fe0 — Off-white page with charcoal type. Colour lives in the objects: circuit-board yellow, chrome, matte black, brass. A small blue logo in the footer is the only interface colour.",
+   "imagery": "Photoreal renders of star-shaped devices in four materials, cut out with no background or cast shadow, scaled well beyond the viewport, each rotated differently and cropped by the edges. Accessories are shown small and centred in grid cells.",
+   "layout": "Three acts: three screens of oversized renders tumbling diagonally with the headline set right, then left; one screen holding a single narrow text column and nothing else; then a three-column hairline-divided product grid running edge to edge with no outer margin.",
+   "sections": [
+    {
+     "role": "gallery",
+     "description": "The second and third screens are only renders: a matte-black star and a chrome star overlap on a diagonal, each wider than half the viewport and cropped by two edges. The second half of the headline then appears left-aligned at the same 13vw, left of centre, while a brass star fills the right half and bleeds off the top and right. No captions or interface."
+    },
+    {
+     "role": "intro",
+     "description": "A single column of 13px lowercase text about 290px wide, placed roughly 15% from the left and starting at the top of the viewport: five short paragraphs, the first in medium weight. The remaining three-quarters of the screen is blank off-white. No heading, image or button accompanies it."
+    },
+    {
+     "role": "showcase",
+     "description": "Three equal columns span the full viewport width, separated by faint 1px vertical and horizontal lines. Each cell holds one cut-out render centred with generous air and a caption row along its bottom edge: product name at left, price with stock count or a coming-soon note in grey at right, all 13px lowercase. The footer is one row: small blue logo left, five text links right."
+    }
+   ],
+   "steal": [
+    "Scale the product until two or three viewport edges crop it, and let its silhouette tuck behind the headline letters.",
+    "Break a sentence into one or two words per line at 13vw, right-aligned for the first half and left-aligned for the second, so the headline spans several screens.",
+    "Follow a loud hero with one tiny text column on an otherwise empty screen; the drop in scale does the pacing."
+   ]
+  },
+  {
+   "id": "aww-moto-finance",
+   "name": "Moto Finance",
+   "url": "https://www.moto-card.com/",
+   "source": "Awwwards Site of the Day",
+   "kind": "finance",
+   "score": 7.3,
+   "idea": "A metal card presented like a museum piece: lit by a single overhead light box in a black room, then orbiting through dim architectural stills.",
+   "mood": [
+    "nocturnal",
+    "exclusive",
+    "cold",
+    "cinematic"
+   ],
+   "archetype": "product-object-centre",
+   "hero": "Black full-bleed 3D scene. A pale silver-lavender light panel, a trapezoid in perspective like a ceiling light box, occupies the top 20% and centre 55% of the viewport. The two-line uppercase headline, centred at 4.4vw in medium grotesk with tight leading, straddles the panel's lower edge so its first line sits half on light, half on black. In the exact centre a small metal card stands on a low plinth, only about 150px wide, surrounded by darkness. A light-grey pill button (about 250 by 52px) is centred near the bottom; the logo is top-left and a dark pill button top-right.",
+   "type": "Neue Montreal only: weight 500 uppercase at 64px (4.4vw) with near-zero tracking and leading under 1.0 for headings, 20px sentence case for body, tiny caps labels in the footer. Three sizes; centred until the left-aligned footer.",
+   "colour": "#080808 #edefef #c4cbd6 #e1e5e5 #2a2f3a — Black with cool silver-grey and no brand colour at all. One section inverts to pale grey-white with grey type; the only chroma is amber city lights and a blue atmosphere rim on the globe.",
+   "imagery": "Rendered chrome card with an embossed profile medallion, a night-side Earth, and small dim architectural and fashion stills floating as tilted panels in 3D. Everything underexposed, cool and low-saturation.",
+   "layout": "Full-viewport scenes stacked one per screen, each with a centred uppercase heading, an optional short sub-line and a pill button. One light interlude breaks the black. The footer switches to a left-aligned statement with link columns at the far right.",
+   "sections": [
+    {
+     "role": "features",
+     "description": "Centred heading at the top with a two-line grey sub-line and a pale pill button directly under it. The lower 45% is the top arc of a night-side Earth rising from the bottom edge, about 75% of the viewport wide, with city lights and a bright blue-white rim on the upper right. Three small dark capsule labels with check icons float over and beside the globe at staggered positions, like status notifications."
+    },
+    {
+     "role": "gallery",
+     "description": "A dark 3D room: about twelve small photo panels (roughly 70 by 90px, each tilted at its own angle, heavily dimmed) arranged in two loose rows across the full width, receding with blur. The card stands edge-on in the centre, much larger, catching a specular highlight. Later the card faces front at top-centre and a centred two-line heading with a pill button sits under it."
+    },
+    {
+     "role": "stats",
+     "description": "A pale grey-white band. Two tall columns of currency amounts in mid-size light-grey sans, one at a quarter and one at three-quarters of the width, each fading to white at top and bottom like slot-machine reels, with the centre rows darkest. Between them, three short centred lines of small black text. The bottom edge of the band reveals a dark photograph."
+    }
+   ],
+   "steal": [
+    "Let a headline straddle the edge of a light shape so one line is half on light and half on dark.",
+    "Show the product very small in a large dark space in the first viewport, then let it grow as the page scrolls.",
+    "Use vertically scrolling columns of real-looking figures, faded at both ends, as a quiet backdrop for a three-line statement."
+   ],
+   "media": "An 11s hero video of a CG metal card on a plinth covers the whole first screen and holds on its last frame. Then a pinned WebGL globe in the lower half under centred text, a 3D card centred in a depth cloud of small photo tiles dimmed to 30-40%, full-bleed sticky photographs with text docked in opposite corners, and a photo strip sitting on an index list; all low-key and desaturated, photos meeting the near-black ground through 200-300px fades, 0px radius.",
+   "motion": "The intro ends in about 1.2s as the camera pushes in and the headline, nav and button arrive (load 9.9s), and Lenis then runs 32 ScrollTriggers: the globe pins for 2.5 viewports at scrub 1, the card turns in 3D across its section, the theme inverts to pale grey with the nav colour following, and benefit rows scrub in one by one. Lines rise by yPercent over 0.65s power3.out and leave over 0.45s power2.in, and headings rise from a blur over 1s power2.inOut."
+  },
+  {
+   "id": "aww-serotoninn",
+   "name": "Serotoninn",
+   "url": "https://serotoninn.com/",
+   "source": "Awwwards Site of the Day",
+   "kind": "fashion",
+   "score": 7.9,
+   "idea": "A torn-paper seam splits the page in two, colour on white against greyscale on grey paper, to stage the brand's glam-versus-grunge line, with ultra-condensed heavy type straddling the tear.",
+   "mood": [
+    "edgy",
+    "editorial",
+    "high-contrast",
+    "theatrical"
+   ],
+   "archetype": "other: torn-split-portrait-centre",
+   "hero": "The viewport is split by a vertical torn-paper edge at 50%: left half pure white, right half a grey paper texture. A cut-out model stands dead centre, about 28% wide, running from 15% down off the bottom edge; her left half is full colour, her right half greyscale, the tear passing through her. Type is ultra-condensed heavy uppercase: the brand name at about 5.5vw top-left beneath a three-line mono menu; a two-line tagline right-aligned at mid-height on the right; and at bottom centre a two-word line at 8.2vw, first word red and second white, overlapping the dress, with a bracketed link beneath. Small centred logo at top, three mono links top-right.",
+   "type": "Thunder extra-bold in uppercase, set tight, for all display lines (118px in the hero, similar for category words, sometimes rotated 90 degrees). PP Fraktion Mono uppercase at about 11px for nav, labels and prices; Inter for small body. Square brackets and parentheses wrap secondary words and counts.",
+   "colour": "#fdfdfd #d8d8d8 #0a0a0a #e8352b #fff9f7 #2a2fb0 — White, paper grey and black with red as the single interface accent (one headline word, section labels). Garment colour (cobalt, yellow, satin tan) supplies the rest. One full black campaign band.",
+   "imagery": "Studio fashion photography of models, cut out or on white seamless, in tall portrait crops. The hero splits one image into colour and greyscale along a torn-paper edge, and the torn edge returns as a divider over the footer video.",
+   "layout": "About 2.5% margins. Sections carry red numbered mono labels at top-left. The layout changes every time: a label column with a product trio; a full-bleed black video; a horizontal row of tall category cards; a two-up split with a torn seam; a footer laid over video.",
+   "sections": [
+    {
+     "role": "showcase",
+     "description": "New arrivals. The left 25% is a nearly empty column holding only a red numbered mono label at top, a bracketed link, and two tiny parenthesised notes further down. The right 60% holds three product images side by side with 4px gaps, each about 3:4, the middle one a tight crop of the same garment. Two carry a black brush-stroke tag with white condensed text in the top-left corner. Name and price sit under each in mono."
+    },
+    {
+     "role": "list",
+     "description": "Categories as a horizontally scrolling row of five tall white cards, about 2:3 with 8px gaps, each showing a full-length cut-out model. The category name is set in the heavy condensed face rotated 90 degrees, running up the card's left edge from the bottom; a bracketed item count sits bottom-right in mono. The fifth card is cropped by the viewport edge."
+    },
+    {
+     "role": "gallery",
+     "description": "Two-up split filling the viewport: two half-width photos of models on pale grounds, divided by a vertical torn-paper edge instead of a straight line. Each half has a category word in heavy condensed type at about 3.5vw bottom-left with a smaller parenthesised word attached like a suffix, and a bracketed count bottom-right."
+    },
+    {
+     "role": "footer",
+     "description": "A dark campaign video is cut off by a horizontal torn-paper edge, below which a taupe-grey ground holds the footer. Mono link clusters sit top-left and top-right. A cut-out model stands about 40% across, overlapping a very large condensed wordmark in darker grey so that letters pass behind her. Bottom-left, a subscribe line in white condensed type with a bracketed suffix; an underlined email field at right."
+    }
+   ],
+   "steal": [
+    "Split one photograph along a torn-paper edge into a colour half and a greyscale half on different grounds, and let a two-word headline change colour across the same seam.",
+    "Run category names in heavy condensed type rotated 90 degrees up the edge of tall product cards, with a bracketed item count in mono at the opposite corner.",
+    "Reuse a torn-paper edge as the divider between sections and over the footer instead of straight lines."
+   ]
+  }
+ ],
+ "scenes": []
+}

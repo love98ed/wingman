@@ -177,13 +177,17 @@ Refine re-runs steps 3 to 5 with updated constraints. Swap returns alternatives 
 
 ## 8. Design direction
 
-- **Feel:** dark luxe. A premium fashion app at night: confident, editorial, alive. Lead with real try-on imagery (before/after), not text
+Follows the `design-taste-frontend` skill (tasteskill v2): its house rules win over older notes here. Direction dealt: "The object, large" (seed in `.taste-skill/direction.json`).
+
+- **Feel:** the user's own render is the object, shown bigger than seems reasonable and cropped by the edges. Lead with real try-on imagery (before/after), not text
 - **Theme:** dark only
-- **Palette:** background `#0A0A0B`, surface `#141416`, raised `#1C1C1F`, border white at 9%, text ivory `#F4EFE6`, muted `#9C978E`, brass `#C8A96A` with bright brass `#E3C78D` for gradients and highlights, success `#5FB58A`, danger `#E06C5F`
-- **Type:** Instrument Serif for display headings (italic brass gradient for emphasis), Geist Sans for UI, Geist Mono for prices and scores
-- **Surfaces:** frosted glass cards (`.glass`) over imagery and a soft ambient brass glow; rounded 24 to 28px
-- **Motion:** subtle rise-in on load, slider hint nudge; respect reduced motion
-- **Layout:** designed at 390px first, centred phone-width column on desktop; large tap targets (min 44px); bottom-anchored brass gradient primary action; swipeable look cards and chip rows
+- **Palette:** background `#0A0A0B`, surface `#141416`, raised `#1C1C1F`, text `#ECEBE8` (full ink for running text), muted `#9C978E` (secondary notes only), brass `#C8A96A` on the primary action and one other thing (the score), hover brass `#D9BD85`, success `#5FB58A`, danger `#E06C5F`. Surfaces separate by a tone step, never a line or shadow
+- **Type:** two faces. Panchang 700 uppercase for display and section headings (tracking -0.02em, leading 1), Switzer 400/500 for everything else, self-hosted in `app/fonts/`. Five steps only: small, body (16px+), lead, head, display. Prices and scores use tabular figures, not monospace
+- **Components:** one button (`.btn`): flat brass, square corners. Radius 0 everywhere. Text links underline on hover
+- **Motion:** scroll-opening hero window (signature), masked headline line rise, staggered `data-reveal` / `data-shutter` entrances once per section, press and hover feedback, slider hint nudge. Transform and opacity only; reduced motion drops the travel and keeps the content
+- **Layout:** designed at 390px first and composed again for desktop (full-width sections on one pair of margins, `--margin`); large tap targets (min 44px); headlines two lines or fewer at every width; a heading on every section
+- **Banned (skill house rules):** glass / backdrop blur, gradients (except a neutral scrim over a photo), glows, shadows at rest, italic or coloured accent words in headlines, eyebrow labels, tiny uppercase tracked labels, monospace, 01/02/03 numbering, hairline dividers and 1px outlined boxes, rows of identical cards, emoji
+- **Check:** `node ~/.agents/skills/design-taste-frontend/scripts/inspect.mjs <url>` on a production build (0 FAIL), then look at the screenshots
 - No brand logos in our UI. Store names as plain text only
 
 ## 9. Privacy and content rules

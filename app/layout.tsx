@@ -1,22 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+/* Panchang (display) and Switzer (text), Fontshare, ITF Free Font License */
+const panchang = localFont({
+  src: "./fonts/Panchang-Bold.woff2",
+  weight: "700",
+  variable: "--font-panchang",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  weight: "400",
-  style: ["normal", "italic"],
-  subsets: ["latin"],
+const switzer = localFont({
+  src: [
+    { path: "./fonts/Switzer-Regular.woff2", weight: "400" },
+    { path: "./fonts/Switzer-Medium.woff2", weight: "500" },
+  ],
+  variable: "--font-switzer",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -39,10 +39,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
-    >
+    <html lang="en" className={`dark ${panchang.variable} ${switzer.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Entrance motion only runs when script does, so nothing stays hidden without it */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body>{children}</body>
     </html>
   );
