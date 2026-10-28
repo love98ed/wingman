@@ -100,4 +100,3 @@ Work through `STEP_PROMPTS.md` in order. Each step ends with a commit and a list
 - **Store terms:** nobody has checked yet whether any store's terms forbid reusing product images or data (checklist item 6).
 - **LICENSE file:** needs the copyright holder's name.
 - **Known quirk:** the hair render slightly lightens skin tone. Watch for it on the real photo.
-- A WhatsApp photo sits in the project root on Ritish's Mac; it must not be committed.
