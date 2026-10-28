@@ -71,10 +71,29 @@ export function fromRow(r: Row): Product {
   };
 }
 
-export async function loadCatalog(db: SupabaseClient): Promise<Product[]> {
-  const { data, error } = await db.from("products").select("*");
-  if (error) throw new Error(`Catalog read failed: ${error.message}`);
-  return (data as Row[]).map(fromRow);
+/** Supabase returns at most 1,000 rows per request, so read in pages. */
+const PAGE = 1000;
+
+export type CatalogFilter = {
+  inStock?: boolean;
+  tier?: Product["tier"];
+  categories?: Product["category"][];
+  formalities?: Product["formality"][];
+};
+
+export async function loadCatalog(db: SupabaseClient, filter: CatalogFilter = {}): Promise<Product[]> {
+  const out: Product[] = [];
+  for (let from = 0; ; from += PAGE) {
+    let query = db.from("products").select("*").order("id");
+    if (filter.inStock) query = query.eq("in_stock", true);
+    if (filter.tier) query = query.eq("tier", filter.tier);
+    if (filter.categories) query = query.in("category", filter.categories);
+    if (filter.formalities) query = query.in("formality", filter.formalities);
+    const { data, error } = await query.range(from, from + PAGE - 1);
+    if (error) throw new Error(`Catalog read failed: ${error.message}`);
+    out.push(...(data as Row[]).map(fromRow));
+    if (data.length < PAGE) return out;
+  }
 }
 
 export async function upsertProducts(db: SupabaseClient, products: Product[]) {
