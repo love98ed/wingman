@@ -105,21 +105,36 @@ Open http://localhost:3000. The UI is designed for a 390px phone screen first.
 ## Project structure
 
 ```
-app/                     Pages and API routes
-components/ui/           shadcn/ui components
+app/                     Routes (App Router): / home, /demo, /occasion
+  fonts/                 Panchang and Switzer, self-hosted
+  globals.css            Design tokens, type steps, motion
+components/
+  home/                  Home page sections: hero window, occasion list, look frames, Fit Check, how it works, footer
+  shared/                Used across routes: placeholder screen, scroll-entrance helper
 lib/
-  env.ts                 Server env, validated with Zod
-  hash.ts                Shared sha256 helper
+  catalog/               Shopify feeds: fetch, filter, Claude tagging, prices in SGD, relative tiers, store checks
+  youcam/                YouCam client, unit guard, render cache, mock mode (index.ts is the entry point)
   llm/                   Claude model config and JSON-output helper
   photo/                 Face box and crops for each YouCam API
   supabase/              Server client (service role)
-  youcam/                YouCam client, unit guard, render cache, mock mode
-scripts/                 Command-line scripts (run with tsx)
+  env.ts, env.server.ts  Env validated with Zod; import env.server.ts from server code only
+  hash.ts, utils.ts      sha256 helper, Tailwind class merging
+scripts/                 Command-line tools (run with tsx, see Scripts)
 supabase/migrations/     Database schema
-fixtures/                Demo photo, saved YouCam responses, store list
+fixtures/
+  stores.json            Verified Shopify stores (failures go to stores-removed.json)
+  catalog-cache/         Resumable tagging cache, one file per store
+  shopify/               Saved products.json feed for tests
+  youcam/                Saved YouCam responses for MOCK_YOUCAM
+  selfies/               Demo photo and its credit
+public/demo/             Before and after images for the home page
 tests/
   unit/                  Vitest, mirrors lib/
-  e2e/                   Playwright
+  e2e/                   Playwright smoke test
+  stubs/                 Stand-ins for server-only modules under Vitest
+docs/                    HANDOFF.md, STEP_PROMPTS.md (build plan), screenshots/
+.taste-skill/            Design direction used by the design-taste-frontend skill
+CLAUDE.md                Project rules for Claude Code
 ```
 
 ## Privacy
