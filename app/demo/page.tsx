@@ -1,4 +1,4 @@
-import { ComingSoon } from "@/components/coming-soon";
+import { ComingSoon } from "@/components/shared/coming-soon";
 
 export default function DemoPage() {
   return (

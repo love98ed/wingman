@@ -4,7 +4,7 @@ import { HowItWorks } from "@/components/home/how-it-works";
 import { LookFrames } from "@/components/home/look-frames";
 import { OccasionPicker } from "@/components/home/occasion-picker";
 import { SiteFooter } from "@/components/home/site-footer";
-import { Reveal } from "@/components/reveal";
+import { Reveal } from "@/components/shared/reveal";
 
 const BEFORE = "/demo/before.jpg";
 const AFTER = "/demo/after.jpg";
