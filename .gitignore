@@ -49,5 +49,3 @@ next-env.d.ts
 /playwright-report/
 /playwright/.cache/
 
-# catalog tag and image cache (resumable fetches)
-/.cache/

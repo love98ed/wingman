@@ -4,6 +4,8 @@ Tell Wingman the occasion and see yourself ready: a full look from real stores, 
 
 Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eCommerce VTO Hackathon (Perfect Corp, Devpost).
 
+> **Teammates:** start with [docs/HANDOFF.md](docs/HANDOFF.md).
+>
 > **Status: in progress.** The app shell, the database schema and the YouCam client are built. The catalog, the style agent and the main screens are next. See [Roadmap](#roadmap).
 
 ## How it works

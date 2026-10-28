@@ -1,0 +1,399 @@
+{
+  "7108307517482": {
+    "name": "Errol Jacket - Brown Herringbone",
+    "url": "https://kerbside-co.com/products/errol-jacket-brown-herringbone",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "outerwear",
+      "colour": "brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 7108307517482
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/1_6cb70aa2-6424-43ba-aad4-5b5ad7f72606.jpg?v=1709890757&width=1600"
+  },
+  "7104823033898": {
+    "name": "Bruno Jacket",
+    "url": "https://kerbside-co.com/products/bruno-jacket",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "outerwear",
+      "colour": "beige",
+      "formality": "casual",
+      "occasions": [],
+      "id": 7104823033898
+    },
+    "image": null
+  },
+  "7092855799850": {
+    "name": "Branson 7.5\" Shorts",
+    "url": "https://kerbside-co.com/products/branson-8-shorts",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "khaki",
+      "formality": "casual",
+      "occasions": [],
+      "id": 7092855799850
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/16.jpg?v=1709287632&width=1600"
+  },
+  "7095087726634": {
+    "name": "Branson 7.5\" Shorts - Camo",
+    "url": "https://kerbside-co.com/products/branson-7-5-shorts-camo",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "camo green",
+      "formality": "casual",
+      "occasions": [],
+      "id": 7095087726634
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/12_9a626910-a0ca-423f-849d-20c76dcfd249.jpg?v=1709294010&width=1600"
+  },
+  "13653245976": {
+    "name": "Scout Shorts",
+    "url": "https://kerbside-co.com/products/the-scout",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "natural",
+      "formality": "casual",
+      "occasions": [],
+      "id": 13653245976
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/1.jpg?v=1709127212&width=1600"
+  },
+  "7034572210218": {
+    "name": "Classic Natural Canvas Tote",
+    "url": "https://kerbside-co.com/products/canvas-totes",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "accessory",
+      "colour": "natural",
+      "formality": "casual",
+      "occasions": [],
+      "id": 7034572210218
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/Totes5.jpg?v=1702066695&width=1600"
+  },
+  "7032387469354": {
+    "name": "Davis Overall - Hickory Denim",
+    "url": "https://kerbside-co.com/products/davis-overall-hickory-denim",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "navy",
+      "formality": "casual",
+      "occasions": [],
+      "id": 7032387469354
+    }
+  },
+  "7017879142442": {
+    "name": "Vintage Batik Print Short Sleeve Shirt - Dark Green",
+    "url": "https://kerbside-co.com/products/vintage-batik-print-short-sleeve-shirt-dark-green",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "dark green",
+      "formality": "casual",
+      "occasions": [],
+      "id": 7017879142442
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/AztechPrint3b_17cb7ad7-c5ce-4a7a-8f25-0b348d2be30a.jpg?v=1700729622&width=1600"
+  },
+  "7017867837482": {
+    "name": "Clint Long Sleeve Shirt - Blue Denim",
+    "url": "https://kerbside-co.com/products/clint-long-sleeve-shirt-black-twill",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "blue",
+      "formality": "casual",
+      "occasions": [],
+      "id": 7017867837482
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/Clint4_89015125-8cdd-40ad-a30f-3ab7543182b4.jpg?v=1700727624&width=1600"
+  },
+  "7017864626218": {
+    "name": "Escobar Corduroy Pants - Coffee",
+    "url": "https://kerbside-co.com/products/escobar-corduroy-pants-coffee",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "coffee brown",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 7017864626218
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/EscobarCourduroy1_48a5f61c-6092-4cb8-8c26-d84684a2875b.jpg?v=1700726706&width=1600"
+  },
+  "6616304975914": {
+    "name": "Woody Gingham Short Sleeve Shirt",
+    "url": "https://kerbside-co.com/products/woody-shirt",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "multicolour",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6616304975914
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/Woody1_0838ed3c-7bae-413d-a355-510c874c5957.jpg?v=1699350765&width=1600"
+  },
+  "6992285106218": {
+    "name": "Gym 6\" Shorts",
+    "url": "https://kerbside-co.com/products/gym-6-5-shorts",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "grey",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6992285106218
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/Gym6.5shorts1.jpg?v=1698766473&width=1600"
+  },
+  "6989205667882": {
+    "name": "Vintage Batik Print Short Sleeve Shirt - Light Green",
+    "url": "https://kerbside-co.com/products/vintage-batik-short-sleeve-shirt",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "light green",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6989205667882
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/AztechPrint1a.jpg?v=1699351204&width=1600"
+  },
+  "6930327601194": {
+    "name": "Farmer Shirt",
+    "url": "https://kerbside-co.com/products/copy-of-shop-crew-tee",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "white",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6930327601194
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/Farmer1.jpg?v=1698929937&width=1600"
+  },
+  "6930328485930": {
+    "name": "Peasant Pants",
+    "url": "https://kerbside-co.com/products/peasants-pants",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "white",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6930328485930
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/PeasantPants2.jpg?v=1698934835&width=1600"
+  },
+  "6558234017834": {
+    "name": "Oxley Chinos",
+    "url": "https://kerbside-co.com/products/oxley-chinos",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "khaki",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "night-out"
+      ],
+      "id": 6558234017834
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/oxley14b.jpg?v=1701855567&width=1600"
+  },
+  "6928324296746": {
+    "name": "Crew Tee - Crawford Court",
+    "url": "https://kerbside-co.com/products/shop-crew-tee",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "white",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6928324296746
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/CrewTeeCrawford12.jpg?v=1701856367&width=1600"
+  },
+  "6921600106538": {
+    "name": "Onyx Jeans",
+    "url": "https://kerbside-co.com/products/onyx",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "indigo blue",
+      "formality": "casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 6921600106538
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/OnyxJeans1.jpg?v=1699358358&width=1600"
+  },
+  "6858819371050": {
+    "name": "Type 2 Canvas Tote - Navy",
+    "url": "https://kerbside-co.com/products/type-2-navy",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "navy",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6858819371050
+    }
+  },
+  "6858818125866": {
+    "name": "Type 1 Canvas Tote - Olive",
+    "url": "https://kerbside-co.com/products/type-1-olive",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": false,
+      "category": null,
+      "colour": "olive",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6858818125866
+    }
+  },
+  "6856123220010": {
+    "name": "Crew Tee - Seaplane",
+    "url": "https://kerbside-co.com/products/seaplane-tee-shirt",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "multicolour",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6856123220010
+    },
+    "image": null
+  },
+  "6850985263146": {
+    "name": "Escobar Corduroy Pants - Khaki",
+    "url": "https://kerbside-co.com/products/escobar-pants",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "khaki",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 6850985263146
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/EscobarCourduroy9b.jpg?v=1700727084&width=1600"
+  },
+  "6765245136938": {
+    "name": "Kennedy Jeans",
+    "url": "https://kerbside-co.com/products/kennedyjeans",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "indigo blue",
+      "formality": "casual",
+      "occasions": [
+        "date",
+        "night-out"
+      ],
+      "id": 6765245136938
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/kennedy1.jpg?v=1700736637&width=1600"
+  },
+  "6740996685866": {
+    "name": "Davis Overall - Twill",
+    "url": "https://kerbside-co.com/products/overall",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": null,
+      "colour": "twill",
+      "formality": "casual",
+      "occasions": [],
+      "id": 6740996685866
+    }
+  },
+  "6720267911210": {
+    "name": "Clint Long Sleeve Shirt - Black Twill",
+    "url": "https://kerbside-co.com/products/clint-l-s-shirt",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "top",
+      "colour": "black",
+      "formality": "smart-casual",
+      "occasions": [
+        "date",
+        "interview",
+        "night-out"
+      ],
+      "id": 6720267911210
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/Clint2.jpg?v=1700727763&width=1600"
+  },
+  "1887752192042": {
+    "name": "LOT 75E Jeans",
+    "url": "https://kerbside-co.com/products/lot-75e",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "indigo",
+      "formality": "casual",
+      "occasions": [],
+      "id": 1887752192042
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/lot75e4b.jpg?v=1700035498&width=1600"
+  },
+  "10374702094": {
+    "name": "The Pollock Pants",
+    "url": "https://kerbside-co.com/products/the-pollock",
+    "updatedAt": "2026-10-28T16:36:50+08:00",
+    "tag": {
+      "menswear": true,
+      "category": "bottom",
+      "colour": "khaki",
+      "formality": "casual",
+      "occasions": [],
+      "id": 10374702094
+    },
+    "image": "https://cdn.shopify.com/s/files/1/1282/1453/files/pollocks15.jpg?v=1701435262&width=1600"
+  }
+}

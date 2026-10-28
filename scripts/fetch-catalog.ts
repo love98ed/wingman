@@ -66,14 +66,15 @@ async function chooseImage(product: ShopifyProduct, category: Category): Promise
 }
 
 /**
- * Per-store cache of tags and image decisions, keyed by Shopify product id and
+ * Per-store cache (fixtures/catalog-cache) of tags and image decisions, keyed by Shopify product id and
  * updated_at. Saved as work progresses, so an interrupted run resumes where it
  * stopped and later refreshes only pay for changed products.
  */
 /** name and url are for people reading the file; the pipeline keys on id and updatedAt. */
 type CacheEntry = { name: string; url: string; updatedAt: string; tag?: ProductTag; image?: string | null };
 type StoreCache = Record<string, CacheEntry>;
-const CACHE_DIR = path.join(process.cwd(), ".cache", "catalog");
+// Committed so teammates can resume a fetch on another machine.
+const CACHE_DIR = path.join(process.cwd(), "fixtures", "catalog-cache");
 
 async function loadCache(domain: string): Promise<StoreCache> {
   try {
