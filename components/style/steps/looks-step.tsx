@@ -86,7 +86,7 @@ export function LooksStep({
   return (
     <FlowShell step={`${TIER_LABELS[tier]}${occasion ? `, ${occasion.setting}` : ""}`} wide>
       <div className="mx-auto max-w-xl">
-        <h1 className="mt-4 text-head">Your looks</h1>
+        <h1 className="mt-4 text-head">{looks.length === 1 ? "Your look" : "Your looks"}</h1>
         <p className="mt-3">
           {looks.length === 1 ? "One look" : `${looks.length} looks`} from real Singapore stores, tried on your photo.{" "}
           {looks.length > 1 && <span className="lg:hidden">Swipe to compare, then tap</span>}
@@ -106,7 +106,7 @@ export function LooksStep({
           </button>
         )}
         {notice && (
-          <p role="alert" className="mt-4 bg-surface-raised p-4">
+          <p role="status" className="mt-4 bg-surface-raised p-4">
             {notice}
           </p>
         )}

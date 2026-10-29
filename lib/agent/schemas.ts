@@ -105,6 +105,10 @@ export type RefineRequest = z.infer<typeof RefineRequestSchema>;
 /** The occasion after a refine request; maxBudget null means no cap. */
 export const RefinedOccasionSchema = ParsedOccasionSchema.omit({ occasion: true, timeOfDay: true }).extend({
   maxBudget: z.number().positive().nullable(),
+  /** "reject" when the request can't or shouldn't be acted on; nothing is re-picked or rendered. */
+  verdict: z.enum(["apply", "reject"]),
+  /** One short sentence for the user: what changed, or why not and what to ask instead. */
+  reply: z.string().max(240),
 });
 
 /** Query string of GET /api/browse; empty values mean "any". */

@@ -100,7 +100,7 @@ describe("Refine and swap schemas", () => {
   });
 
   it("takes a budget cap or null from Claude, never a negative one", () => {
-    const brief = { formality: "casual", setting: "rooftop bar", constraints: ["no white sneakers"] };
+    const brief = { formality: "casual", setting: "rooftop bar", constraints: ["no white sneakers"], verdict: "apply", reply: "Done." };
     expect(RefinedOccasionSchema.safeParse({ ...brief, maxBudget: 300 }).success).toBe(true);
     expect(RefinedOccasionSchema.safeParse({ ...brief, maxBudget: null }).success).toBe(true);
     expect(RefinedOccasionSchema.safeParse({ ...brief, maxBudget: -5 }).success).toBe(false);

@@ -20,10 +20,15 @@ const switzer = localFont({
   display: "swap",
 });
 
+const DESCRIPTION =
+  "Tell Wingman the occasion and see yourself ready: a full look from real Singapore stores, tried on your photo and one tap from checkout.";
+
 export const metadata: Metadata = {
-  title: "Wingman",
-  description:
-    "Tell Wingman the occasion and see yourself ready: a full look from real stores, styled on your photo and one tap from checkout.",
+  metadataBase: new URL("https://wingman-eight-beta.vercel.app"),
+  title: { default: "Wingman: see the look on you", template: "%s · Wingman" },
+  description: DESCRIPTION,
+  openGraph: { title: "Wingman: see the look on you", description: DESCRIPTION, siteName: "Wingman", type: "website" },
+  twitter: { card: "summary_large_image" },
   appleWebApp: { capable: true, title: "Wingman", statusBarStyle: "black-translucent" },
 };
 

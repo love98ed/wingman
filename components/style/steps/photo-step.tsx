@@ -45,7 +45,10 @@ export function PhotoStep({
           {notice}
         </p>
       )}
-      <p className="mt-4 max-w-[36ch]">One photo, waist up, facing the camera in good light. Glasses are fine.</p>
+      <p className="mt-4 max-w-[36ch]">
+        One photo, waist up, facing the camera in good light. Glasses are fine. Wingman tries the shirt or jacket on you;
+        trousers, shoes and watches come as picks beside it.
+      </p>
 
       <label
         htmlFor={inputId}

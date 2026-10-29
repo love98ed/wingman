@@ -50,6 +50,14 @@ export type PreviousLook = { name: string; items: string[]; total: number };
 const previousLines = (previous: PreviousLook[]) =>
   previous.map((l) => `- ${l.name} (S$${l.total.toFixed(0)}): ${l.items.join(", ")}`).join("\n");
 
+/** Strip JSON leftovers the model sometimes ends a sentence with (`}` or an unpaired closing quote). */
+export function tidyReply(reply: string): string {
+  let out = reply.trim().replace(/[\s}]+$/, "");
+  const quotes = (out.match(/["\u201C\u201D]/g) ?? []).length;
+  if (quotes % 2 === 1 && /["\u201D]$/.test(out)) out = out.slice(0, -1).trimEnd();
+  return out;
+}
+
 /** Refine: one chat request applied to the parsed occasion. The occasion type and time stay. */
 export async function refineOccasion(args: {
   occasion: ParsedOccasion;
@@ -58,7 +66,7 @@ export async function refineOccasion(args: {
   previous: PreviousLook[];
 }) {
   const o = args.occasion;
-  return generateStructured({
+  const update = await generateStructured({
     task: "agent",
     label: "refine-occasion",
     effort: "low",
@@ -69,7 +77,14 @@ export async function refineOccasion(args: {
       "most a whole look may cost in SGD: set it when he names a price or asks for cheaper (aim about 25% below his " +
       "cheapest look), keep the current value otherwise, null when there is none or he asks to drop it. constraints " +
       "is the full list of his wishes and limits as short phrases: keep earlier ones unless he contradicts them and add " +
-      "the new one (\"no white sneakers\", \"shoes under S$150\"). setting stays unless he changes the place.",
+      "the new one (\"no white sneakers\", \"shoes under S$150\"). setting stays unless he changes the place. " +
+      "First decide the verdict. reject (and leave the brief unchanged) when the request: is not about his outfit for this " +
+      "event (questions, chit-chat, gibberish); asks to change his body, face, skin, hair colour or height; asks for something " +
+      "Wingman doesn't sell (it only picks tops, jackets, trousers, shoes and watches: no hats, bags, glasses, ties, jewellery " +
+      "or womenswear); or is insulting or unsafe. Otherwise apply. reply is one short, friendly sentence in second person: " +
+      "for reject, why not and one example of what he can ask instead; for apply, what you changed. Wingman's try-on only " +
+      "draws the shirt or jacket on his photo, so when the request is only about trousers, shoes or a watch, apply it and " +
+      "say the new pieces show in each look's list rather than on him.",
     content: [
       {
         type: "text",
@@ -81,6 +96,7 @@ export async function refineOccasion(args: {
       },
     ],
   });
+  return { ...update, reply: tidyReply(update.reply) };
 }
 
 /** Step 3: 2 to 3 looks from the candidate pool, colours chosen for his face and skin tone. */

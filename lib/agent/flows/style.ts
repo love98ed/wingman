@@ -216,6 +216,9 @@ export async function runRefine(photoBytes: Buffer, req: RefineRequest, emit: (e
     refineOccasion({ occasion: current, sentence: req.sentence, message: req.message, previous: req.previous }),
     preparePhoto(photoBytes, cachedFace),
   ]);
+  // Turn down what can't or shouldn't be done before spending anything on new looks or renders
+  if (update.verdict === "reject") throw new AgentError("REJECTED", update.reply);
+  emit({ type: "refined", reply: update.reply });
   const occasion: ParsedOccasion = {
     ...current,
     formality: update.formality,

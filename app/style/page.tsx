@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { StyleFlow } from "@/components/style/style-flow";
 import { OCCASIONS, type Occasion } from "@/lib/catalog/types";
 
-export const metadata: Metadata = { title: "Style me · Wingman" };
+export const metadata: Metadata = { title: "Style me" };
 
 export default async function StylePage({ searchParams }: { searchParams: Promise<{ o?: string }> }) {
   const { o } = await searchParams;

@@ -58,6 +58,8 @@ export type StyleEvent =
   | { type: "looks"; occasion: ParsedOccasion; looks: Look[] }
   | { type: "render"; look: number; kind: RenderKind; url: string }
   | { type: "fitcheck"; checks: NonNullable<Look["fitCheck"]>[] }
+  /** A refine was accepted: what Wingman is changing, in a sentence for the user. */
+  | { type: "refined"; reply: string }
   /** Looks that scored too low are dropped after the Fit Check: keep these indexes, in order. */
   | { type: "prune"; keep: number[]; dropped: number }
   | { type: "prep"; prepPlan: PrepPlan; skinAnalysed: boolean }
