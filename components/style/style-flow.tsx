@@ -58,6 +58,12 @@ const roundTotal = (items: LookItem[]) => Math.round(items.reduce((sum, i) => su
 const errorFrom = async (res: Response, fallback: string) =>
   ((await res.json().catch(() => ({}))) as { error?: string }).error ?? fallback;
 
+/**
+ * A browser history entry for screen `at` of the flow. Next.js keeps its own routing data in
+ * history.state and reloads the page on Back when an entry lacks it, so keep that and add ours.
+ */
+const entry = (at: number) => ({ ...(window.history.state as Record<string, unknown> | null), wingman: at });
+
 /** What the flow keeps when the visitor leaves /style, so coming back picks up where they were. */
 type Saved = {
   phase: Phase;
@@ -180,7 +186,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       t.phases = [...t.phases.slice(0, t.at + 1), next];
       t.at++;
     }
-    window.history[replace ? "replaceState" : "pushState"]({ wingman: t.at }, "");
+    window.history[replace ? "replaceState" : "pushState"](entry(t.at), "");
     setPhase(next);
   };
 
@@ -210,13 +216,13 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   /** Start over at `to` with nothing behind it in the flow, e.g. after deleting the photo. */
   const resetTo = (to: Phase) => {
     trail.current = { phases: [to], at: 0 };
-    window.history.replaceState({ wingman: 0 }, "");
+    window.history.replaceState(entry(0), "");
     setPhase(to);
   };
 
   // Browser back and forward move through the trail
   useEffect(() => {
-    window.history.replaceState({ wingman: 0 }, "");
+    window.history.replaceState(entry(0), "");
     const onPop = (event: PopStateEvent) => {
       const at = (event.state as { wingman?: number } | null)?.wingman;
       if (typeof at !== "number" || !trail.current.phases[at]) return;
