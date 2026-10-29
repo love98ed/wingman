@@ -1,14 +1,14 @@
 # Wingman
 
-**Tell Wingman the occasion and see yourself ready: a full look from real stores, styled on your selfie and one tap from checkout.**
+**Tell Wingman the occasion and see yourself ready: a full look from real Singapore stores, tried on your photo and one tap from checkout.**
 
 **Live demo:** https://wingman-eight-beta.vercel.app
 
-Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eCommerce VTO Hackathon (Perfect Corp). It picks 2 to 3 full looks from in-stock products at 17 Singapore Shopify stores, tries each one on your photo with YouCam, scores it, and opens each store's own cart with your sizes already in it.
+Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eCommerce VTO Hackathon (Perfect Corp). It picks 2 to 3 full looks from in-stock products at 17 Singapore Shopify stores, tries each one on your photo with YouCam, scores it, drops any look that scores below 6, and opens each store's own cart with your sizes already in it.
 
 ## Try it in 60 seconds
 
-1. Open https://wingman-eight-beta.vercel.app on your phone (or a narrow browser window).
+1. Open https://wingman-eight-beta.vercel.app on your phone or laptop.
 2. Tap **Start with a photo** and upload a waist-up, front-facing selfie. Glasses are fine.
 3. Keep "First date Friday night, rooftop bar, want to look effortless", pick **Mid-range** and tap **Style me**. The first look appears in about 30 seconds and the others follow.
 
@@ -16,11 +16,11 @@ What to look for:
 
 - **The looks:** swipe through 3 complete outfits from real stores, each tried on your photo with a Fit Check score out of 10.
 - **Compare prices:** the same look rebuilt at Budget, Mid-range and Luxury, side by side, with real SGD totals.
-- **Refine and swap:** type "more casual" or "under S$500" in the bar at the bottom, or tap **Swap** on any piece for 6 alternatives that go with the rest of the look.
+- **Refine and swap:** type "more casual" or "under S$500" in the bar at the bottom and Wingman says in a sentence what it changed (it turns down requests it can't act on, like hats or a new hair colour, before spending anything), or tap **Swap** on any piece for 6 alternatives that go with the rest of the look.
 - **Prep plan:** a three-step grooming routine for the night before, based on a skin analysis of your photo.
 - **Checkout:** **Add this look to cart**, pick in-stock sizes, and tap **Checkout at {store}**. The store's real cart opens with your pieces in it. You pay there; Wingman never takes payment.
 
-> Every try-on on the live site is a real YouCam render of your photo. The site caps itself at 700 YouCam units in total; once they're used, styling shows a "try again later" message until the cap is raised.
+> Every try-on on the live site is a real YouCam render of your photo. The site caps itself at 700 YouCam units in total; once they're used, looks still arrive with their pieces and prices but without the try-on, until the cap is raised.
 
 ## Screenshots
 
@@ -60,14 +60,15 @@ flowchart TD
     F --> G[YouCam renders each look<br/>clothes, then hair, then beard]
     G --> H[Claude Fit Check<br/>score out of 10 + reason]
     D --> I[Claude prep plan<br/>3 grooming steps, no medical claims]
-    H --> J[Looks stream to the phone<br/>first one as soon as it's ready]
+    H --> P[Looks scoring under 6 dropped]
+    P --> J[Looks stream to the phone<br/>first one as soon as it's ready]
     J --> K[Refine by chat / Swap a piece / Compare prices]
     K --> F
     J --> L[Cart: in-stock sizes,<br/>one Shopify cart link per store]
 ```
 
 - **`POST /api/style`** streams progress as newline-delimited JSON, so the first look shows as soon as its render is done.
-- **`POST /api/refine`**: Claude updates the brief ("more casual", "under S$300"), then look selection, renders and Fit Checks run again with the old looks as context. A budget cap opens the cheaper tiers.
+- **`POST /api/refine`**: Claude first decides whether the request is something Wingman can do. Off-topic requests, changes to your body or hair colour, and things it doesn't sell (hats, bags, ties) are turned down with a one-line reply and an example of what to ask instead, before any units are spent. Otherwise Claude updates the brief ("more casual", "under S$300"), replies with what it changed, and look selection, renders and Fit Checks run again with the old looks as context. A budget cap opens the cheaper tiers.
 - **`POST /api/swap/options` and `/api/swap`**: 6 in-stock alternatives for one slot that go with the rest of the look, then a re-render and new score.
 - **`POST /api/compare`**: for each piece, products in the other tiers are ranked by colour, cut (shared name words like "linen") and formality; Claude picks the closest stand-in and says what changes at that price.
 - **`GET /api/browse`**: the whole in-stock catalog, filtered by category, tier, price, colour family and size.
@@ -87,7 +88,7 @@ flowchart TD
 | Images | sharp |
 | Validation | Zod on every API input and every Claude output |
 | Products and checkout | Shopify `products.json` feeds and cart permalinks |
-| Tests | Vitest (147 unit tests) and Playwright (smoke) |
+| Tests | Vitest (192 unit tests) and Playwright (smoke) |
 | Deploy | Vercel |
 
 ## Setup
@@ -159,14 +160,17 @@ Open http://localhost:3000 at phone width and tap **Start with a photo**. `fixtu
 
 ```
 app/
-  page.tsx, style/, demo/      Home, the style flow, demo placeholder (/occasion redirects to /style)
+  page.tsx, style/             Home and the style flow (/occasion redirects to /style)
+  not-found.tsx, icon.svg,     404 page, favicon and the link-preview image
+  opengraph-image.jpg
   api/                         style, refine, compare, swap, swap/options (streamed), browse
   fonts/, globals.css          Self-hosted Panchang and Switzer; design tokens, type steps, motion
 components/
-  home/                        Home page sections: hero window, occasions, look frames, Fit Check, footer
+  home/                        Home page sections: hero window (drag to compare), occasion picker, three budgets,
+                               Fit Check, how it works, stores, footer
   style/                       style-flow.tsx runs the flow; flow-shell, refine-bar, product-image
     steps/                     One screen each: photo, occasion, loading, looks, compare, swap, cart, prep, browse, error
-  shared/                      Placeholder screen, scroll-entrance helper
+  shared/                      Scroll-entrance helper
 lib/
   agent/                       The style agent
     flows/                     Route entry points: style.ts (style + refine), compare.ts, swap.ts
@@ -184,7 +188,7 @@ lib/
   llm/                         Claude model config and JSON-output helper
   photo/                       Face box and crops for each YouCam API; in-browser photo shrinking
   supabase/                    Server client (service role)
-  utils/                       sha256, concurrency limiter, price formatting, class merging
+  utils/                       sha256, concurrency limiter, price formatting, class merging (knows the type steps)
   cart.ts, occasions.ts        Cart permalinks per store; occasion choices and tier labels
   env.ts, env.server.ts        Env validated with Zod; import env.server.ts from server code only
 scripts/
