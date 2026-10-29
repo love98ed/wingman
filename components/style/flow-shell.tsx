@@ -18,7 +18,7 @@ export function FlowShell({
         <Link href="/" className="font-display text-small uppercase">
           Wingman
         </Link>
-        {step && <span className="text-small text-muted-foreground">{step}</span>}
+        {step && <span className="text-right text-small text-muted-foreground">{step}</span>}
       </header>
       <main className={cn("mx-auto px-(--margin)", wide ? "max-w-5xl" : "max-w-xl")}>{children}</main>
     </div>

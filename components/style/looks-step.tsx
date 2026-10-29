@@ -190,14 +190,16 @@ function LookCard({
       )}
 
       <div className="p-5">
-        <div className="flex items-baseline justify-between gap-4">
-          <h2 className="text-lead">{look.name}</h2>
-          <span className="shrink-0 tabular-nums">{sgd(look.total)}</span>
-        </div>
-        <div className="mt-1 flex items-center justify-between gap-4">
-          <span className="text-small text-muted-foreground">{TIER_LABELS[look.tier]}</span>
+        {/* The display face is wide: the name gets its own line and shrinks a little on very
+            narrow phones so a long word ("Professional") still fits whole */}
+        <h2 className="text-[min(var(--step-lead),5vw)] [overflow-wrap:break-word]">{look.name}</h2>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-4">
+          <p className="whitespace-nowrap">
+            <span className="tabular-nums">{sgd(look.total)}</span>
+            <span className="text-small text-muted-foreground"> · {TIER_LABELS[look.tier]}</span>
+          </p>
           {onCompare && (
-            <button type="button" onClick={onCompare} className="text-link -my-3 min-h-11 text-small font-medium">
+            <button type="button" onClick={onCompare} className="text-link -my-3 min-h-11 text-small font-medium whitespace-nowrap">
               Compare prices
             </button>
           )}
