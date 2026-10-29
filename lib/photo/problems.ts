@@ -68,5 +68,12 @@ export type PhotoProblem = { code: PhotoProblemCode; soft: boolean; message: str
 
 export const photoProblem = (code: PhotoProblemCode): PhotoProblem => ({ code, ...PHOTO_PROBLEMS[code] });
 
-/** POST /api/photo/check response. `ok` is false when any problem is hard. */
-export type PhotoCheck = { ok: boolean; problems: PhotoProblem[] };
+/**
+ * POST /api/photo/check response. `ok` is false when any problem is hard. `zoom` is set when the
+ * person is too far from the camera: the waist-up crop, as fractions of the photo, to check next.
+ */
+export type PhotoCheck = {
+  ok: boolean;
+  problems: PhotoProblem[];
+  zoom?: { x: number; y: number; width: number; height: number };
+};

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cropBoxes, rollDegrees, rotatePoint } from "@/lib/photo/crops";
+import { cropBoxes, rollDegrees, rotatePoint, zoomBox } from "@/lib/photo/crops";
 
 describe("cropBoxes", () => {
   it("keeps crop boxes inside the image with the face centred", () => {
@@ -37,5 +37,21 @@ describe("head tilt", () => {
   it("keeps the centre fixed on an expanded canvas", () => {
     const p = rotatePoint({ x: 50, y: 60 }, 100, 120, 10, 130, 140);
     expect(p).toEqual({ x: 65, y: 70 });
+  });
+});
+
+describe("zoomBox", () => {
+  it("frames a far-away person waist up, 4:5, inside the photo", () => {
+    // Full-length shot: face 150px wide in a 3000x4000 photo
+    const box = zoomBox({ x: 1425, y: 600, width: 150, height: 195 }, 3000, 4000)!;
+    expect(box.width).toBe(720);
+    expect(box.height).toBe(900);
+    expect(box.x + box.width / 2).toBeCloseTo(1500, 0);
+    expect(box.y).toBeLessThan(600);
+    expect(box.x + box.width).toBeLessThanOrEqual(3000);
+  });
+
+  it("leaves a photo that is already close enough", () => {
+    expect(zoomBox({ x: 1100, y: 500, width: 800, height: 1000 }, 3000, 4000)).toBeNull();
   });
 });

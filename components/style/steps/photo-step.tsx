@@ -47,7 +47,27 @@ export function PhotoStep({
     setChecking(true);
     const result = await check(blob);
     if (latest.current !== url) return;
+    if (result?.zoom) return zoom(file, result.zoom, url);
     onPhoto({ blob, url, check: result });
+    setChecking(false);
+  }
+
+  /** Too far from the camera: crop to waist up from the full-size original and check that instead. */
+  async function zoom(file: File, crop: NonNullable<PhotoCheck["zoom"]>, from: string) {
+    let blob: Blob;
+    try {
+      blob = await downscalePhoto(file, undefined, undefined, crop);
+    } catch {
+      if (latest.current === from) setChecking(false);
+      return;
+    }
+    if (latest.current !== from) return;
+    const url = URL.createObjectURL(blob);
+    latest.current = url;
+    onPhoto({ blob, url, zoomed: true });
+    const result = await check(blob);
+    if (latest.current !== url) return;
+    onPhoto({ blob, url, zoomed: true, check: result });
     setChecking(false);
   }
 
@@ -111,6 +131,11 @@ export function PhotoStep({
       {photo && checking && (
         <p role="status" className="mt-6">
           Checking your photo works for a try-on…
+        </p>
+      )}
+      {photo?.zoomed && !checking && !hard && (
+        <p role="status" className="mt-6">
+          You were a little far from the camera, so we zoomed in to waist up.
         </p>
       )}
       {photo && !checking && shown.length > 0 && (

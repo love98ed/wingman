@@ -4,6 +4,7 @@ import sharp from "sharp";
 import { z } from "zod";
 import { memo } from "@/lib/agent/memo";
 import { generateStructured } from "@/lib/llm/client";
+import { zoomBox, type Box } from "./crops";
 import { normalisePhoto } from "./prepare";
 import { photoProblem, type PhotoCheck, type PhotoProblem } from "./problems";
 
@@ -31,8 +32,11 @@ const VisionSchema = z.object({
   facing_camera: z.boolean(),
   /** A hand, mask, hat brim or hair hides a large part of the face. Glasses never count. */
   face_covered: z.boolean(),
-  /** Face width (ear to ear) as a fraction of the photo's width. */
+  /** Face box (hairline to chin, ear to ear) as fractions of the photo's width and height. */
+  face_left: z.number().min(0).max(1),
+  face_top: z.number().min(0).max(1),
   face_width: z.number().min(0).max(1),
+  face_height: z.number().min(0).max(1),
 });
 export type PhotoVision = z.infer<typeof VisionSchema>;
 
@@ -50,6 +54,15 @@ export async function measurePhoto(normalised: Buffer, width: number, height: nu
   return { width, height, brightness, sharpness };
 }
 
+/** Where to crop a photo taken from too far away, as fractions of its size; null when it's close enough. */
+export function zoomFrom(metrics: PhotoMetrics, vision: PhotoVision | null): Box | null {
+  if (!vision || vision.people !== 1 || !vision.face_visible || vision.face_cut_off) return null;
+  const { width, height } = metrics;
+  const face = { x: vision.face_left * width, y: vision.face_top * height, width: vision.face_width * width, height: vision.face_height * height };
+  const box = zoomBox(face, width, height);
+  return box && { x: box.x / width, y: box.y / height, width: box.width / width, height: box.height / height };
+}
+
 /** Problems found, hard ones first. `vision` is null when the Claude check couldn't run. */
 export function problemsFrom(metrics: PhotoMetrics, vision: PhotoVision | null): PhotoProblem[] {
   const codes: Parameters<typeof photoProblem>[0][] = [];
@@ -60,7 +73,8 @@ export function problemsFrom(metrics: PhotoMetrics, vision: PhotoVision | null):
     else {
       if (vision.face_cut_off) codes.push("FACE_CUT_OFF");
       if (!vision.shoulders_visible) codes.push("SHOULDERS_CUT_OFF");
-      if (vision.face_width * metrics.width < MIN_FACE_PX) codes.push("FACE_TOO_SMALL");
+      // A photo the browser can zoom into is checked again once zoomed
+      if (vision.face_width * metrics.width < MIN_FACE_PX && !zoomFrom(metrics, vision)) codes.push("FACE_TOO_SMALL");
       if (vision.face_covered) codes.push("FACE_COVERED");
       if (!vision.facing_camera) codes.push("NOT_FACING");
     }
@@ -88,7 +102,8 @@ async function lookAtPhoto(normalised: Buffer): Promise<PhotoVision> {
           "head (top of the hair, chin or an ear). shoulders_visible is true when both shoulders and the upper chest are " +
           "in the photo. facing_camera is false only when the head or body is clearly turned (profile, three-quarter " +
           "or more). face_covered is true only when a hand, mask, hat brim or hair hides a large part of the face; " +
-          "glasses and sunglasses never count. face_width is the face's width, ear to ear, as a fraction of the photo's width.",
+          "glasses and sunglasses never count. face_left, face_top, face_width and face_height are the face box, hairline " +
+          "to chin and ear to ear, as fractions (0 to 1) of the photo's width and height from the top-left corner.",
       },
     ],
   });
@@ -99,11 +114,11 @@ export async function checkPhoto(input: Buffer): Promise<PhotoCheck> {
   const { normalised, width, height, hash } = await normalisePhoto(input);
   const [metrics, vision] = await Promise.all([
     measurePhoto(normalised, width, height),
-    memo({ selfieHash: hash, api: "photo-check", params: { v: 1 } }, () => lookAtPhoto(normalised)).catch((err: Error) => {
+    memo({ selfieHash: hash, api: "photo-check", params: { v: 2 } }, () => lookAtPhoto(normalised)).catch((err: Error) => {
       console.warn(`[photo-check] vision skipped: ${err.message}`);
       return null;
     }),
   ]);
   const problems = problemsFrom(metrics, vision);
-  return { ok: problems.every((p) => p.soft), problems };
+  return { ok: problems.every((p) => p.soft), problems, zoom: zoomFrom(metrics, vision) ?? undefined };
 }

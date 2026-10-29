@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/llm/client", () => ({ generateStructured: vi.fn() }));
 vi.mock("@/lib/agent/memo", () => ({ memo: vi.fn() }));
-const { measurePhoto, problemsFrom } = await import("@/lib/photo/check");
+const { measurePhoto, problemsFrom, zoomFrom } = await import("@/lib/photo/check");
 
 const good = { width: 2000, height: 2500, brightness: 200, sharpness: 180 };
 const clear = {
@@ -14,7 +14,10 @@ const clear = {
   shoulders_visible: true,
   facing_camera: true,
   face_covered: false,
+  face_left: 0.4,
+  face_top: 0.1,
   face_width: 0.2,
+  face_height: 0.2,
 };
 const codes = (m = good, v: typeof clear | null = clear) => problemsFrom(m, v).map((p) => p.code);
 
@@ -29,7 +32,19 @@ describe("problemsFrom", () => {
     expect(codes(good, { ...clear, people: 0 })).toEqual(["NO_PERSON"]);
     expect(codes(good, { ...clear, face_cut_off: true })).toEqual(["FACE_CUT_OFF"]);
     expect(codes(good, { ...clear, shoulders_visible: false })).toEqual(["SHOULDERS_CUT_OFF"]);
-    expect(codes(good, { ...clear, face_width: 0.05 })).toEqual(["FACE_TOO_SMALL"]);
+    // Small in a small photo: zooming in can't help
+    expect(codes({ ...good, width: 1000, height: 1250 }, { ...clear, face_width: 0.15 })).toEqual(["FACE_TOO_SMALL"]);
+  });
+
+  it("zooms into a person standing too far back instead of rejecting the photo", () => {
+    const far = { ...clear, face_left: 0.475, face_top: 0.15, face_width: 0.05, face_height: 0.05 };
+    expect(codes(good, far)).toEqual([]);
+    const zoom = zoomFrom(good, far)!;
+    expect(zoom.width).toBeCloseTo(0.24, 2);
+    expect(zoom.x + zoom.width / 2).toBeCloseTo(0.5, 2);
+    expect(zoomFrom(good, clear)).toBeNull();
+    expect(zoomFrom(good, { ...far, people: 2 })).toBeNull();
+    expect(zoomFrom(good, null)).toBeNull();
   });
 
   it("treats light, blur, angle and a covered face as soft", () => {

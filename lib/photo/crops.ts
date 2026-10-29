@@ -29,6 +29,23 @@ export function cropBoxes(face: Box, imageWidth: number, imageHeight: number) {
   return { hair, face: faceBox };
 }
 
+/** A face narrower than this fraction of the photo's width means the person stood too far back. */
+const ZOOM_BELOW = 0.14;
+
+/**
+ * Waist-up framing (4:5, face ~1/5 of the width) around a face in a photo taken from too far
+ * away, or null when the photo is already close enough.
+ */
+export function zoomBox(face: Box, imageWidth: number, imageHeight: number): Box | null {
+  if (face.width >= imageWidth * ZOOM_BELOW) return null;
+  const width = face.width * 4.8;
+  return fitBox(
+    { x: face.x + face.width / 2 - width / 2, y: face.y - face.height * 0.6, width, height: width * 1.25 },
+    imageWidth,
+    imageHeight,
+  );
+}
+
 /** Clamp a box to the image, shifting it inward before shrinking it. */
 export function fitBox(box: Box, imageWidth: number, imageHeight: number): Box {
   const width = Math.min(box.width, imageWidth);

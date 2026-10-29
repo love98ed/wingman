@@ -30,7 +30,8 @@ import type { Occasion, Tier } from "@/lib/catalog/types";
 import { OCCASION_CHOICES } from "@/lib/occasions";
 import type { PhotoCheck } from "@/lib/photo/problems";
 
-export type Photo = { blob: Blob; url: string; check?: PhotoCheck };
+/** `zoomed`: cropped in by the browser because the person stood too far from the camera. */
+export type Photo = { blob: Blob; url: string; check?: PhotoCheck; zoomed?: boolean };
 export type Progress = { step: StyleStep; detail?: string };
 type Phase = "photo" | "occasion" | "loading" | "looks" | "compare" | "swap" | "cart" | "prep" | "browse" | "error";
 
