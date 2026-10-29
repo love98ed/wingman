@@ -115,7 +115,7 @@ export const BrowseQuerySchema = z.object({
   colour: z.string().max(40).optional(),
   size: z.string().max(40).optional(),
   store: z.string().max(100).optional(),
-  sort: z.enum(["price-asc", "price-desc"]).default("price-asc"),
+  sort: z.enum(["featured", "price-asc", "price-desc"]).default("featured"),
   offset: z.coerce.number().int().min(0).max(5000).default(0),
 });
 

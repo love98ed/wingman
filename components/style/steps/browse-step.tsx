@@ -17,7 +17,13 @@ export type BrowseFilters = {
   colour?: string;
   size?: string;
   store?: string;
-  sort: "price-asc" | "price-desc";
+  sort: "featured" | "price-asc" | "price-desc";
+};
+
+const SORTS: Record<BrowseFilters["sort"], { label: string; next: BrowseFilters["sort"] }> = {
+  featured: { label: "Featured", next: "price-asc" },
+  "price-asc": { label: "Price: low to high", next: "price-desc" },
+  "price-desc": { label: "Price: high to low", next: "featured" },
 };
 
 const CATEGORIES: { value: LookItem["slot"]; label: string }[] = [
@@ -162,9 +168,9 @@ export function BrowseStep({
   const facets = page?.facets;
 
   return (
-    <FlowShell step="Browse">
+    <FlowShell step="Browse" wide>
       <h1 className="mt-4 text-head">Browse</h1>
-      <p className="mt-4">Every piece in stock at the stores Wingman shops. Tap one to add it to a look.</p>
+      <p className="mt-4 max-w-[52ch]">Every piece in stock at the stores Wingman shops. Tap one to add it to a look.</p>
 
       <ChipRow
         label="Category"
@@ -205,10 +211,11 @@ export function BrowseStep({
         </p>
         <button
           type="button"
-          onClick={() => set({ sort: filters.sort === "price-asc" ? "price-desc" : "price-asc" })}
+          onClick={() => set({ sort: SORTS[filters.sort].next })}
           className="text-link min-h-11 text-small font-medium"
+          aria-label={`Sorted by ${SORTS[filters.sort].label.toLowerCase()}. Change sort order`}
         >
-          {filters.sort === "price-asc" ? "Price: low to high" : "Price: high to low"}
+          {SORTS[filters.sort].label}
         </button>
       </div>
 
@@ -225,7 +232,7 @@ export function BrowseStep({
         </div>
       )}
 
-      <ul className={cn("mt-4 grid grid-cols-2 gap-2 transition-opacity sm:grid-cols-3", status === "loading" && "opacity-50")}>
+      <ul className={cn("mt-4 grid grid-cols-2 gap-2 transition-opacity sm:grid-cols-3 lg:grid-cols-4", status === "loading" && "opacity-50")}>
         {page?.items.map((item) => (
           <li key={item.id}>
             <button
@@ -233,7 +240,7 @@ export function BrowseStep({
               onClick={() => setSelected(item)}
               className="group block w-full bg-surface text-left transition-colors hover:bg-surface-raised active:scale-[0.98]"
             >
-              <ProductImage src={item.image} sizes="(min-width: 640px) 12rem, 45vw" className="aspect-square" />
+              <ProductImage src={item.image} sizes="(min-width: 1024px) 15rem, (min-width: 640px) 30vw, 45vw" className="aspect-square" />
               <span className="block p-3">
                 <span className="line-clamp-2 text-small">{displayName(item.name, item.storeName)}</span>
                 <span className="mt-1 block text-small text-muted-foreground">{item.storeName}</span>

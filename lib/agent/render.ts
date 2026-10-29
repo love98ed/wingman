@@ -41,8 +41,9 @@ export async function renderLook(args: {
     try {
       return await fn();
     } catch (err) {
-      // A bad photo fails every render the same way; let the caller tell the user.
-      if (err instanceof YouCamError && (err.code === "NO_FACE" || err.code === "QUOTA")) throw err;
+      // A bad photo fails every render the same way; let the caller tell the user. Out of units is
+      // different: the looks are still worth showing, as pieces without a try-on.
+      if (err instanceof YouCamError && err.code === "NO_FACE") throw err;
       console.warn(`[render] ${(err as Error).message}`);
       out.errors.push(err instanceof YouCamError ? err.code : "UNKNOWN");
       return undefined;

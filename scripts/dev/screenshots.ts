@@ -1,14 +1,24 @@
 /**
- * Captures every screen of the flow at 390px into docs/screenshots/.
+ * Captures every screen of the flow into docs/screenshots/ (or --out), at 390px (or --width).
  * Start the app first (npm run dev), then: npm run screenshots (--url for another server).
- * With MOCK_YOUCAM=true every try-on is the same saved sample; live renders of the demo photo
- * are cached, so a second run costs few or no units.
+ * With MOCK_YOUCAM=true every try-on is the same saved sample and no units are spent; with live
+ * renders a full run costs about 30 units. --full captures whole pages instead of the first screen.
  */
 import { chromium, type Page } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { parseArgs } from "node:util";
 
-const url = process.argv.includes("--url") ? process.argv[process.argv.indexOf("--url") + 1] : "http://localhost:3000";
-const OUT = "docs/screenshots";
+const { values: args } = parseArgs({
+  options: {
+    url: { type: "string", default: "http://localhost:3000" },
+    out: { type: "string", default: "docs/screenshots" },
+    width: { type: "string", default: "390" },
+    full: { type: "boolean", default: false },
+  },
+});
+const url = args.url;
+const OUT = args.out;
+const WIDTH = Number(args.width);
 const SLOW = 240_000; // the style agent streams its first look in 20 to 50 s, longer on a cold dev server
 
 async function shot(page: Page, name: string, { settle = true } = {}) {
@@ -17,7 +27,7 @@ async function shot(page: Page, name: string, { settle = true } = {}) {
   await page.evaluate(() => document.fonts.ready);
   await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" }); // dev badge
   await page.waitForTimeout(800); // let entrance motion settle
-  await page.screenshot({ path: `${OUT}/${name}.png` });
+  await page.screenshot({ path: `${OUT}/${name}.png`, fullPage: args.full });
   console.log(`  ${name}.png`);
 }
 
@@ -31,14 +41,14 @@ async function main() {
   mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
   const page = await browser.newPage({
-    viewport: { width: 390, height: 844 },
+    viewport: { width: WIDTH, height: WIDTH < 600 ? 844 : 800 },
     deviceScaleFactor: 2,
-    isMobile: true,
-    hasTouch: true,
+    isMobile: WIDTH < 600,
+    hasTouch: WIDTH < 600,
     reducedMotion: "reduce",
   });
   page.setDefaultTimeout(60_000);
-  console.log(`Capturing ${url} at 390px`);
+  console.log(`Capturing ${url} at ${WIDTH}px into ${OUT}`);
 
   await page.goto(url);
   await shot(page, "home");

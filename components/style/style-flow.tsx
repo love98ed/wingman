@@ -66,7 +66,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   /** Kept across refines and new runs, so pieces from earlier looks stay in the cart. */
   const [cart, setCart] = useState<CartLine[]>([]);
   const [prep, setPrep] = useState<{ plan: PrepPlan; skinAnalysed: boolean } | null>(null);
-  const [browseFilters, setBrowseFilters] = useState<BrowseFilters>({ category: "top", sort: "price-asc" });
+  const [browseFilters, setBrowseFilters] = useState<BrowseFilters>({ category: "top", sort: "featured" });
   /** The look card to bring into view when returning to the looks. */
   const [focusLook, setFocusLook] = useState(0);
   const abort = useRef<AbortController | null>(null);

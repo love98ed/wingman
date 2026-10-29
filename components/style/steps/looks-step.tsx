@@ -208,7 +208,7 @@ function LookCard({
   return (
     <article
       aria-label={`Look ${index + 1} of ${count}: ${look.name}`}
-      className="relative w-[86%] shrink-0 snap-center bg-surface sm:w-[24rem] lg:w-[calc((100%-2rem)/3)]"
+      className="relative flex w-[86%] shrink-0 snap-center flex-col bg-surface sm:w-[24rem] lg:w-[calc((100%-2rem)/3)]"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-surface-raised">
         {look.renders.outfit ? (
@@ -230,7 +230,9 @@ function LookCard({
         )}
         {!look.renders.outfit && !rendering && (
           <p className="absolute inset-x-0 bottom-0 bg-background/80 px-4 py-3 text-small">
-            The try-on didn&apos;t work for this one; the pieces are below.
+            {look.renders.errors.includes("QUOTA")
+              ? "Try-ons are paused for now, so here are the pieces on their own."
+              : "The try-on didn't work for this one; the pieces are below."}
           </p>
         )}
       </div>
@@ -248,7 +250,7 @@ function LookCard({
         </div>
       )}
 
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
         {/* The display face is wide: the name gets its own line and shrinks a little on very
             narrow phones so a long word ("Professional") still fits whole */}
         <h2 className="text-[min(var(--step-lead),5vw)] [overflow-wrap:break-word]">{look.name}</h2>
@@ -310,15 +312,18 @@ function LookCard({
           ))}
         </ul>
 
-        {inCart ? (
-          <button type="button" onClick={onViewCart} className="text-link mt-5 min-h-11 font-medium">
-            In your cart. View cart
-          </button>
-        ) : (
-          <button type="button" onClick={onAddToCart} className="btn mt-5 w-full">
-            Add this look to cart
-          </button>
-        )}
+        {/* Pinned to the bottom, so the buttons line up across cards of different lengths */}
+        <div className="mt-auto pt-5">
+          {inCart ? (
+            <button type="button" onClick={onViewCart} className="text-link min-h-11 font-medium">
+              In your cart. View cart
+            </button>
+          ) : (
+            <button type="button" onClick={onAddToCart} className="btn w-full">
+              Add this look to cart
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );

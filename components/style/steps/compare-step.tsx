@@ -123,7 +123,7 @@ function Column({
   const waiting = !render && !finished;
 
   return (
-    <section aria-label={`${TIER_LABELS[tier]}${current ? ", your look" : ""}`} className={cn("min-w-0", current ? "bg-surface-raised" : "bg-surface")}>
+    <section aria-label={`${TIER_LABELS[tier]}${current ? ", your look" : ""}`} className={cn("flex min-w-0 flex-col", current ? "bg-surface-raised" : "bg-surface")}>
       <div className="relative aspect-[4/5] overflow-hidden bg-surface-raised">
         {render ? (
           <Image src={render} alt={`You in the ${TIER_LABELS[tier]} version`} fill sizes="(min-width: 640px) 16rem, 30vw" className="animate-in object-cover fade-in duration-500" {...RAW_IMG_PROPS} />
@@ -131,9 +131,14 @@ function Column({
           photo && <Image src={photo.url} alt="" fill sizes="30vw" className="object-cover opacity-40" {...RAW_IMG_PROPS} />
         )}
         {waiting && <div aria-hidden className="absolute inset-x-0 h-1/3 animate-scan bg-brass/25" />}
+        {version && !render && finished && (
+          <p className="absolute inset-x-0 bottom-0 bg-background/80 p-2 text-small">
+            {version.renders.errors.includes("QUOTA") ? "Try-ons paused" : "No try-on"}
+          </p>
+        )}
       </div>
 
-      <div className="p-2 sm:p-4">
+      <div className="flex flex-1 flex-col p-2 sm:p-4">
         <p className="text-small font-medium">{TIER_LABELS[tier]}</p>
         {version ? (
           <>
@@ -164,13 +169,20 @@ function Column({
               ))}
             </ul>
 
-            {current ? (
-              <p className="mt-3 min-h-11 text-small text-muted-foreground">Your look</p>
-            ) : (
-              <button type="button" onClick={() => onChoose(version)} className="text-link mt-3 min-h-11 text-left text-small font-medium">
-                Wear this version
-              </button>
-            )}
+            {/* Pinned to the bottom so the three columns line up */}
+            <div className="mt-auto pt-3">
+              {current ? (
+                <p className="flex min-h-11 items-center text-small text-muted-foreground">Your look</p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onChoose(version)}
+                  className="min-h-11 w-full bg-surface-raised px-2 text-small font-medium transition-colors hover:bg-background active:scale-[0.97]"
+                >
+                  Wear this version
+                </button>
+              )}
+            </div>
           </>
         ) : (
           <p className="mt-1 text-small text-muted-foreground">{finished ? "Not available" : "Finding pieces…"}</p>

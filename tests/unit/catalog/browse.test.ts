@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { browse, colourFamily, compareSizes, normaliseSize } from "@/lib/catalog/browse";
+import { browse, colourFamily, compareSizes, featured, normaliseSize } from "@/lib/catalog/browse";
 import type { Product } from "@/lib/catalog/types";
 
 function product(id: string, overrides: Partial<Product> = {}): Product {
@@ -75,7 +75,7 @@ describe("browse", () => {
   ];
 
   it("filters by category and sorts by price", () => {
-    expect(browse(catalog, { category: "top" }).items.map((p) => p.id)).toEqual(["navy-m", "navy-soldout-s", "white-l", "navy-lux"]);
+    expect(browse(catalog, { category: "top", sort: "price-asc" }).items.map((p) => p.id)).toEqual(["navy-m", "navy-soldout-s", "white-l", "navy-lux"]);
     expect(browse(catalog, { category: "top", sort: "price-desc" }).items[0].id).toBe("navy-lux");
   });
 
@@ -97,5 +97,29 @@ describe("browse", () => {
     ]);
     expect(facets.stores).toEqual([{ value: "duxton.com", label: "DUXTON", count: 1 }]);
     expect(facets.sizes).toEqual([{ value: "L", count: 1 }]);
+  });
+});
+
+describe("featured order", () => {
+  const stores = ["a.com", "b.com", "c.com"];
+  const many = stores.flatMap((store, s) =>
+    Array.from({ length: [5, 2, 1][s] }, (_, i) => product(`${store}-${i}`, { store, price: 10 + i })),
+  );
+
+  it("takes one piece from each store in turn before repeating a store", () => {
+    const order = featured(many).map((p) => p.store);
+    expect(new Set(order.slice(0, 3)).size).toBe(3);
+    expect(new Set(order.slice(3, 5)).size).toBe(2);
+    expect(order.slice(5)).toEqual(["a.com", "a.com", "a.com"]);
+  });
+
+  it("keeps every product exactly once and gives the same order every time", () => {
+    const once = featured(many).map((p) => p.id);
+    expect([...once].sort()).toEqual(many.map((p) => p.id).sort());
+    expect(featured([...many].reverse()).map((p) => p.id)).toEqual(once);
+  });
+
+  it("is the default sort", () => {
+    expect(browse(many, { category: "top" }).items.map((p) => p.id)).toEqual(featured(many).map((p) => p.id));
   });
 });

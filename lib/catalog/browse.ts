@@ -87,7 +87,7 @@ type BrowseFilter = {
   colour?: string;
   size?: string;
   store?: string;
-  sort?: "price-asc" | "price-desc";
+  sort?: "featured" | "price-asc" | "price-desc";
 };
 
 type Facets = {
@@ -111,15 +111,40 @@ function matches(p: Product, f: BrowseFilter, skip?: "colour" | "size" | "store"
   return true;
 }
 
+/** A stable number for a string (FNV-1a), so the featured order is the same on every visit. */
+function stableHash(s: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193);
+  return h >>> 0;
+}
+
+/**
+ * The default order: one piece from each store in turn, so the first screen shows the range
+ * rather than one store's cheapest line. Within a store the order is a stable shuffle.
+ */
+export function featured(products: Product[]): Product[] {
+  const byStore = new Map<string, Product[]>();
+  for (const p of products) byStore.set(p.store, [...(byStore.get(p.store) ?? []), p]);
+  const queues = [...byStore.entries()]
+    .sort(([a], [b]) => stableHash(a) - stableHash(b))
+    .map(([, items]) => items.sort((a, b) => stableHash(a.id) - stableHash(b.id)));
+  const out: Product[] = [];
+  for (let round = 0; out.length < products.length; round++) {
+    for (const queue of queues) if (queue[round]) out.push(queue[round]);
+  }
+  return out;
+}
+
 /**
  * Products matching every filter, sorted, plus the options for the colour, size and store
  * filters. Each facet counts products matching the other filters, so picking a colour
  * doesn't hide the other colours.
  */
 export function browse(products: Product[], f: BrowseFilter): { items: Product[]; facets: Facets } {
-  const items = products.filter((p) => matches(p, f));
+  let items = products.filter((p) => matches(p, f));
   if (f.sort === "price-desc") items.sort((a, b) => b.price - a.price);
-  else items.sort((a, b) => a.price - b.price);
+  else if (f.sort === "price-asc") items.sort((a, b) => a.price - b.price);
+  else items = featured(items);
 
   const count = <K extends string>(values: Iterable<K>, into: Map<K, number>) => {
     for (const v of values) into.set(v, (into.get(v) ?? 0) + 1);
