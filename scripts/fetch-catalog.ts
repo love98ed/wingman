@@ -214,7 +214,10 @@ async function main() {
 
   if (!dryRun) {
     await upsertProducts(db, catalog);
-    for (const [store, products] of refreshed) await deleteStoreProducts(db, store, products.map((p) => p.id));
+    for (const [store, products] of refreshed) {
+      const removed = await deleteStoreProducts(db, store, products.map((p) => p.id));
+      if (removed) console.info(`${store}: removed ${removed} products no longer in the feed`);
+    }
   }
 
   console.info(`\n${"Store".padEnd(28)}${"Fetched".padEnd(9)}${"Prefilter".padEnd(11)}${"Menswear".padEnd(10)}${"No image".padEnd(10)}Kept`);

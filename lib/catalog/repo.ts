@@ -107,10 +107,31 @@ export async function upsertProducts(db: SupabaseClient, products: Product[]) {
   }
 }
 
-/** Remove a store's products (removal rule), or only those no longer in its feed. */
-export async function deleteStoreProducts(db: SupabaseClient, store: string, keepIds?: string[]) {
-  let query = db.from("products").delete().eq("store", store);
-  if (keepIds?.length) query = query.not("id", "in", `(${keepIds.map((id) => `"${id}"`).join(",")})`);
-  const { error } = await query;
-  if (error) throw new Error(`Catalog delete failed: ${error.message}`);
+/** Ids per delete request: a long `in (...)` list goes in the URL, which has a length limit. */
+const DELETE_BATCH = 100;
+
+/**
+ * Remove a store's products (removal rule), or only those no longer in its feed. Returns how many
+ * were removed. The stale ids are worked out here rather than sent as one `not in (...)` list,
+ * which is too long for a URL once a store has a few hundred products.
+ */
+export async function deleteStoreProducts(db: SupabaseClient, store: string, keepIds?: string[]): Promise<number> {
+  if (!keepIds?.length) {
+    const { error, count } = await db.from("products").delete({ count: "exact" }).eq("store", store);
+    if (error) throw new Error(`Catalog delete failed: ${error.message}`);
+    return count ?? 0;
+  }
+  const keep = new Set(keepIds);
+  const stale: string[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await db.from("products").select("id").eq("store", store).order("id").range(from, from + PAGE - 1);
+    if (error) throw new Error(`Catalog read failed: ${error.message}`);
+    stale.push(...data.map((r) => r.id as string).filter((id) => !keep.has(id)));
+    if (data.length < PAGE) break;
+  }
+  for (let i = 0; i < stale.length; i += DELETE_BATCH) {
+    const { error } = await db.from("products").delete().in("id", stale.slice(i, i + DELETE_BATCH));
+    if (error) throw new Error(`Catalog delete failed: ${error.message}`);
+  }
+  return stale.length;
 }
