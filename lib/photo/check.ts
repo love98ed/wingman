@@ -59,7 +59,7 @@ export function zoomFrom(metrics: PhotoMetrics, vision: PhotoVision | null): Box
   if (!vision || vision.people !== 1 || !vision.face_visible || vision.face_cut_off) return null;
   const { width, height } = metrics;
   const face = { x: vision.face_left * width, y: vision.face_top * height, width: vision.face_width * width, height: vision.face_height * height };
-  const box = zoomBox(face, width, height);
+  const box = zoomBox(face, width, height, MIN_FACE_PX);
   return box && { x: box.x / width, y: box.y / height, width: box.width / width, height: box.height / height };
 }
 

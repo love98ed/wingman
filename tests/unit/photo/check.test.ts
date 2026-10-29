@@ -32,8 +32,8 @@ describe("problemsFrom", () => {
     expect(codes(good, { ...clear, people: 0 })).toEqual(["NO_PERSON"]);
     expect(codes(good, { ...clear, face_cut_off: true })).toEqual(["FACE_CUT_OFF"]);
     expect(codes(good, { ...clear, shoulders_visible: false })).toEqual(["SHOULDERS_CUT_OFF"]);
-    // Small in a small photo: zooming in can't help
-    expect(codes({ ...good, width: 1000, height: 1250 }, { ...clear, face_width: 0.15 })).toEqual(["FACE_TOO_SMALL"]);
+    // Small in a small, close photo: zooming in can't help
+    expect(codes({ ...good, width: 600, height: 750 }, { ...clear, face_left: 0.375, face_width: 0.25 })).toEqual(["FACE_TOO_SMALL"]);
   });
 
   it("zooms into a person standing too far back instead of rejecting the photo", () => {

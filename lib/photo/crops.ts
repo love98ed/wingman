@@ -34,16 +34,19 @@ const ZOOM_BELOW = 0.14;
 
 /**
  * Waist-up framing (4:5, face ~1/5 of the width) around a face in a photo taken from too far
- * away, or null when the photo is already close enough.
+ * away, or null when the photo is already close enough. `minFacePx`: also zoom when the face is
+ * fewer pixels wide than this, since the browser crops from an original larger than the upload.
  */
-export function zoomBox(face: Box, imageWidth: number, imageHeight: number): Box | null {
-  if (face.width >= imageWidth * ZOOM_BELOW) return null;
+export function zoomBox(face: Box, imageWidth: number, imageHeight: number, minFacePx = 0): Box | null {
+  if (face.width >= imageWidth * ZOOM_BELOW && face.width >= minFacePx) return null;
   const width = face.width * 4.8;
-  return fitBox(
+  const box = fitBox(
     { x: face.x + face.width / 2 - width / 2, y: face.y - face.height * 0.6, width, height: width * 1.25 },
     imageWidth,
     imageHeight,
   );
+  // Nearly the whole photo: zooming wouldn't gain anything
+  return box.width * box.height < imageWidth * imageHeight * 0.8 ? box : null;
 }
 
 /** Clamp a box to the image, shifting it inward before shrinking it. */

@@ -51,6 +51,17 @@ describe("zoomBox", () => {
     expect(box.x + box.width).toBeLessThanOrEqual(3000);
   });
 
+  it("zooms a tall photo whose face is too few pixels wide, even if it fills enough of the width", () => {
+    // 1152x2048 upload, face 173px: 15% of the width but under 200px
+    const box = zoomBox({ x: 490, y: 300, width: 173, height: 225 }, 1152, 2048, 200)!;
+    expect(box.height).toBeLessThan(1100);
+    expect(zoomBox({ x: 490, y: 300, width: 173, height: 225 }, 1152, 2048)).toBeNull();
+  });
+
+  it("skips a zoom that would keep nearly the whole photo", () => {
+    expect(zoomBox({ x: 200, y: 50, width: 150, height: 190 }, 600, 750, 200)).toBeNull();
+  });
+
   it("leaves a photo that is already close enough", () => {
     expect(zoomBox({ x: 1100, y: 500, width: 800, height: 1000 }, 3000, 4000)).toBeNull();
   });
