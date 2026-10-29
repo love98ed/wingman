@@ -42,6 +42,7 @@ export function LooksStep({
   hasPrep,
   onPrep,
   onBrowse,
+  onDeletePhoto,
 }: {
   looks: Look[];
   photo: Photo | null;
@@ -63,6 +64,7 @@ export function LooksStep({
   hasPrep: boolean;
   onPrep: () => void;
   onBrowse: () => void;
+  onDeletePhoto: () => void;
 }) {
   const inCart = new Set(cart.map((l) => l.id));
   const cartTotal = cart.reduce((sum, l) => sum + l.price * l.qty, 0);
@@ -163,6 +165,9 @@ export function LooksStep({
         </button>
         <button type="button" onClick={onRestart} className="text-link min-h-11 text-muted-foreground">
           Change the occasion or budget
+        </button>
+        <button type="button" onClick={onDeletePhoto} className="text-link min-h-11 text-muted-foreground">
+          Delete my photo
         </button>
       </div>
 

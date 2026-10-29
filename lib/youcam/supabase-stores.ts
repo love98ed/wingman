@@ -5,7 +5,7 @@ import type { CachedRender, RenderCacheStore } from "./cache";
 import { YouCamError } from "./errors";
 import type { UsageStore } from "./guard";
 
-const RENDERS_BUCKET = "renders";
+export const RENDERS_BUCKET = "renders";
 
 export class SupabaseUsageStore implements UsageStore {
   constructor(private readonly db: SupabaseClient) {}

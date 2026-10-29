@@ -4,7 +4,7 @@ test("home renders themed at phone width", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("See it");
   await expect(page.getByRole("slider", { name: /Compare original photo/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /try the demo/i }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Style me" }).first()).toHaveAttribute("href", "/style");
   const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   expect(bg).toBe("rgb(10, 10, 11)");
 });

@@ -38,7 +38,7 @@ const FRIENDLY: Record<YouCamErrorCode, string> = {
   NO_FACE: "We couldn't find a clear face and shoulders. Try a front-facing, waist-up photo.",
   BAD_LIGHTING: "The photo is too dark or blurry. Try again in even, bright light.",
   TIMEOUT: "Styling took too long. Please try again.",
-  QUOTA: "We've hit today's styling limit. Please try again later.",
+  QUOTA: "Wingman has used up its try-ons for now. Please try again later.",
   UNKNOWN: "Something went wrong while styling. Please try again.",
 };
 

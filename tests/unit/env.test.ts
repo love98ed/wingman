@@ -13,9 +13,7 @@ describe("parseServerEnv", () => {
   it("applies defaults", () => {
     const env = parseServerEnv(base);
     expect(env.MOCK_YOUCAM).toBe(false);
-    expect(env.DEMO_MODE).toBe(false);
     expect(env.YOUCAM_UNIT_LIMIT).toBe(700);
-    expect(env.SHOPIFY_STORES).toEqual([]);
   });
 
   it("parses flags, limit and store list", () => {
@@ -23,11 +21,9 @@ describe("parseServerEnv", () => {
       ...base,
       MOCK_YOUCAM: "true",
       YOUCAM_UNIT_LIMIT: "500",
-      SHOPIFY_STORES: "duxton.com, boldrsupply.co,,",
     });
     expect(env.MOCK_YOUCAM).toBe(true);
     expect(env.YOUCAM_UNIT_LIMIT).toBe(500);
-    expect(env.SHOPIFY_STORES).toEqual(["duxton.com", "boldrsupply.co"]);
   });
 
   it("names missing keys without leaking values", () => {

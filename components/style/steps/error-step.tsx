@@ -11,12 +11,14 @@ export function ErrorStep({
   onRetry,
   onNewPhoto,
   onBack,
+  onDeletePhoto,
 }: {
   code: string;
   message: string;
   onRetry: () => void;
   onNewPhoto: () => void;
   onBack: () => void;
+  onDeletePhoto: () => void;
 }) {
   const photoProblem = PHOTO_CODES.has(code);
   return (
@@ -42,6 +44,9 @@ export function ErrorStep({
         )}
         <button type="button" onClick={onBack} className="text-link min-h-11 text-muted-foreground">
           Change the occasion
+        </button>
+        <button type="button" onClick={onDeletePhoto} className="text-link min-h-11 text-muted-foreground">
+          Delete my photo
         </button>
       </div>
     </FlowShell>

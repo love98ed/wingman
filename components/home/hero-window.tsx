@@ -110,8 +110,8 @@ export function HeroWindow({ before, after, alt }: Props) {
               <a href="#how" className="text-link hidden min-h-11 items-center md:inline-flex">
                 How it works
               </a>
-              <Link href="/demo" className="text-link inline-flex min-h-11 items-center">
-                Try the demo
+              <Link href="/style" className="text-link inline-flex min-h-11 items-center">
+                Style me
               </Link>
             </nav>
           </header>

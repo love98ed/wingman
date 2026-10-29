@@ -65,16 +65,11 @@ export function OccasionPicker() {
 
 function PrimaryAction({ id, cta }: { id: string; cta: string }) {
   return (
-    <>
-      <Link href={`/style?o=${id}`} className="btn w-full md:w-auto">
-        Style me for {cta}
-        <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
-          <path d="M5 12h14m-6-6 6 6-6 6" />
-        </svg>
-      </Link>
-      <Link href="/demo" className="text-link flex min-h-11 items-center text-muted-foreground max-md:justify-center">
-        Or try the demo, no photo needed
-      </Link>
-    </>
+    <Link href={`/style?o=${id}`} className="btn w-full md:w-auto">
+      Style me for {cta}
+      <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+        <path d="M5 12h14m-6-6 6 6-6 6" />
+      </svg>
+    </Link>
   );
 }

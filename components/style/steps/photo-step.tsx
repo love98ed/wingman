@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useId, useState } from "react";
 import { FlowShell, RAW_IMG_PROPS } from "@/components/style/flow-shell";
 import type { Photo } from "@/components/style/style-flow";
@@ -11,10 +10,13 @@ export function PhotoStep({
   photo,
   onPhoto,
   onNext,
+  notice,
 }: {
   photo: Photo | null;
   onPhoto: (photo: Photo) => void;
   onNext: () => void;
+  /** Shown after "Delete my photo". */
+  notice?: string | null;
 }) {
   const inputId = useId();
   const [busy, setBusy] = useState(false);
@@ -38,6 +40,11 @@ export function PhotoStep({
   return (
     <FlowShell step="Photo, then occasion">
       <h1 className="mt-4 text-head">Your photo</h1>
+      {notice && (
+        <p role="status" className="mt-4 bg-surface p-3">
+          {notice}
+        </p>
+      )}
       <p className="mt-4 max-w-[36ch]">One photo, waist up, facing the camera in good light. Glasses are fine.</p>
 
       <label
@@ -71,23 +78,17 @@ export function PhotoStep({
         </p>
       )}
 
-      <div className="mt-6 flex flex-col gap-2">
-        {photo ? (
-          <>
-            <button type="button" onClick={onNext} className="btn w-full">
-              Use this photo
-            </button>
-            <label htmlFor={inputId} className="text-link flex min-h-11 cursor-pointer items-center justify-center text-muted-foreground">
-              Choose a different photo
-            </label>
-          </>
-        ) : (
-          <Link href="/demo" className="text-link flex min-h-11 items-center justify-center text-muted-foreground">
-            No photo handy? Try the demo
-          </Link>
-        )}
-      </div>
-      <p className="mt-6 text-small text-muted-foreground">Your photo stays private and is only used to style you.</p>
+      {photo && (
+        <div className="mt-6 flex flex-col gap-2">
+          <button type="button" onClick={onNext} className="btn w-full">
+            Use this photo
+          </button>
+          <label htmlFor={inputId} className="text-link flex min-h-11 cursor-pointer items-center justify-center text-muted-foreground">
+            Choose a different photo
+          </label>
+        </div>
+      )}
+      <p className="mt-6 text-small text-muted-foreground">Your photo is only used to style you. It and your try-ons are deleted after 24 hours, or straight away with “Delete my photo”.</p>
     </FlowShell>
   );
 }

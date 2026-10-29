@@ -1,8 +1,10 @@
 import "server-only";
 
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import type { ZodType } from "zod";
 import { AgentError } from "@/lib/agent/errors";
+import { deleteExpired } from "@/lib/privacy";
+import { supabaseAdmin } from "@/lib/supabase/server";
 import { YouCamError, friendlyMessage } from "@/lib/youcam/errors";
 
 type ErrorEvent = { type: "error"; code: string; message: string };
@@ -40,7 +42,7 @@ export function eventStream<E>(label: string, work: (send: (event: E | ErrorEven
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 
 /** The `photo` field of a multipart form as bytes, or a user-facing reason it can't be used. */
-async function photoFrom(form: FormData): Promise<{ bytes: Buffer } | { error: string; status: number }> {
+export async function photoFrom(form: FormData): Promise<{ bytes: Buffer } | { error: string; status: number }> {
   const photo = form.get("photo");
   if (!(photo instanceof File) || !photo.type.startsWith("image/")) return { error: "Add a photo.", status: 400 };
   if (photo.size > MAX_PHOTO_BYTES) return { error: "That photo is too large. Use one under 10 MB.", status: 413 };
@@ -84,6 +86,8 @@ export function photoStreamRoute<T, E>(opts: {
     if (!fields.success) {
       return NextResponse.json({ error: opts.invalid, issues: fields.error.issues }, { status: 400 });
     }
+    // Sweep expired renders once the response is done, so they go on time between daily crons.
+    after(() => deleteExpired(supabaseAdmin()).catch((err: Error) => console.warn(`[cleanup] ${err.message}`)));
     return eventStream<E>(opts.label, (send) => opts.run(photo.bytes, fields.data, send));
   };
 }

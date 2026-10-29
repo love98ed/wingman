@@ -12,18 +12,8 @@ const serverEnvSchema = z.object({
   // Unused while all database access is server-side with the service role key.
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-  SHOPIFY_STORES: z
-    .string()
-    .default("")
-    .transform((v) =>
-      v
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
-    ),
   MOCK_YOUCAM: bool,
   YOUCAM_UNIT_LIMIT: z.coerce.number().int().positive().default(700),
-  DEMO_MODE: bool,
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

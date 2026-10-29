@@ -20,7 +20,7 @@ What to look for:
 - **Prep plan:** a three-step grooming routine for the night before, based on a skin analysis of your photo.
 - **Checkout:** **Add this look to cart**, pick in-stock sizes, and tap **Checkout at {store}**. The store's real cart opens with your pieces in it. You pay there; Wingman never takes payment.
 
-> **On the live site, try-ons show a saved sample render** (`MOCK_YOUCAM=true`), so public visitors can't use up the hackathon's YouCam units. Everything else is live: occasion parsing, look selection, prices, stock, sizes and checkout. The screenshots below are real renders of the demo photo. "Try the demo" (a fixed, fully cached run) is not built yet; see [Limitations](#limitations-and-future-work).
+> Every try-on on the live site is a real YouCam render of your photo. The site caps itself at 700 YouCam units in total; once they're used, styling shows a "try again later" message until the cap is raised.
 
 ## Screenshots
 
@@ -112,10 +112,8 @@ cp .env.example .env.local
 | `SUPABASE_URL` | Supabase: Project Settings, then API |
 | `SUPABASE_ANON_KEY` | Same page (optional; all database access is server-side) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Same page (keep this secret) |
-| `SHOPIFY_STORES` | Leave empty; the store list lives in `fixtures/stores.json` |
 | `MOCK_YOUCAM` | `true` serves saved YouCam responses from `fixtures/youcam/` (zero units). `false` for live renders |
 | `YOUCAM_UNIT_LIMIT` | Hard cap on YouCam units (default 700) |
-| `DEMO_MODE` | Reserved for the fixed demo flow (not built yet) |
 
 **3. Database migration.** In the Supabase SQL Editor, run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql), then [`0002_catalog_tags.sql`](supabase/migrations/0002_catalog_tags.sql). They create the tables (see [Database](#database)), the unit-reserve function and two private storage buckets.
 
@@ -138,9 +136,7 @@ Open http://localhost:3000 at phone width and tap **Start with a photo**. `fixtu
 
 **Mock mode** (`MOCK_YOUCAM=true`): every try-on returns the saved sample render after a short delay, and skin analysis uses a saved response. Claude, the catalog and checkout still run for real. Use it for UI work so you spend no units.
 
-**Demo mode** (`DEMO_MODE=true`): planned as a fixed golden path with the demo photo, the rooftop-bar occasion and Mid-range, served entirely from the render cache. Not built yet; the "Try the demo" button opens a placeholder.
-
-**Deploying:** add the same variables to the Vercel project. Keep `MOCK_YOUCAM=true` on a public deployment unless you're happy for visitors to spend YouCam units (the unit guard still stops at the limit).
+**Deploying:** add the same variables to the Vercel project with `MOCK_YOUCAM=false`. [`vercel.json`](vercel.json) adds a daily cron that deletes expired renders.
 
 ## Scripts
 
@@ -208,25 +204,25 @@ docs/                          HANDOFF.md, STEP_PROMPTS.md (build plan), screens
 | `catalog_tags` | Claude's tags and image picks per product, keyed by a hash of the product's text and photos, so a refresh only re-tags what changed |
 | `render_cache` | YouCam results by photo, product, API and settings, plus cached Claude results (Fit Checks, tier picks); images live in the private `renders` bucket |
 | `youcam_usage` | Every YouCam call and its units, for the unit guard |
-| `selfies` | Reserved for photo auto-delete (not used yet) |
+| `selfies` | Not used: photos are never stored, only the renders made from them |
 
 All tables have row-level security on and no policies, so only the server's service role key can read them.
 
 ## Privacy
 
-- Your photo goes to the server only to style you. Location data is stripped before anything is sent to YouCam.
+- Your photo goes to the server only to style you and is never stored. Location data is stripped before it's sent to YouCam for the try-ons.
 - Try-on renders are kept in a private bucket and shown through links that expire after an hour.
+- Every render and cached result made from your photo is deleted after 24 hours: swept after each styling request and by a daily cron ([`lib/privacy.ts`](lib/privacy.ts)).
+- "Delete my photo" (under your looks) deletes them straight away.
 - Every API key stays on the server; none reach the browser bundle.
 - Store product images appear only as product cards linking back to the store.
 - Prep plans are grooming tips only, with no medical claims.
 
 ## Limitations and future work
 
-**Not built yet**
+**Budget**
 
-- **Demo mode and "Try the demo":** a fixed, fully cached run for judges and the video. The button opens a placeholder for now.
-- **Photo auto-delete after 24 hours and a "Delete my photo" button.** Renders are private and links expire after an hour, but the files themselves are not deleted yet.
-- **Live renders on the public site:** off to protect a 700-unit budget; the live site shows a saved sample render.
+- **No per-visitor limit.** The 700-unit cap is shared by every visitor, at up to 24 units for a full styling run.
 
 **Known limits**
 

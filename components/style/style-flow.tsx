@@ -54,8 +54,10 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   const [error, setError] = useState<{ code: string; message: string } | null>(null);
   /** The request being applied while the loading screen shows a refine. */
   const [refining, setRefining] = useState<string | null>(null);
-  /** A refine or swap that failed; the looks stay as they were. */
+  /** A refine, swap or delete that failed; the looks stay as they were. */
   const [notice, setNotice] = useState<string | null>(null);
+  /** Confirms "Delete my photo" on the photo screen. */
+  const [photoNotice, setPhotoNotice] = useState<string | null>(null);
   /** Price Compare per look index; kept so reopening a comparison is instant. */
   const [compares, setCompares] = useState<Record<number, CompareState>>({});
   const [comparing, setComparing] = useState(0);
@@ -400,8 +402,44 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     });
   };
 
+  /** Delete every render made from the photo, then start over. The cart has no photo data, so it stays. */
+  const deletePhoto = async () => {
+    if (!photo || !window.confirm("Delete your photo and every try-on made from it? Your looks will close.")) return;
+    abort.current?.abort();
+    sideAborts.current.forEach((c) => c.abort());
+    sideAborts.current = [];
+    const form = new FormData();
+    form.set("photo", photo.blob, "photo.jpg");
+    const res = await fetch("/api/photo/delete", { method: "POST", body: form }).catch(() => null);
+    if (!res?.ok) {
+      const message = res ? await errorFrom(res, "We couldn't delete your photo. Please try again.") : "We couldn't reach Wingman to delete your photo. Please try again.";
+      if (phase === "error") setError({ code: "UNKNOWN", message });
+      else setNotice(message);
+      return;
+    }
+    setPhoto(null);
+    setLooks([]);
+    setParsed(null);
+    setPrep(null);
+    setCompares({});
+    setSwapOptions({});
+    setNotice(null);
+    setPhotoNotice("Your photo and every try-on made from it are deleted.");
+    setPhase("photo");
+  };
+
   if (phase === "photo") {
-    return <PhotoStep photo={photo} onPhoto={setPhoto} onNext={() => setPhase("occasion")} />;
+    return (
+      <PhotoStep
+        photo={photo}
+        onPhoto={(next) => {
+          setPhotoNotice(null);
+          setPhoto(next);
+        }}
+        onNext={() => setPhase("occasion")}
+        notice={photoNotice}
+      />
+    );
   }
   if (phase === "occasion") {
     return (
@@ -435,6 +473,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
           setPhase("photo");
         }}
         onBack={() => setPhase("occasion")}
+        onDeletePhoto={() => void deletePhoto()}
       />
     );
   }
@@ -513,6 +552,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       hasPrep={prep != null}
       onPrep={() => setPhase("prep")}
       onBrowse={() => setPhase("browse")}
+      onDeletePhoto={() => void deletePhoto()}
     />
   );
 }

@@ -45,10 +45,8 @@ ANTHROPIC_API_KEY=
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-SHOPIFY_STORES=            # comma-separated, from fixtures/stores.json
-MOCK_YOUCAM=true           # true during UI work
+MOCK_YOUCAM=false          # true serves fixtures during UI work; false in production
 YOUCAM_UNIT_LIMIT=700      # hard stop
-DEMO_MODE=false            # golden path for video and judges
 ```
 
 All keys stay server-side. Never import server env into client components.
@@ -100,7 +98,7 @@ type Product = {
 };
 ```
 
-Other tables: `render_cache`, `youcam_usage`, `selfies` (with `expires_at`, auto-delete after 24 hours).
+Other tables: `render_cache` (renders and cached results, deleted 24 hours after they're made), `youcam_usage`, `catalog_tags` (tag cache for the catalog pipeline), `selfies` (unused; photos are never stored).
 
 ### Tiers are relative, not fixed (`lib/catalog/pipeline/tiers.ts`)
 
@@ -207,13 +205,11 @@ Follows the `design-taste-frontend` skill (tasteskill v2): its house rules win o
 
 ## 11. Testing
 - Vitest: cart permalink builder, tier assignment, image selection heuristics, all Zod schemas, unit guard
-- Playwright: one smoke test of the full flow in `MOCK_YOUCAM=true` and `DEMO_MODE=true`
+- Playwright: smoke tests of the flow in `MOCK_YOUCAM=true`
 
-## 12. Demo mode (`DEMO_MODE=true`)
-- Uses `fixtures/selfies/demo.jpg`, occasion "First date Friday night, rooftop bar, want to look effortless", Mid-range tier
-- All renders served from cache; zero live YouCam calls
-- Deterministic looks so the demo video and judges' first try never fail
-- A "Try the demo" button on the home page
+## 12. Demo mode
+
+Dropped (29 Oct): every visitor uses their own selfie with live YouCam renders, capped by `YOUCAM_UNIT_LIMIT`. There is no "Try the demo" button.
 
 ## 13. Hackathon submission
 - Public GitHub repo, MIT license, all source

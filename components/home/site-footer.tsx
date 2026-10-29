@@ -7,7 +7,6 @@ const MENU = [
   { label: "The look", href: "#look" },
   { label: "Fit check", href: "#fit" },
   { label: "How it works", href: "#how" },
-  { label: "Try the demo", href: "/demo" },
 ];
 
 /** A designed close: the render, closer than anywhere above, beside the menu set large. */

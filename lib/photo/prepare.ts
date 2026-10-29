@@ -141,20 +141,27 @@ const MIN_FACE_PX = 200;
 /** Finds the face in the normalised photo; `hash` lets a caller cache the answer. */
 export type FaceLocator = (jpeg: Buffer, width: number, height: number, hash: string) => Promise<Face>;
 
-export async function preparePhoto(input: Buffer, locate: FaceLocator = locateFace): Promise<PreparedPhoto> {
-  // Apply EXIF rotation and strip metadata (location etc.) before anything leaves the server.
-  // Keep up to 4096px (YouCam's max) so face crops come from full-resolution pixels.
+/**
+ * Apply EXIF rotation and strip metadata (location etc.) before anything leaves the server.
+ * Keeps up to 4096px (YouCam's max) so face crops come from full-resolution pixels. The hash
+ * of the result keys every render and cached result made from this photo.
+ */
+export async function normalisePhoto(input: Buffer) {
   const normalised = await sharp(input)
     .rotate()
     .resize(4096, 4096, { fit: "inside", withoutEnlargement: true })
     .jpeg({ quality: 92 })
     .toBuffer();
   const { width = 0, height = 0 } = await sharp(normalised).metadata();
+  return { normalised, width, height, hash: sha256(normalised) };
+}
+
+export async function preparePhoto(input: Buffer, locate: FaceLocator = locateFace): Promise<PreparedPhoto> {
+  const { normalised, width, height, hash } = await normalisePhoto(input);
   if (Math.min(width, height) < 512) {
     throw new YouCamError("NO_FACE", "Photo is too small. Use a photo at least 512px wide.");
   }
 
-  const hash = sha256(normalised);
   const face = await locate(normalised, width, height, hash);
   if (face.width < MIN_FACE_PX) {
     throw new YouCamError("NO_FACE", "Face is too small in the photo. Move closer to the camera.");
