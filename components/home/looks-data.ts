@@ -81,6 +81,12 @@ export const OCCASION_LOOKS: Record<Occasion, { render: string; look: string; pi
   },
 };
 
+/**
+ * The occasions the picker offers: only those whose try-on no other section shows, so no
+ * picture appears twice on the page (first date, interview and wedding are used above and below).
+ */
+export const PICKER_OCCASIONS: Occasion[] = ["night-out", "dnd", "cny"];
+
 /** One white linen shirt at each budget, as Price Compare matched them. */
 export const BUDGETS = [
   {
@@ -101,11 +107,11 @@ export const BUDGETS = [
 ] as const;
 
 /**
- * The first-date look as Wingman scores and sells it. Score and reasoning are Wingman's real
- * Fit Check of /home/date.jpg (first two sentences); the cart link holds these three variants.
+ * The first-date look as Wingman scores and sells it: the mid-range version in Three budgets.
+ * Score and reasoning are Wingman's real Fit Check of /home/date.jpg (first two sentences); the
+ * cart link holds these three variants.
  */
 export const FIT_CHECK = {
-  render: "/home/date.jpg",
   score: 8.2,
   reasoning:
     "The white linen shirt sits cleanly on your shoulders, and the rolled sleeves and natural creasing give it a relaxed rooftop look. White looks fresh against your warm skin tone, and the black pants and shoes sharpen it for a night date.",

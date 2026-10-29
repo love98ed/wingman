@@ -6,15 +6,17 @@ import { useState } from "react";
 import { OCCASION_CHOICES } from "@/lib/occasions";
 import { cn } from "@/lib/utils/cn";
 import { sgd } from "@/lib/utils/format";
-import { OCCASION_LOOKS } from "./looks-data";
+import { OCCASION_LOOKS, PICKER_OCCASIONS } from "./looks-data";
+
+const CHOICES = OCCASION_CHOICES.filter((o) => PICKER_OCCASIONS.includes(o.id));
 
 /**
  * The page's live thing: pick an occasion and the same man is shown in the look Wingman put
  * together for it, as a real try-on, with the real piece, store and price beside it.
  */
 export function OccasionPicker() {
-  const [selected, setSelected] = useState(OCCASION_CHOICES[0].id);
-  const occasion = OCCASION_CHOICES.find((o) => o.id === selected)!;
+  const [selected, setSelected] = useState(CHOICES[0].id);
+  const occasion = CHOICES.find((o) => o.id === selected)!;
   const look = OCCASION_LOOKS[selected];
 
   return (
@@ -29,13 +31,13 @@ export function OccasionPicker() {
         </h2>
         <p data-reveal style={{ "--d": "80ms" } as React.CSSProperties} className="mt-6 max-w-[36ch]">
           Every look here is a real try-on of one photo, in pieces you can buy today from Singapore stores. Tap an
-          occasion.
+          occasion; first dates, interviews and weddings are in the flow too.
         </p>
       </div>
 
       <div className="flex flex-col md:col-span-5 md:row-start-2">
         <ul aria-label="Occasions" className="grid grid-cols-2 gap-x-4 md:grid-cols-1">
-          {OCCASION_CHOICES.map((o, i) => {
+          {CHOICES.map((o, i) => {
             const on = selected === o.id;
             return (
               <li key={o.id} data-reveal style={{ "--d": `${120 + i * 60}ms` } as React.CSSProperties}>
@@ -72,7 +74,7 @@ export function OccasionPicker() {
       <figure className="-mx-(--margin) max-md:row-start-2 md:col-span-7 md:col-start-6 md:row-span-2 md:row-start-1 md:mx-0">
         <div data-shutter className="relative aspect-[4/5] overflow-hidden bg-surface md:aspect-auto md:h-[min(88svh,64rem)]">
           {/* Every look is mounted, so switching is an instant crossfade with nothing to load */}
-          {OCCASION_CHOICES.map((o) => (
+          {CHOICES.map((o) => (
             <Image
               key={o.id}
               src={OCCASION_LOOKS[o.id].render}

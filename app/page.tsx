@@ -19,7 +19,7 @@ export default function Home() {
         <HowItWorks />
         <Stores />
       </main>
-      <SiteFooter render={OCCASION_LOOKS.cny.render} />
+      <SiteFooter />
       <Reveal />
     </>
   );

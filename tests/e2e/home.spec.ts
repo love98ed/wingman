@@ -11,22 +11,22 @@ test("home renders themed at phone width", async ({ page }) => {
 
 test("occasion list drives the primary action", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Wedding guest" }).click();
-  const cta = page.getByRole("link", { name: /Style me for the wedding/ });
-  await expect(cta).toHaveAttribute("href", "/style?o=wedding");
+  await page.getByRole("button", { name: "Company D&D" }).click();
+  const cta = page.getByRole("link", { name: /Style me for the D&D/ });
+  await expect(cta).toHaveAttribute("href", "/style?o=dnd");
   await cta.click();
   await expect(page.getByRole("heading", { level: 1, name: "Your photo" })).toBeVisible();
-  await expect(page).toHaveURL(/\/style\?o=wedding/);
+  await expect(page).toHaveURL(/\/style\?o=dnd/);
 });
 
 test("photo then occasion, with the occasion carried over", async ({ page }) => {
-  await page.goto("/style?o=wedding");
+  await page.goto("/style?o=dnd");
   await expect(page.getByRole("button", { name: "Use this photo" })).toHaveCount(0);
   await page.locator("input[type=file]").setInputFiles("fixtures/selfies/demo.jpg");
   await page.getByRole("button", { name: "Use this photo" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "The occasion" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Wedding guest" })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("textbox")).toHaveValue(/wedding/i);
+  await expect(page.getByRole("button", { name: "Company D&D" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("textbox")).toHaveValue(/dinner and dance/i);
   await page.getByRole("radio", { name: "Luxury" }).click();
   await expect(page.getByRole("radio", { name: "Luxury" })).toHaveAttribute("aria-checked", "true");
 });

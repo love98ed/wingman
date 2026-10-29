@@ -1,8 +1,10 @@
-import Image from "next/image";
 import { sgd } from "@/lib/utils/format";
 import { FIT_CHECK } from "./looks-data";
 
-/** A real Fit Check: the render, Wingman's score and reasoning, and the bill with its one-store checkout. */
+/**
+ * A real Fit Check of the mid-range look in Three budgets, just above: Wingman's score and
+ * reasoning beside the bill with its one-store checkout. No picture of its own, so none repeats.
+ */
 export function FitCheck() {
   const total = FIT_CHECK.items.reduce((sum, i) => sum + i.price, 0);
   return (
@@ -11,29 +13,25 @@ export function FitCheck() {
       aria-labelledby="fit-heading"
       className="relative z-10 grid gap-12 bg-background px-(--margin) py-28 md:grid-cols-12 md:gap-6 md:py-40"
     >
-      <div data-shutter className="relative aspect-[4/5] overflow-hidden bg-surface md:col-span-5">
-        <Image
-          src={FIT_CHECK.render}
-          alt="The model in a white linen shirt, the look this Fit Check scores"
-          fill
-          sizes="(min-width: 768px) 40vw, 100vw"
-          className="object-cover object-[50%_30%]"
-        />
-      </div>
-
-      <div className="flex flex-col md:col-span-6 md:col-start-7">
+      <div className="flex flex-col md:col-span-6">
         <h2 id="fit-heading" data-reveal className="text-head">
           Fit check
         </h2>
-        <p data-reveal style={{ "--d": "80ms" } as React.CSSProperties} className="mt-8 flex items-baseline gap-4">
+        <p data-reveal style={{ "--d": "60ms" } as React.CSSProperties} className="mt-4 max-w-[40ch]">
+          Every look is scored on you before you see it. This is the mid-range linen look above.
+        </p>
+        <p data-reveal style={{ "--d": "120ms" } as React.CSSProperties} className="mt-10 flex items-baseline gap-4">
           <span className="font-display text-display leading-none text-brass">{FIT_CHECK.score.toFixed(1)}</span>
           <span className="text-lead">out of 10</span>
         </p>
-        <p data-reveal style={{ "--d": "160ms" } as React.CSSProperties} className="mt-6 max-w-[46ch] text-lead">
+        <p data-reveal style={{ "--d": "180ms" } as React.CSSProperties} className="mt-6 max-w-[46ch] text-lead">
           {FIT_CHECK.reasoning}
         </p>
+      </div>
 
-        <ul className="mt-12 flex flex-col gap-4 md:mt-auto md:pt-12">
+      <div className="flex flex-col md:col-span-5 md:col-start-8 md:justify-end">
+        <h3 data-reveal className="font-sans text-lead font-medium tracking-normal normal-case">The bill</h3>
+        <ul className="mt-6 flex flex-col gap-4">
           {FIT_CHECK.items.map((item, i) => (
             <li
               key={item.name}
