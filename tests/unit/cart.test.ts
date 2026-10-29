@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cartPermalink, groupByStore, isOneSize, sizeChoices, type CartLine } from "@/lib/cart";
+import { cartPermalink, groupByStore, isOneSize, pieceCount, sizeChoices, type CartLine } from "@/lib/cart";
 
 describe("cartPermalink", () => {
   it("builds https://{store}/cart/{variantId}:{qty},... in order", () => {
@@ -74,7 +74,7 @@ describe("groupByStore", () => {
     price,
     image: "",
     url: "",
-    sizes: [],
+    sizes: [{ variantId: variantId ?? 9, size: "M" }],
     variantId,
     qty,
   });
@@ -92,5 +92,19 @@ describe("groupByStore", () => {
     const groups = groupByStore([line("a", "x.com", 10, null), line("b", "y.com", 20, 2)]);
     expect(groups[0].checkoutUrl).toBeNull();
     expect(groups[1].checkoutUrl).toBe("https://y.com/cart/2:1");
+    expect(groups[0].missingSizes).toBe(1);
+  });
+
+  it("leaves a sold-out piece out of the subtotal and checkout instead of blocking it", () => {
+    const soldOut = { ...line("s", "x.com", 99, null), sizes: [] };
+    const [group] = groupByStore([line("a", "x.com", 10, 1, 2), soldOut]);
+    expect(group.subtotal).toBe(20);
+    expect(group.missingSizes).toBe(0);
+    expect(group.checkoutUrl).toBe("https://x.com/cart/1:2");
+    expect(groupByStore([soldOut])[0].checkoutUrl).toBeNull();
+  });
+
+  it("counts pieces with their quantities", () => {
+    expect(pieceCount([line("a", "x.com", 1, 1, 2), line("b", "x.com", 1, 2)])).toBe(3);
   });
 });

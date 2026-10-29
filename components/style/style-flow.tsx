@@ -25,7 +25,7 @@ import {
 import type { ParsedOccasion, PrepPlan } from "@/lib/agent/schemas";
 import { imageStatus } from "@/lib/agent/images";
 import { SLOTS } from "@/lib/agent/slots";
-import { isOneSize, type CartLine } from "@/lib/cart";
+import { isOneSize, MAX_QTY, type CartLine } from "@/lib/cart";
 import type { Occasion, Tier } from "@/lib/catalog/types";
 import { OCCASION_CHOICES } from "@/lib/occasions";
 import type { PhotoCheck } from "@/lib/photo/problems";
@@ -755,7 +755,13 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       <CartStep
         lines={cart}
         onSize={(id, variantId) => setCart((prev) => prev.map((l) => (l.id === id ? { ...l, variantId } : l)))}
+        onQty={(id, qty) =>
+          setCart((prev) => prev.map((l) => (l.id === id ? { ...l, qty: Math.min(MAX_QTY, Math.max(1, qty)) } : l)))
+        }
         onRemove={(id) => setCart((prev) => prev.filter((l) => l.id !== id))}
+        onRestore={(line, index) =>
+          setCart((prev) => (prev.some((l) => l.id === line.id) ? prev : [...prev.slice(0, index), line, ...prev.slice(index)]))
+        }
         onBack={back}
         backLabel={previous ? BACK_LABELS[previous] : undefined}
       />

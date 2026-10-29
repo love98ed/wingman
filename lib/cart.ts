@@ -58,26 +58,47 @@ export type CartLine = {
   qty: number;
 };
 
+/** Most of one piece a cart line can hold. */
+export const MAX_QTY = 5;
+
+/** Sold out since it was added: no size left to buy, so it's left out of totals and checkout. */
+export const isSoldOut = (line: Pick<CartLine, "sizes">) => line.sizes.length === 0;
+
+/** Pieces counted with their quantities. */
+export const pieceCount = (lines: Pick<CartLine, "qty">[]) => lines.reduce((sum, l) => sum + l.qty, 0);
+
 type StoreCart = {
   store: string;
   storeName: string;
   lines: CartLine[];
+  /** Pieces that can be bought, with quantities; sold-out lines aren't counted. */
   subtotal: number;
-  /** Set once every line has a size. */
+  /** Lines still waiting for a size. */
+  missingSizes: number;
+  /** Set once every piece that can be bought has a size. */
   checkoutUrl: string | null;
 };
 
-/** Lines grouped by store in the order stores first appear, each with its own checkout link. */
+/**
+ * Lines grouped by store in the order stores first appear, each with its own checkout link.
+ * A sold-out line never blocks its store's checkout: it's simply left out.
+ */
 export function groupByStore(lines: CartLine[]): StoreCart[] {
   const groups = new Map<string, CartLine[]>();
   for (const line of lines) groups.set(line.store, [...(groups.get(line.store) ?? []), line]);
-  return [...groups].map(([store, group]) => ({
-    store,
-    storeName: group[0].storeName,
-    lines: group,
-    subtotal: Math.round(group.reduce((sum, l) => sum + l.price * l.qty, 0) * 100) / 100,
-    checkoutUrl: group.every((l) => l.variantId != null)
-      ? cartPermalink(store, group.map((l) => ({ variantId: l.variantId!, qty: l.qty })))
-      : null,
-  }));
+  return [...groups].map(([store, group]) => {
+    const buyable = group.filter((l) => !isSoldOut(l));
+    const missingSizes = buyable.filter((l) => l.variantId == null).length;
+    return {
+      store,
+      storeName: group[0].storeName,
+      lines: group,
+      subtotal: Math.round(buyable.reduce((sum, l) => sum + l.price * l.qty, 0) * 100) / 100,
+      missingSizes,
+      checkoutUrl:
+        buyable.length > 0 && missingSizes === 0
+          ? cartPermalink(store, buyable.map((l) => ({ variantId: l.variantId!, qty: l.qty })))
+          : null,
+    };
+  });
 }

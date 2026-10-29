@@ -8,7 +8,7 @@ import { RefineBar } from "@/components/style/refine-bar";
 import type { Photo } from "@/components/style/style-flow";
 import { showsInRender, type Look, type LookItem } from "@/lib/agent/events";
 import type { ParsedOccasion } from "@/lib/agent/schemas";
-import type { CartLine } from "@/lib/cart";
+import { isSoldOut, pieceCount, type CartLine } from "@/lib/cart";
 import { displayName } from "@/lib/catalog/names";
 import type { Tier } from "@/lib/catalog/types";
 import { TIER_LABELS } from "@/lib/occasions";
@@ -67,7 +67,7 @@ export function LooksStep({
   onDeletePhoto: () => void;
 }) {
   const inCart = new Set(cart.map((l) => l.id));
-  const cartTotal = cart.reduce((sum, l) => sum + l.price * l.qty, 0);
+  const cartTotal = cart.filter((l) => !isSoldOut(l)).reduce((sum, l) => sum + l.price * l.qty, 0);
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
@@ -99,7 +99,7 @@ export function LooksStep({
             className="mt-4 flex min-h-12 w-full items-center justify-between bg-surface-raised px-4 text-left transition-colors hover:bg-surface"
           >
             <span>
-              Cart: {cart.length} {cart.length === 1 ? "piece" : "pieces"},{" "}
+              Cart: {pieceCount(cart)} {pieceCount(cart) === 1 ? "piece" : "pieces"},{" "}
               <span className="tabular-nums">{sgd(cartTotal)}</span>
             </span>
             <span className="font-medium">View cart</span>
