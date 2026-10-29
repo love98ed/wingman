@@ -21,7 +21,9 @@ Read this first, then `CLAUDE.md` (the project rules) and `docs/STEP_PROMPTS.md`
 | 7. Refine and swap | Done. A chat bar under the looks re-picks all of them ("More casual", "Under S$500", "No white sneakers"); Swap on any piece offers 6 alternatives and tries the look on again. `npm run style:demo -- --refine "more casual" --swap shoes`. 62 of 700 YouCam units used |
 | 8. Cart and checkout | Done. "Add this look to cart" on each look; the cart groups pieces by store, offers only in-stock sizes, and "Checkout at {store}" opens that store's cart pre-filled (checked against the live carts of Colony Clothing, Senja Bali Co. and Arden Teal) |
 | 9. Prep plan and browse | Done. "Your night-before prep plan" under the looks shows the 3 grooming steps (general when skin analysis couldn't read the photo). "Browse every piece" lists the in-stock catalog with category, budget, price, colour, size and store filters; a piece can go into any look (re-tried on and scored) or the cart |
-| 10 to 12 | Not started |
+| 10. Demo mode and privacy | Skipped for now (by choice). "Try the demo" still opens the placeholder; photos are not auto-deleted yet |
+| 11. Polish and deploy | Done. Every screen checked at 390px and 1280px; no API keys in the browser bundle; live site tested end to end (looks, compare, swap, prep, browse, refine, cart) and both checkout links opened real store carts with the exact items |
+| 12 | Not started |
 
 ## 1. Get set up (once)
 
