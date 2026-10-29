@@ -17,7 +17,8 @@ Read this first, then `CLAUDE.md` (the project rules) and `docs/STEP_PROMPTS.md`
 | Home page redesign | Done and live (design-taste-frontend direction) |
 | 4. Style agent | Done. `POST /api/style` returns 2 to 3 looks with renders, Fit Check, totals and prep plan. Try it with `npm run style:demo` |
 | 5. Core screens | Done. `/style`: photo, occasion, streamed loading, swipeable looks with Fit Check. Works in mock mode and with real renders |
-| 6 to 12 | Not started |
+| 6. Price compare | Done. "Compare prices" on each look shows it at Budget, Mid-range and Luxury side by side, tried on, with real SGD totals; "Wear this version" swaps the look. `npm run style:demo -- --compare`. 50 of 700 YouCam units used |
+| 7 to 12 | Not started |
 
 ## 1. Get set up (once)
 

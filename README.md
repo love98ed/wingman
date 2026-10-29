@@ -8,14 +8,15 @@ Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eC
 
 > **Teammates:** start with [docs/HANDOFF.md](docs/HANDOFF.md).
 >
-> **Status: in progress.** You can upload a photo, describe the occasion and get 2 to 3 looks from real stores, tried on your photo and scored. Swapping items, refining by chat, checkout and demo mode are next. See [Roadmap](#roadmap).
+> **Status: in progress.** You can upload a photo, describe the occasion and get 2 to 3 looks from real stores, tried on your photo and scored, then compare any look at three price tiers. Swapping items, refining by chat, checkout and demo mode are next. See [Roadmap](#roadmap).
 
 ## How it works
 
 1. **Upload one photo.** A waist-up, front-facing shot. Glasses are fine.
 2. **Describe the occasion.** Pick an occasion, adjust the one-sentence description (for example "First date Friday night, rooftop bar, want to look effortless") and choose Budget, Mid-range or Luxury.
 3. **Get 2 to 3 full looks.** Claude picks in-stock products from Singapore Shopify stores, choosing colours for your skin tone. YouCam renders each look on your photo, and each one gets a Fit Check score out of 10. A night-before grooming plan comes with them.
-4. **Refine and buy** *(coming next)*. Swap items, refine by chat, pick an in-stock size and tap checkout to open each store's cart pre-filled.
+4. **Compare prices.** Tap "Compare prices" on any look to see the same look at Budget, Mid-range and Luxury side by side: same colours and cut, each piece from its own price tier, tried on your photo, with the real SGD total under each. Tap "Wear this version" to switch.
+5. **Refine and buy** *(coming next)*. Swap items, refine by chat, pick an in-stock size and tap checkout to open each store's cart pre-filled.
 
 The first look appears as soon as its try-on is ready (usually 20 to 50 seconds, mostly YouCam render time). The rest fill in as they finish.
 
@@ -30,6 +31,16 @@ The first look appears as soon as its try-on is ready (usually 20 to 50 seconds,
 5. Claude scores each render with a Fit Check and writes the prep plan.
 
 `npm run style:demo` calls it with the demo photo and prints every step.
+
+### Price Compare
+
+`POST /api/compare` takes the photo and one look, and streams the same look rebuilt at the other two tiers:
+
+1. For each slot, the in-stock products of the target tier in the same category, ranked by colour, then cut (shared name words like "linen" or "loafer"), then formality.
+2. Claude picks the closest stand-in per slot from those candidates and writes one sentence on what changes at that price. A pick that isn't on the list falls back to the top-ranked candidate.
+3. Each version is tried on and gets its own Fit Check.
+
+Caching keeps it cheap: a shared garment hits the render cache (zero units), and the tier picks, Fit Checks and the face box are cached per photo, so reopening a comparison takes about 2 seconds. A fresh compare costs 4 YouCam units.
 
 ## YouCam APIs
 
@@ -132,7 +143,7 @@ Open http://localhost:3000 at phone width. Tap an occasion, or go straight to ht
 | `npm run stores:check` | Verifies every store in `fixtures/stores.json` (products feed, Shopify fingerprint, cart link). Failing stores move to `fixtures/stores-removed.json`. |
 | `npm run catalog:fetch` | Builds the catalog: fetches feeds, keeps menswear, tags with Claude, converts to SGD, picks try-on images and colours, assigns relative tiers, writes to Supabase. Resumable. `--store <domain>` for one store, `--dry-run` to skip writes. |
 | `npm run photo:check` | Checks a photo before spending YouCam units: finds the face and writes the crops each API would get. |
-| `npm run style:demo` | Calls `POST /api/style` with the demo photo and prints the looks, Fit Checks and prep plan. Start `npm run dev` first; `MOCK_YOUCAM` decides mock or live renders. Flags: `--tier`, `--occasion`, `--max-budget`, `--photo`, `--url`. |
+| `npm run style:demo` | Calls `POST /api/style` with the demo photo and prints the looks, Fit Checks and prep plan. Start `npm run dev` first; `MOCK_YOUCAM` decides mock or live renders. Flags: `--tier`, `--occasion`, `--max-budget`, `--photo`, `--url`, and `--compare` to also price-compare the first look. |
 | `npm run catalog:colours` | Re-tags the colour of tops and outerwear from their try-on photo (text tags miss multi-colour products). Safe to re-run; new catalog runs already do this. |
 | `npm run youcam:smoke` | One real call per YouCam API on `fixtures/selfies/demo.jpg`. Saves responses for mock mode and prints units used. A second run costs zero units. |
 
@@ -140,15 +151,17 @@ Open http://localhost:3000 at phone width. Tap an occasion, or go straight to ht
 
 ```
 app/                     Routes (App Router): / home, /style flow, /demo (placeholder),
-                         /occasion (redirects to /style), /api/style (style agent, streamed)
+                         /occasion (redirects to /style), /api/style (style agent, streamed),
+                         /api/compare (Price Compare, streamed)
   fonts/                 Panchang and Switzer, self-hosted
   globals.css            Design tokens, type steps, motion
 components/
-  style/                 The style flow at /style: photo, occasion, loading (streamed progress), looks
+  style/                 The style flow at /style: photo, occasion, loading (streamed progress), looks, price compare
   home/                  Home page sections: hero window, occasion list, look frames, Fit Check, how it works, footer
   shared/                Used across routes: placeholder screen, scroll-entrance helper
 lib/
-  agent/                 Style agent: occasion parsing, candidate pool, look selection, renders, Fit Check, prep plan
+  agent/                 Style agent: occasion parsing, candidate pool, look selection, renders, Fit Check,
+                         prep plan, and Price Compare (match.ts ranks tier stand-ins, compare.ts runs it)
   catalog/               Shopify feeds: fetch, filter, Claude tagging, prices in SGD, relative tiers, store checks
   youcam/                YouCam client, unit guard, render cache, mock mode (index.ts is the entry point)
   llm/                   Claude model config and JSON-output helper
@@ -193,7 +206,7 @@ CLAUDE.md                Project rules for Claude Code
 - [x] Store checks and catalog pipeline (17 stores, about 5,000 products, colours read from photos)
 - [x] Style agent (occasion parsing, look selection, renders, Fit Check, prep plan), streamed
 - [x] Home page and core screens (photo, occasion, loading, looks)
-- [ ] Budget tiers and price compare
+- [x] Budget tiers and price compare
 - [ ] Refine and swap
 - [ ] Cart and checkout
 - [ ] Prep plan and browse screens

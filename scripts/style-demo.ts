@@ -3,11 +3,13 @@
  * Start the app first (npm run dev); MOCK_YOUCAM in .env.local decides mock or live renders.
  *
  *   npm run style:demo [-- --url http://localhost:3000 --tier mid --occasion "..." --max-budget 400 --photo path.jpg]
+ *
+ * --compare also calls POST /api/compare with the first look and prints it at all three tiers.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { readEvents, type StyleResult } from "@/lib/agent/events";
+import { readEvents, type CompareEvent, type Look, type StyleResult, type TierVersion } from "@/lib/agent/events";
 
 const { values: args } = parseArgs({
   options: {
@@ -17,14 +19,17 @@ const { values: args } = parseArgs({
     tier: { type: "string", default: "mid" },
     "max-budget": { type: "string" },
     out: { type: "string" },
+    compare: { type: "boolean", default: false },
   },
 });
 
 const short = (url?: string) => (!url ? "none" : url.startsWith("data:") ? "inline (mock)" : `${url.slice(0, 70)}...`);
 
+const photoBlob = async () => new Blob([await readFile(args.photo)], { type: "image/jpeg" });
+
 async function main() {
   const form = new FormData();
-  form.set("photo", new Blob([await readFile(args.photo)], { type: "image/jpeg" }), path.basename(args.photo));
+  form.set("photo", await photoBlob(), path.basename(args.photo));
   form.set("occasion", args.occasion);
   form.set("tier", args.tier);
   if (args["max-budget"]) form.set("maxBudget", args["max-budget"]);
@@ -71,6 +76,58 @@ async function main() {
   }
   console.info(`Prep plan${body.skinAnalysed ? "" : " (general, no skin analysis)"}:`);
   for (const step of body.prepPlan.steps) console.info(`  - ${step.title}: ${step.detail}`);
+
+  if (args.compare) await compare(body.looks[0], body);
+}
+
+/** Price Compare for one look: the original tier plus the two streamed from /api/compare. */
+async function compare(look: Look, body: StyleResult) {
+  const form = new FormData();
+  form.set("photo", await photoBlob(), path.basename(args.photo));
+  form.set(
+    "look",
+    JSON.stringify({
+      name: look.name,
+      tier: look.tier,
+      items: look.items.map((i) => ({ slot: i.slot, id: i.id })),
+      hair: look.hair,
+      occasion: body.occasion,
+    }),
+  );
+  console.info(`\nPOST ${args.url}/api/compare  "${look.name}" from ${look.tier}`);
+  const started = Date.now();
+  const res = await fetch(`${args.url}/api/compare`, { method: "POST", body: form });
+  if (!res.ok || !res.body) {
+    console.error(`HTTP ${res.status}`, await res.text());
+    process.exit(1);
+  }
+  const versions: TierVersion[] = [];
+  await readEvents<CompareEvent>(res.body, (event) => {
+    const at = `${((Date.now() - started) / 1000).toFixed(1)}s`.padStart(6);
+    if (event.type === "versions") {
+      versions.push(...event.versions);
+      console.info(`${at}  ${event.versions.map((v) => v.tier).join(" and ")} picked`);
+    } else if (event.type === "render") {
+      console.info(`${at}  ${event.tier} ${event.kind} render`);
+      const v = versions.find((x) => x.tier === event.tier)!;
+      v.renders[event.kind] = event.url;
+    } else if (event.type === "fitcheck") {
+      console.info(`${at}  ${event.tier} Fit Check in`);
+      versions.find((x) => x.tier === event.tier)!.fitCheck = event.check;
+    } else if (event.type === "done") console.info(`${at}  done`);
+    else if (event.type === "error") {
+      console.error(`${at}  ERROR ${event.code}: ${event.message}`);
+      process.exit(1);
+    }
+  });
+  const all = [{ ...look, note: "(original)" }, ...versions].sort((a, b) => a.total - b.total);
+  for (const v of all) {
+    console.info(`\n${v.tier.toUpperCase()}  S$${v.total.toFixed(2)}  ·  Fit Check ${v.fitCheck?.score ?? "–"}/10  ${v.note}`);
+    for (const item of v.items) {
+      console.info(`  ${item.slot.padEnd(9)} S$${item.price.toFixed(2).padStart(8)}  ${item.name} (${item.storeName})`);
+    }
+    console.info(`  outfit render: ${short(v.renders.outfit)}`);
+  }
 }
 
 main().catch((err) => {

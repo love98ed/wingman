@@ -2,6 +2,7 @@
  * Shapes the style route streams to the browser, plus a reader for the stream.
  * Safe to import from client components (no server-only code).
  */
+import type { Tier } from "@/lib/catalog/types";
 import type { Slot } from "./catalog";
 import type { ParsedOccasion, PrepPlan } from "./schemas";
 
@@ -22,6 +23,8 @@ export type LookItem = {
 
 export type Look = {
   name: string;
+  /** Price tier the pieces come from; changes when the user picks another version in Price Compare. */
+  tier: Tier;
   why: string;
   items: LookItem[];
   hair: string | null;
@@ -54,8 +57,29 @@ export type StyleEvent =
   | { type: "result"; result: StyleResult }
   | { type: "error"; code: string; message: string };
 
+/** The same look at another tier, as Price Compare shows it. */
+export type TierVersion = {
+  tier: Tier;
+  items: LookItem[];
+  total: number;
+  /** What changes at this price, one sentence. */
+  note: string;
+  /** Why the look works; set on the version a look had before the user switched tier. */
+  why?: string;
+  renders: { outfit?: string; hair?: string; errors: string[] };
+  fitCheck: Look["fitCheck"];
+};
+
+/** Streamed by /api/compare, one JSON object per line. */
+export type CompareEvent =
+  | { type: "versions"; versions: TierVersion[] }
+  | { type: "render"; tier: Tier; kind: Exclude<RenderKind, "beard">; url: string }
+  | { type: "fitcheck"; tier: Tier; check: NonNullable<Look["fitCheck"]> }
+  | { type: "done" }
+  | { type: "error"; code: string; message: string };
+
 /** Read a newline-delimited JSON stream, calling `onEvent` for each event in order. */
-export async function readEvents(body: ReadableStream<Uint8Array>, onEvent: (event: StyleEvent) => void) {
+export async function readEvents<E = StyleEvent>(body: ReadableStream<Uint8Array>, onEvent: (event: E) => void) {
   const reader = body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
@@ -66,7 +90,7 @@ export async function readEvents(body: ReadableStream<Uint8Array>, onEvent: (eve
     while ((nl = buffer.indexOf("\n")) >= 0) {
       const line = buffer.slice(0, nl).trim();
       buffer = buffer.slice(nl + 1);
-      if (line) onEvent(JSON.parse(line) as StyleEvent);
+      if (line) onEvent(JSON.parse(line) as E);
     }
     if (done) return;
   }

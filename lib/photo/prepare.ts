@@ -138,7 +138,10 @@ export async function headShouldersFrom(image: Buffer, photo: PreparedPhoto): Pr
 /** Smallest face width (px) in the original photo that still gives usable face crops. */
 const MIN_FACE_PX = 200;
 
-export async function preparePhoto(input: Buffer, knownFace?: Face): Promise<PreparedPhoto> {
+/** Finds the face in the normalised photo; `hash` lets a caller cache the answer. */
+export type FaceLocator = (jpeg: Buffer, width: number, height: number, hash: string) => Promise<Face>;
+
+export async function preparePhoto(input: Buffer, locate: FaceLocator = locateFace): Promise<PreparedPhoto> {
   // Apply EXIF rotation and strip metadata (location etc.) before anything leaves the server.
   // Keep up to 4096px (YouCam's max) so face crops come from full-resolution pixels.
   const normalised = await sharp(input)
@@ -151,14 +154,15 @@ export async function preparePhoto(input: Buffer, knownFace?: Face): Promise<Pre
     throw new YouCamError("NO_FACE", "Photo is too small. Use a photo at least 512px wide.");
   }
 
-  const face = knownFace ?? (await locateFace(normalised, width, height));
+  const hash = sha256(normalised);
+  const face = await locate(normalised, width, height, hash);
   if (face.width < MIN_FACE_PX) {
     throw new YouCamError("NO_FACE", "Face is too small in the photo. Move closer to the camera.");
   }
   const boxes = cropBoxes(face, width, height);
 
   return {
-    hash: sha256(normalised),
+    hash,
     face,
     size: { width, height },
     full: await sharp(normalised).resize(2048, 2048, { fit: "inside", withoutEnlargement: true }).jpeg({ quality: 92 }).toBuffer(),

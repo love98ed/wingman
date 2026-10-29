@@ -2,7 +2,7 @@ import "server-only";
 
 import { loadCatalog } from "@/lib/catalog/repo";
 import type { Product } from "@/lib/catalog/types";
-import { preparePhoto } from "@/lib/photo/prepare";
+import { locateFace, preparePhoto, type FaceLocator } from "@/lib/photo/prepare";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { youcam } from "@/lib/youcam";
 import {
@@ -16,12 +16,17 @@ import {
   type Slot,
 } from "./catalog";
 import { BEARD_STYLES, HAIR_STYLES } from "./grooming";
+import { memo } from "./memo";
 import { renderLook } from "./render";
 import type { Look, LookItem, StyleEvent, StyleResult } from "./events";
 import type { LookPick, ParsedOccasion, StyleRequest } from "./schemas";
 import { fitCheck, parseOccasion, prepPlan, selectLooks } from "./steps";
 
-const toItem = (slot: Slot, p: Product): LookItem => ({
+/** Face box cached per photo, so Price Compare and repeat runs skip the Claude face call. */
+export const cachedFace: FaceLocator = (jpeg, width, height, hash) =>
+  memo({ selfieHash: hash, api: "face-box", params: { width, height } }, () => locateFace(jpeg, width, height));
+
+export const toItem = (slot: Slot, p: Product): LookItem => ({
   slot,
   id: p.id,
   name: p.name,
@@ -52,7 +57,7 @@ export async function runStyle(
 
   // 1. Occasion, and the photo crops (Claude finds the face)
   emit({ type: "progress", step: "reading" });
-  const [parsed, photo] = await Promise.all([parseOccasion(req.occasion), preparePhoto(photoBytes)]);
+  const [parsed, photo] = await Promise.all([parseOccasion(req.occasion), preparePhoto(photoBytes, cachedFace)]);
   const occasion: ParsedOccasion = { ...parsed, budgetTier: req.tier, maxBudget: req.maxBudget };
   lap(`parsed ${occasion.occasion}/${occasion.formality}`);
 
@@ -89,6 +94,7 @@ export async function runStyle(
   const itemsByLook: LookItems[] = valid.map((pick) => lookItems(pick, pool));
   const looks: Look[] = valid.map((pick, i) => ({
     name: pick.name,
+    tier: req.tier,
     why: pick.why,
     items: SLOTS.flatMap((slot) => (itemsByLook[i][slot] ? [toItem(slot, itemsByLook[i][slot]!)] : [])),
     hair: pick.hair,

@@ -79,6 +79,7 @@ export type CatalogFilter = {
   tier?: Product["tier"];
   categories?: Product["category"][];
   formalities?: Product["formality"][];
+  ids?: string[];
 };
 
 export async function loadCatalog(db: SupabaseClient, filter: CatalogFilter = {}): Promise<Product[]> {
@@ -89,6 +90,7 @@ export async function loadCatalog(db: SupabaseClient, filter: CatalogFilter = {}
     if (filter.tier) query = query.eq("tier", filter.tier);
     if (filter.categories) query = query.in("category", filter.categories);
     if (filter.formalities) query = query.in("formality", filter.formalities);
+    if (filter.ids) query = query.in("id", filter.ids);
     const { data, error } = await query.range(from, from + PAGE - 1);
     if (error) throw new Error(`Catalog read failed: ${error.message}`);
     out.push(...(data as Row[]).map(fromRow));

@@ -5,6 +5,8 @@ import {
   ParsedOccasionSchema,
   PrepPlanSchema,
   StyleRequestSchema,
+  CompareRequestSchema,
+  TierPicksSchema,
 } from "@/lib/agent/schemas";
 import { BEARD_STYLES, BEARD_TEMPLATES, HAIR_STYLES, HAIR_TEMPLATES } from "@/lib/agent/grooming";
 import hairTemplates from "../../../fixtures/youcam/hair-templates.json";
@@ -57,6 +59,24 @@ describe("LLM output schemas", () => {
     const step = { title: "Rest", detail: "Sleep early." };
     expect(PrepPlanSchema.safeParse({ steps: [step, step, step] }).success).toBe(true);
     expect(PrepPlanSchema.safeParse({ steps: [step, step] }).success).toBe(false);
+  });
+});
+
+describe("Price Compare schemas", () => {
+  const occasion = { occasion: "date", formality: "smart-casual", setting: "rooftop bar", timeOfDay: "night", constraints: [] };
+  const request = { name: "Rooftop easy", tier: "mid", items: [{ slot: "top", id: "a" }], hair: null, occasion };
+
+  it("accepts a look and rejects an unknown slot or an empty look", () => {
+    expect(CompareRequestSchema.safeParse(request).success).toBe(true);
+    expect(CompareRequestSchema.safeParse({ ...request, items: [{ slot: "hat", id: "a" }] }).success).toBe(false);
+    expect(CompareRequestSchema.safeParse({ ...request, items: [] }).success).toBe(false);
+  });
+
+  it("takes one or two tier versions", () => {
+    const version = { tier: "budget", top: "a", outerwear: null, bottom: "b", shoes: "c", watch: null, note: "Cheaper." };
+    expect(TierPicksSchema.safeParse({ versions: [version, { ...version, tier: "luxury" }] }).success).toBe(true);
+    expect(TierPicksSchema.safeParse({ versions: [] }).success).toBe(false);
+    expect(TierPicksSchema.safeParse({ versions: [{ ...version, tier: "cheap" }] }).success).toBe(false);
   });
 });
 

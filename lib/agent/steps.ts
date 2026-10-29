@@ -3,16 +3,20 @@ import "server-only";
 import type Anthropic from "@anthropic-ai/sdk";
 import sharp from "sharp";
 import { generateStructured } from "@/lib/llm/client";
-import { poolLines, type Pool } from "./catalog";
+import type { Tier } from "@/lib/catalog/types";
+import { poolLines, SLOTS, type LookItems, type Pool } from "./catalog";
+import { tierPoolLines, type TierPool } from "./match";
 import { BEARD_STYLES, HAIR_STYLES } from "./grooming";
 import {
   FitCheckSchema,
   LookPicksSchema,
   ParsedOccasionSchema,
   PrepPlanSchema,
+  TierPicksSchema,
   type LookPick,
   type ParsedOccasion,
   type PrepPlan,
+  type TierPick,
 } from "./schemas";
 
 /** JPEG block for Claude vision, long side capped to keep image tokens down. */
@@ -81,6 +85,48 @@ export async function selectLooks(args: {
     ],
   });
   return result.looks;
+}
+
+/** Price Compare: rebuild one look at other tiers, keeping colour, cut and formality. */
+export async function matchTiers(args: {
+  occasion: ParsedOccasion;
+  look: LookItems;
+  from: Tier;
+  pools: Partial<Record<Tier, TierPool>>;
+  errors?: string[];
+}): Promise<TierPick[]> {
+  const original = SLOTS.filter((slot) => args.look[slot])
+    .map((slot) => {
+      const p = args.look[slot]!;
+      return `${slot}: ${p.name} | ${p.colour} | ${p.formality} | S$${p.price.toFixed(0)} | ${p.storeName}`;
+    })
+    .join("\n");
+  const tiers = Object.keys(args.pools) as Tier[];
+  const result = await generateStructured({
+    task: "agent",
+    label: "match-tiers",
+    effort: "low",
+    schema: TierPicksSchema,
+    system:
+      "You are Wingman, a menswear stylist in Singapore. A man liked a look; show him the same look at other price tiers. " +
+      "For each target tier and each slot of the look, choose the candidate that keeps the style direction: the same colour " +
+      "(or the nearest shade), the same cut and garment type (an oxford shirt stays an oxford shirt, loafers stay loafers, " +
+      "a field watch stays a field watch) and the same formality. The look should be recognisably the same outfit at a " +
+      "different price. Use only the listed ids, null for slots the look doesn't have. note is one short sentence on what " +
+      "he gets or gives up at that price (fabric, make, details), not a list of items.",
+    content: [
+      {
+        type: "text",
+        text:
+          `Occasion: ${args.occasion.occasion}, ${args.occasion.formality}, ${args.occasion.setting}.\n\n` +
+          `The look (${args.from} tier):\n${original}\n\n` +
+          tiers.map((t) => `## ${t} tier candidates (id | name | colour | formality | price | store)\n${tierPoolLines(args.pools[t]!)}`).join("\n\n") +
+          `\n\nReturn one version for each of: ${tiers.join(", ")}.` +
+          (args.errors?.length ? `\n\nYour previous answer had these problems. Fix them:\n- ${args.errors.join("\n- ")}` : ""),
+      },
+    ],
+  });
+  return result.versions;
 }
 
 /** Step 5: score each rendered look out of 10 with a one or two sentence reason. */

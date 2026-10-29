@@ -29,6 +29,7 @@ export function LooksStep({
   tier,
   scoring,
   onRestart,
+  onCompare,
 }: {
   looks: Look[];
   photo: Photo | null;
@@ -36,6 +37,8 @@ export function LooksStep({
   tier: Tier;
   scoring: boolean;
   onRestart: () => void;
+  /** Opens Price Compare for a look; absent until the looks are picked. */
+  onCompare?: (index: number) => void;
 }) {
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -65,7 +68,15 @@ export function LooksStep({
         aria-label="Looks"
       >
         {looks.map((look, i) => (
-          <LookCard key={i} look={look} index={i} count={looks.length} photo={photo} scoring={scoring && !look.fitCheck} />
+          <LookCard
+            key={i}
+            look={look}
+            index={i}
+            count={looks.length}
+            photo={photo}
+            scoring={scoring && !look.fitCheck}
+            onCompare={onCompare && (() => onCompare(i))}
+          />
         ))}
       </div>
 
@@ -102,12 +113,14 @@ function LookCard({
   count,
   photo,
   scoring,
+  onCompare,
 }: {
   look: Look;
   index: number;
   count: number;
   photo: Photo | null;
   scoring: boolean;
+  onCompare?: () => void;
 }) {
   const grooming = [
     look.renders.hair && { url: look.renders.hair, label: `Hair: ${look.hair}` },
@@ -162,6 +175,14 @@ function LookCard({
         <div className="flex items-baseline justify-between gap-4">
           <h2 className="text-lead">{look.name}</h2>
           <span className="shrink-0 tabular-nums">{sgd(look.total)}</span>
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-4">
+          <span className="text-small text-muted-foreground">{TIER_LABELS[look.tier]}</span>
+          {onCompare && (
+            <button type="button" onClick={onCompare} className="text-link -my-3 min-h-11 text-small font-medium">
+              Compare prices
+            </button>
+          )}
         </div>
 
         <div className="mt-5 flex gap-4 bg-surface-raised p-4" aria-live="polite">
