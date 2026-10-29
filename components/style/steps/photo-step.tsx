@@ -148,7 +148,18 @@ export function PhotoStep({
           )}
         </div>
       )}
-      <p className="mt-6 text-small text-muted-foreground">Only used to style you. Try-ons are deleted after 24 hours.</p>
+      <section aria-labelledby="photo-tips" className="mt-10">
+        <h2 id="photo-tips" className="font-sans text-lead font-medium tracking-normal normal-case">
+          What works best
+        </h2>
+        <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 marker:text-muted-foreground">
+          <li>Stand facing a window or a lamp, so your face is evenly lit.</li>
+          <li>Waist up, with your head, shoulders and chest in the frame.</li>
+          <li>Just you, looking straight at the camera.</li>
+          <li>Glasses are fine. Hats, masks and hands over your face get in the way.</li>
+        </ul>
+      </section>
+      <p className="mt-8 text-small text-muted-foreground">Only used to style you. Try-ons are deleted after 24 hours.</p>
       <Link href="/" className="text-link mt-4 inline-flex min-h-11 items-center text-muted-foreground">
         Back to the home page
       </Link>

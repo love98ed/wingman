@@ -128,6 +128,19 @@ export function LoadingStep({
           <Steps current={current} detail={progress.detail} />
         </div>
       )}
+
+      {!stuck && (
+        <section aria-labelledby="wait-heading" className="mt-10 bg-surface p-5">
+          <h2 id="wait-heading" className="font-sans text-lead font-medium tracking-normal normal-case">
+            While you wait
+          </h2>
+          <p className="mt-2">
+            Wingman is picking in-stock pieces from independent Singapore stores and trying each look on your photo. When
+            they open, you can swap any piece, see it cheaper, compare the look at three budgets and check out at each
+            store.
+          </p>
+        </section>
+      )}
     </FlowShell>
   );
 }

@@ -224,7 +224,7 @@ export function BrowseStep({
 
       {page && page.total === 0 && status === "done" && (
         <div className="mt-4">
-          <p>Nothing matches all of those.</p>
+          <p>Nothing matches all of those. Try a wider price range or another colour, or clear the filters.</p>
           <button
             type="button"
             onClick={() => onFilters({ category: filters.category, sort: filters.sort })}

@@ -79,8 +79,13 @@ export function OccasionStep(props: {
             maxLength={300}
             rows={3}
             placeholder="Where, when, and anything you want or want to avoid"
+            aria-describedby={`${textId}-hint`}
             className="mt-3 block w-full resize-none bg-surface p-4 text-lead leading-snug placeholder:text-muted-foreground focus:bg-surface-raised focus:outline-2 focus:outline-brass"
           />
+          <p id={`${textId}-hint`} className="mt-2 text-small text-muted-foreground">
+            Say where, when and how you want to look. For example: &ldquo;Wedding dinner at a hotel ballroom, sharp but not
+            stiff.&rdquo;
+          </p>
         </div>
 
         <fieldset>
