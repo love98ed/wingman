@@ -23,6 +23,7 @@ import {
   type TierVersion,
 } from "@/lib/agent/events";
 import type { ParsedOccasion, PrepPlan } from "@/lib/agent/schemas";
+import { imageStatus } from "@/lib/agent/images";
 import { SLOTS } from "@/lib/agent/slots";
 import { isOneSize, type CartLine } from "@/lib/cart";
 import type { Occasion, Tier } from "@/lib/catalog/types";
@@ -70,6 +71,10 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   const [browseFilters, setBrowseFilters] = useState<BrowseFilters>({ category: "top", sort: "featured" });
   /** The look card to bring into view when returning to the looks. */
   const [focusLook, setFocusLook] = useState(0);
+  /** The run has finished rendering and scoring; the loading screen opens the looks once no image is missing. */
+  const [settled, setSettled] = useState(false);
+  /** Looks whose failed images are being tried again. */
+  const [retrying, setRetrying] = useState(0);
   const abort = useRef<AbortController | null>(null);
   /** Compares and swaps in flight; a new run or refine cancels them. */
   const sideAborts = useRef<AbortController[]>([]);
@@ -80,6 +85,10 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [phase]);
+  // Every image landed (or the user chose to go on without the missing ones): open the looks
+  useEffect(() => {
+    if (phase === "loading" && settled && retrying === 0 && imageStatus(looks).failed.length === 0) setPhase("looks");
+  }, [phase, settled, retrying, looks]);
   useEffect(
     () => () => {
       abort.current?.abort();
@@ -120,6 +129,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     abort.current = controller;
     setProgress({ step: "reading" });
     setNotice(null);
+    setSettled(false);
     setPhase("loading");
 
     try {
@@ -132,8 +142,6 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         switch (event.type) {
           case "progress":
             setProgress({ step: event.step, detail: event.detail });
-            // Renders all failed: nothing will trigger the switch below, so show the looks now
-            if (event.step === "scoring") setPhase((p) => (p === "loading" ? "looks" : p));
             break;
           case "looks":
             setParsed(event.occasion);
@@ -144,8 +152,18 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
             setLooks((prev) =>
               prev.map((look, i) => (i === event.look ? { ...look, renders: { ...look.renders, [event.kind]: event.url } } : look)),
             );
-            // The first outfit on screen beats waiting for every render
-            if (event.kind === "outfit") setPhase((p) => (p === "loading" ? "looks" : p));
+            break;
+          case "renderFailed":
+            setLooks((prev) =>
+              prev.map((look, i) =>
+                i === event.look
+                  ? { ...look, renders: { ...look.renders, failed: { ...look.renders.failed, [event.kind]: event.code } } }
+                  : look,
+              ),
+            );
+            break;
+          case "ready":
+            setSettled(true);
             break;
           case "fitcheck":
             setLooks((prev) => prev.map((look, i) => ({ ...look, fitCheck: event.checks[i] ?? look.fitCheck })));
@@ -165,7 +183,10 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
             setPrep({ plan: event.prepPlan, skinAnalysed: event.skinAnalysed });
             break;
           case "result":
-            setLooks(event.result.looks);
+            // The stream already carried every look; keep what this screen has since added (retried images)
+            setLooks((prev) =>
+              event.result.looks.map((look, i) => ({ ...look, renders: { ...look.renders, ...prev[i]?.renders } })),
+            );
             setPrep({ plan: event.result.prepPlan, skinAnalysed: event.result.skinAnalysed });
             break;
           case "error":
@@ -174,8 +195,8 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
             break;
         }
       });
-      // Leave the user where they are if they already moved on to compare or swap
-      if (!failed && !controller.signal.aborted) setPhase((p) => (p === "loading" ? "looks" : p));
+      // The looks open from the effect above once no image is missing
+      if (!failed && !controller.signal.aborted) setSettled(true);
     } catch (err) {
       if (controller.signal.aborted) return;
       console.error(err);
@@ -392,6 +413,61 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     }
   };
 
+  /**
+   * Try the failed images again: the swap route re-renders the look as it is. Images that already
+   * worked come from the render cache at no cost, so only the failed ones call YouCam again.
+   */
+  const retryImages = () => {
+    if (!photo) return;
+    const failedLooks = [...new Set(imageStatus(looks).failed.map((f) => f.look))];
+    setRetrying(failedLooks.length);
+    for (const index of failedLooks) {
+      const look = looks[index];
+      const patch = (fn: (look: Look) => Look) => setLooks((prev) => prev.map((l, i) => (i === index ? fn(l) : l)));
+      patch((l) => ({ ...l, renders: { ...l.renders, failed: {} } }));
+      const controller = sideController();
+      const form = new FormData();
+      form.set("photo", photo.blob, "photo.jpg");
+      form.set("look", JSON.stringify({ ...lookRef(look), beard: look.renders.failed?.beard ? look.beard : null }));
+      const failAll = (code: string) =>
+        patch((l) => ({
+          ...l,
+          renders: { ...l.renders, failed: Object.fromEntries(Object.keys(look.renders.failed ?? {}).map((k) => [k, code])) },
+        }));
+      void (async () => {
+        try {
+          const res = await fetch("/api/swap", { method: "POST", body: form, signal: controller.signal });
+          if (!res.ok || !res.body) return failAll("UNKNOWN");
+          await readEvents<SwapEvent>(res.body, (event) => {
+            if (event.type === "render") patch((l) => ({ ...l, renders: { ...l.renders, [event.kind]: event.url } }));
+            else if (event.type === "renderFailed")
+              patch((l) => ({ ...l, renders: { ...l.renders, failed: { ...l.renders.failed, [event.kind]: event.code } } }));
+            else if (event.type === "fitcheck") patch((l) => ({ ...l, fitCheck: event.check }));
+            else if (event.type === "error") failAll(event.code);
+          });
+        } catch (err) {
+          if (!controller.signal.aborted) {
+            console.error(err);
+            failAll("UNKNOWN");
+          }
+        } finally {
+          setRetrying((n) => Math.max(0, n - 1));
+        }
+      })();
+    }
+  };
+
+  /** Go on to the looks without the images that failed; their cards show the pieces on their own. */
+  const skipMissingImages = () => {
+    setLooks((prev) =>
+      prev.map((l) => ({
+        ...l,
+        renders: { ...l.renders, errors: [...l.renders.errors, ...Object.values(l.renders.failed ?? {})], failed: {} },
+      })),
+    );
+    setPhase("looks");
+  };
+
   /** Pieces into the cart (once each); a one-size piece needs no size pick. */
   const addToCart = (pieces: LookItem[]) => {
     setCart((prev) => {
@@ -473,7 +549,20 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       />
     );
   }
-  if (phase === "loading") return <LoadingStep photo={photo} progress={progress} refining={refining} />;
+  if (phase === "loading") {
+    return (
+      <LoadingStep
+        photo={photo}
+        progress={progress}
+        refining={refining}
+        looks={looks}
+        settled={settled}
+        retrying={retrying > 0}
+        onRetry={retryImages}
+        onContinue={skipMissingImages}
+      />
+    );
+  }
   if (phase === "error" && error) {
     return (
       <ErrorStep

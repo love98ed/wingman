@@ -25,6 +25,8 @@ type YouCamDeps = {
   guard: UnitGuard;
   cache: RenderCacheStore;
   mock: boolean;
+  /** Mock mode only: APIs whose first call per cache key fails, so the retry path can be seen. */
+  mockFail?: string[];
   poll?: PollOptions;
 };
 
@@ -42,6 +44,8 @@ type RunInput = {
 };
 
 export class YouCamClient {
+  private readonly mockFailed = new Set<string>();
+
   constructor(private readonly deps: YouCamDeps) {}
 
   private async run(input: RunInput): Promise<YouCamResult> {
@@ -49,6 +53,11 @@ export class YouCamClient {
     const cacheKey = renderCacheKey({ selfieHash, productId, api, params });
 
     if (this.deps.mock) {
+      if (this.deps.mockFail?.includes(api) && !this.mockFailed.has(cacheKey)) {
+        this.mockFailed.add(cacheKey);
+        await new Promise((r) => setTimeout(r, 400));
+        throw new YouCamError("TIMEOUT", `Mock failure for ${api} (MOCK_YOUCAM_FAIL)`);
+      }
       const fx = await loadFixture(input.fixture ?? api);
       return { api, cacheKey, source: "mock", response: fx.response, image: fx.image };
     }

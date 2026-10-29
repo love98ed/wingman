@@ -113,3 +113,25 @@ describe("YouCam helpers", () => {
     expect(fromEngineError("error_inference").code).toBe("UNKNOWN");
   });
 });
+
+describe("YouCamClient mock failures (MOCK_YOUCAM_FAIL)", () => {
+  const mockClient = (mockFail: string[]) =>
+    new YouCamClient({
+      http: new YouCamHttp("key", vi.fn() as unknown as typeof fetch),
+      guard: new UnitGuard(new MemoryUsageStore(), 700),
+      cache: new MemoryRenderCache(),
+      mock: true,
+      mockFail,
+    });
+  const hair = { photo: Buffer.from("p"), selfieHash: "s1", templateId: "male_curtain" };
+
+  it("fails the first call per image, then succeeds on the retry", async () => {
+    const yc = mockClient(["hair"]);
+    await expect(yc.tryOnHair(hair)).rejects.toMatchObject({ code: "TIMEOUT" });
+    await expect(yc.tryOnHair(hair)).resolves.toMatchObject({ source: "mock" });
+  });
+
+  it("leaves APIs that aren't listed alone", async () => {
+    await expect(mockClient(["beard"]).tryOnHair(hair)).resolves.toMatchObject({ source: "mock" });
+  });
+});

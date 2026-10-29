@@ -13,6 +13,8 @@ const serverEnvSchema = z.object({
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   MOCK_YOUCAM: bool,
+  /** Mock mode only: comma-separated APIs (clothes, hair, beard) whose first call per image fails, to see the retry. */
+  MOCK_YOUCAM_FAIL: z.string().default(""),
   YOUCAM_UNIT_LIMIT: z.coerce.number().int().positive().default(700),
 });
 

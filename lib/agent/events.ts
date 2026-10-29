@@ -30,7 +30,14 @@ export type Look = {
   items: LookItem[];
   hair: string | null;
   beard: string | null;
-  renders: { outfit?: string; hair?: string; beard?: string; errors: string[] };
+  renders: {
+    outfit?: string;
+    hair?: string;
+    beard?: string;
+    errors: string[];
+    /** Images that failed this run, with the error code; cleared when one is tried again. */
+    failed?: Partial<Record<RenderKind, string>>;
+  };
   /** Null until the Fit Check has run. */
   fitCheck: { score: number; reasoning: string } | null;
   total: number;
@@ -57,12 +64,16 @@ export type StyleEvent =
   | { type: "progress"; step: StyleStep; detail?: string }
   | { type: "looks"; occasion: ParsedOccasion; looks: Look[] }
   | { type: "render"; look: number; kind: RenderKind; url: string }
+  /** One try-on image failed; the look is still shown, with a retry on the loading screen. */
+  | { type: "renderFailed"; look: number; kind: RenderKind; code: string }
   | { type: "fitcheck"; checks: NonNullable<Look["fitCheck"]>[] }
   /** A refine was accepted: what Wingman is changing, in a sentence for the user. */
   | { type: "refined"; reply: string }
   /** Looks that scored too low are dropped after the Fit Check: keep these indexes, in order. */
   | { type: "prune"; keep: number[]; dropped: number }
   | { type: "prep"; prepPlan: PrepPlan; skinAnalysed: boolean }
+  /** Every image has landed or failed and the looks are scored: the looks screen can open. */
+  | { type: "ready" }
   | { type: "result"; result: StyleResult }
   | { type: "error"; code: string; message: string };
 
@@ -103,7 +114,8 @@ export type BrowsePage = {
 
 /** Streamed by /api/swap after a piece is swapped: the new try-on and score. */
 export type SwapEvent =
-  | { type: "render"; kind: Exclude<RenderKind, "beard">; url: string }
+  | { type: "render"; kind: RenderKind; url: string }
+  | { type: "renderFailed"; kind: RenderKind; code: string }
   | { type: "fitcheck"; check: NonNullable<Look["fitCheck"]> }
   | { type: "done" }
   | { type: "error"; code: string; message: string };

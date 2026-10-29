@@ -84,10 +84,10 @@ export async function runSwap(photoBytes: Buffer, req: SwapRequest, emit: (event
     photo,
     items,
     hair: req.hair,
-    beard: null,
-    onRender: (kind, url) => {
-      if (kind !== "beard") emit({ type: "render", kind, url });
-    },
+    // A swap keeps the beard render it had; a retry of failed images sends the beard to redo
+    beard: req.beard ?? null,
+    onRender: (kind, url) => emit({ type: "render", kind, url }),
+    onFail: (kind, code) => emit({ type: "renderFailed", kind, code }),
   });
   const params = { ids: SLOTS.map((s) => items[s]?.id ?? null), hair: req.hair, occasion: occasion.occasion, mock: !renders.outfitImage };
   const [check] = await memo({ selfieHash: photo.hash, api: "fit-check", params }, () =>

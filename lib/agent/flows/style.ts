@@ -130,6 +130,7 @@ async function buildLooks(args: {
         hair: pick.hair,
         beard: pick.beard,
         onRender: (kind, url) => emit({ type: "render", look: i, kind, url }),
+        onFail: (kind, code) => emit({ type: "renderFailed", look: i, kind, code }),
       }),
     ),
   );
@@ -162,6 +163,7 @@ async function buildLooks(args: {
     lap(`dropped ${looks.length - keep.length} low-scoring look(s)`);
     emit({ type: "prune", keep, dropped: looks.length - keep.length });
   }
+  emit({ type: "ready" });
   return keep.map((i) => looks[i]);
 }
 

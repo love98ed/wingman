@@ -71,6 +71,8 @@ const LookRefSchema = z.object({
   tier: z.enum(TIERS),
   items: z.array(z.object({ slot: SlotSchema, id: z.string().max(200) })).min(1).max(5),
   hair: z.string().nullable(),
+  /** Sent only to redo a failed beard render; swaps leave it out. */
+  beard: z.string().nullable().optional(),
   occasion: ClientOccasionSchema,
 });
 

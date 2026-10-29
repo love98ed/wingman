@@ -23,6 +23,7 @@ export function youcam(): YouCamClient {
       guard: new UnitGuard(new SupabaseUsageStore(db), env.YOUCAM_UNIT_LIMIT, dev ? console.info : undefined),
       cache: new SupabaseRenderCache(db),
       mock: env.MOCK_YOUCAM,
+      mockFail: env.MOCK_YOUCAM_FAIL.split(",").map((s) => s.trim()).filter(Boolean),
     });
   }
   return instance;

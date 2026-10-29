@@ -31,13 +31,15 @@ export async function renderLook(args: {
   beard: string | null;
   /** Called as each render lands, so the client can show the outfit before hair and beard finish. */
   onRender?: (kind: RenderKind, url: string) => void;
+  /** Called when a render fails, so the client can offer to try it again. */
+  onFail?: (kind: RenderKind, code: YouCamErrorCode) => void;
 }): Promise<LookRenders> {
   const yc = youcam();
   const { photo } = args;
   const out: LookRenders = { errors: [] };
   const garment = args.items.outerwear ?? args.items.top;
 
-  const attempt = async <T>(fn: () => Promise<T>): Promise<T | undefined> => {
+  const attempt = async <T>(kind: RenderKind, fn: () => Promise<T>): Promise<T | undefined> => {
     try {
       return await fn();
     } catch (err) {
@@ -45,13 +47,15 @@ export async function renderLook(args: {
       // different: the looks are still worth showing, as pieces without a try-on.
       if (err instanceof YouCamError && err.code === "NO_FACE") throw err;
       console.warn(`[render] ${(err as Error).message}`);
-      out.errors.push(err instanceof YouCamError ? err.code : "UNKNOWN");
+      const code = err instanceof YouCamError ? err.code : "UNKNOWN";
+      out.errors.push(code);
+      args.onFail?.(kind, code);
       return undefined;
     }
   };
 
   const beard = args.beard
-    ? attempt(() =>
+    ? attempt("beard", () =>
         yc.tryOnBeard({ photo: photo.closeFace, selfieHash: photo.hash, templateId: BEARD_TEMPLATES[args.beard!] }),
       )
     : undefined;
@@ -59,7 +63,7 @@ export async function renderLook(args: {
   beard?.catch(() => undefined);
 
   const clothes = garment
-    ? await attempt(() =>
+    ? await attempt("outfit", () =>
         yc.tryOnClothes({
           photo: photo.full,
           selfieHash: photo.hash,
@@ -71,13 +75,14 @@ export async function renderLook(args: {
   if (clothes) {
     out.outfit = await renderUrl(clothes);
     if (out.outfit) args.onRender?.("outfit", out.outfit);
+    else args.onFail?.("outfit", "UNKNOWN");
     // Mock fixtures show a different outfit, so the Fit Check would judge the wrong clothes.
     if (clothes.source !== "mock") out.outfitImage = clothes.image;
   }
 
   if (args.hair) {
     const source = clothes?.image ? await headShouldersFrom(clothes.image, photo) : photo.headShoulders;
-    const hair = await attempt(() =>
+    const hair = await attempt("hair", () =>
       yc.tryOnHair({
         photo: source,
         selfieHash: photo.hash,
@@ -87,11 +92,13 @@ export async function renderLook(args: {
       }),
     );
     if (hair) out.hair = await renderUrl(hair);
+    if (hair && !out.hair) args.onFail?.("hair", "UNKNOWN");
     if (out.hair) args.onRender?.("hair", out.hair);
   }
 
   const beardResult = await beard;
   if (beardResult) out.beard = await renderUrl(beardResult);
+  if (beardResult && !out.beard) args.onFail?.("beard", "UNKNOWN");
   if (out.beard) args.onRender?.("beard", out.beard);
   return out;
 }
