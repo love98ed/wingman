@@ -25,6 +25,9 @@ export type PollOptions = {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** Failed status checks in a row before polling gives up. */
+const MAX_POLL_MISSES = 3;
+
 export class YouCamHttp {
   constructor(
     private readonly apiKey: string,
@@ -104,9 +107,22 @@ export class YouCamHttp {
     const { timeoutMs = 120_000, initialDelayMs = 1500, maxDelayMs = 5000 } = opts;
     const started = Date.now();
     let delay = initialDelayMs;
+    let misses = 0;
     while (Date.now() - started < timeoutMs) {
       await sleep(delay);
-      const res = await this.request<TaskPollResponse>("GET", `${path}/${encodeURIComponent(taskId)}`);
+      let res: TaskPollResponse;
+      try {
+        res = await this.request<TaskPollResponse>("GET", `${path}/${encodeURIComponent(taskId)}`);
+        misses = 0;
+      } catch (err) {
+        // The task keeps running (and may be charged) even if one status check fails, so keep
+        // polling. After several misses in a row give up as a timeout, which keeps its units reserved.
+        if (err instanceof YouCamError && err.code === "QUOTA") throw err;
+        if (++misses >= MAX_POLL_MISSES) {
+          throw new YouCamError("TIMEOUT", `Lost contact with YouCam while waiting for task ${taskId}: ${(err as Error).message}`);
+        }
+        continue;
+      }
       const { task_status, error, error_message } = res.data;
       if (task_status === "success") return res;
       if (task_status === "error") throw fromEngineError(error, error_message);

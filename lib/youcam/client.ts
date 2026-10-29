@@ -67,7 +67,13 @@ export class YouCamClient {
       return { response: polled, image: await this.deps.http.download(url) };
     });
 
-    const stored = await this.deps.cache.put({ cacheKey, api, response, image, selfieHash, productId, params });
+    // Paid for already: if caching fails, still return it (shown inline instead of from storage).
+    const stored = await this.deps.cache
+      .put({ cacheKey, api, response, image, selfieHash, productId, params })
+      .catch((err: Error) => {
+        console.warn(`[youcam] ${api} result not cached: ${err.message}`);
+        return { imagePath: undefined };
+      });
     return { api, cacheKey, source: "live", response, image, imagePath: stored.imagePath };
   }
 

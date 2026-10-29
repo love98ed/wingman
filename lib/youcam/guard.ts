@@ -18,24 +18,30 @@ export class UnitGuard {
   constructor(
     private readonly store: UsageStore,
     private readonly limit: number,
-    private readonly log: (msg: string) => void = () => {},
+    /** Dev logging. Running totals cost a query, so they're only fetched when this is set. */
+    private readonly log?: (msg: string) => void,
   ) {}
 
   async run<T>(api: string, units: number, cacheKey: string, call: () => Promise<T>): Promise<T> {
     const id = await this.store.reserve(api, units, this.limit, cacheKey);
+    let result: T;
     try {
-      const result = await call();
-      await this.store.settle(id, "ok");
-      this.log(`[youcam] ${api} +${units} units (total ${await this.store.total()}/${this.limit})`);
-      return result;
+      result = await call();
     } catch (err) {
       const timedOut = err instanceof YouCamError && err.code === "TIMEOUT";
-      if (!timedOut) await this.store.settle(id, "failed");
-      this.log(
-        `[youcam] ${api} failed${timedOut ? " (units kept reserved)" : ""}: ${(err as Error).message}`,
-      );
+      // A failed release leaves the units reserved: an overcount, never an overspend.
+      if (!timedOut) await this.store.settle(id, "failed").catch(() => undefined);
+      this.log?.(`[youcam] ${api} failed${timedOut ? " (units kept reserved)" : ""}: ${(err as Error).message}`);
       throw err;
     }
+    // The call succeeded and is paid for: bookkeeping problems must not throw it away.
+    // If the settle fails the units stay counted as reserved, which is still correct.
+    await this.store.settle(id, "ok").catch((err: Error) => console.warn(`[youcam] ${api} settle failed: ${err.message}`));
+    if (this.log) {
+      const total = await this.store.total().catch(() => NaN);
+      this.log(`[youcam] ${api} +${units} units (total ${total}/${this.limit})`);
+    }
+    return result;
   }
 
   total() {

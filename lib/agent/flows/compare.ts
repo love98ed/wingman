@@ -1,5 +1,6 @@
 import "server-only";
 
+import { AgentError } from "@/lib/agent/errors";
 import type { CompareEvent, TierVersion } from "@/lib/agent/events";
 import { memo } from "@/lib/agent/memo";
 import { allowedFormalities, lookTotal, type LookItems } from "@/lib/agent/pick/candidates";
@@ -38,7 +39,7 @@ export async function runCompare(photoBytes: Buffer, req: CompareRequest, emit: 
     const product = originals.find((p) => p.id === id);
     if (product) look[slot] = product;
   }
-  if (!look.top && !look.outerwear) throw new Error("The look's pieces are no longer in the catalog");
+  if (!look.top && !look.outerwear) throw new AgentError("NOT_FOUND", "This look's pieces are no longer in stock. Try a new look.");
 
   const targets = TIERS.filter((t) => t !== req.tier);
   const pools = Object.fromEntries(targets.map((t) => [t, tierPool(look, products, t, photo.hash)])) as Record<Tier, TierPool>;

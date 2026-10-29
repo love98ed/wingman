@@ -17,7 +17,16 @@ export function eventStream<E>(label: string, work: (send: (event: E | ErrorEven
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
-      const send = (event: E | ErrorEvent) => controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      // After the visitor disconnects, enqueue throws; the work carries on so its renders are cached.
+      let open = true;
+      const send = (event: E | ErrorEvent) => {
+        if (!open) return;
+        try {
+          controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+        } catch {
+          open = false;
+        }
+      };
       try {
         await work(send);
       } catch (err) {
@@ -30,7 +39,7 @@ export function eventStream<E>(label: string, work: (send: (event: E | ErrorEven
           send({ type: "error", code: "UNKNOWN", message: "Something went wrong while styling. Please try again." });
         }
       } finally {
-        controller.close();
+        if (open) controller.close();
       }
     },
   });

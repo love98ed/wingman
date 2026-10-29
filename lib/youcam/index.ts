@@ -33,7 +33,12 @@ export function youcam(): YouCamClient {
  * or an inline data URL for mock fixtures (never stored).
  */
 export async function renderUrl(result: YouCamResult): Promise<string | undefined> {
-  if (result.imagePath) return new SupabaseRenderCache(supabaseAdmin()).signedUrl(result.imagePath);
+  if (result.imagePath) {
+    const signed = await new SupabaseRenderCache(supabaseAdmin())
+      .signedUrl(result.imagePath)
+      .catch((err: Error) => console.warn(`[youcam] signed URL failed, sending inline: ${err.message}`));
+    if (signed) return signed;
+  }
   if (result.image) return `data:image/jpeg;base64,${result.image.toString("base64")}`;
   return undefined;
 }
