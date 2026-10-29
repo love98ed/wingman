@@ -360,7 +360,7 @@ function LookCard({
         )}
 
         {/* Pinned to the bottom, so the buttons line up across cards of different lengths */}
-        <div className="mt-auto pt-5">
+        <div className="card-foot pt-5">
           {inCart ? (
             <button type="button" onClick={onViewCart} className="text-link min-h-11 font-medium">
               In your cart. View cart

@@ -98,15 +98,15 @@ export function SwapStep({
               <button
                 type="button"
                 onClick={() => onPick(option)}
-                className="group block w-full bg-surface text-left transition-colors hover:bg-surface-raised active:scale-[0.98]"
+                className="group card-cell w-full bg-surface text-left transition-colors hover:bg-surface-raised active:scale-[0.98]"
               >
                 <ProductImage src={option.image} sizes="(min-width: 640px) 12rem, 45vw" className="aspect-square" />
-                <span className="block p-3">
+                <span className="flex flex-1 flex-col p-3">
                   <span className="line-clamp-2 text-small">{displayName(option.name, option.storeName)}</span>
                   <span className="mt-1 block text-small text-muted-foreground">
                     <span className="capitalize">{option.colour}</span> · {option.storeName}
                   </span>
-                  <span className="mt-1 block text-small tabular-nums">
+                  <span className="card-foot block pt-1 text-small tabular-nums">
                     {sgd(option.price, { whole: true })}{" "}
                     <span className="text-muted-foreground">({priceDiff(option.price, current.price)})</span>
                   </span>

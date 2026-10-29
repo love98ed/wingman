@@ -126,7 +126,7 @@ function Column({
   const waiting = !render && !finished;
 
   return (
-    <section aria-label={`${TIER_LABELS[tier]}${current ? ", your look" : ""}`} className={cn("flex min-w-0 flex-col", current ? "bg-surface-raised" : "bg-surface")}>
+    <section aria-label={`${TIER_LABELS[tier]}${current ? ", your look" : ""}`} className={cn("card-cell min-w-0", current ? "bg-surface-raised" : "bg-surface")}>
       <div className="relative aspect-[4/5] overflow-hidden bg-surface-raised">
         {render ? (
           <Image src={render} alt={`You in the ${TIER_LABELS[tier]} version`} fill sizes="(min-width: 640px) 16rem, 30vw" className="animate-in object-cover fade-in duration-500" {...RAW_IMG_PROPS} />
@@ -173,7 +173,7 @@ function Column({
             </ul>
 
             {/* Pinned to the bottom so the three columns line up */}
-            <div className="mt-auto pt-3">
+            <div className="card-foot pt-3">
               {current ? (
                 <p className="flex min-h-11 items-center text-small text-muted-foreground">Your look</p>
               ) : (
