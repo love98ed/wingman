@@ -79,6 +79,20 @@ export type CompareEvent =
   | { type: "done" }
   | { type: "error"; code: string; message: string };
 
+/** A piece in Browse: a look item plus its tier. */
+export type BrowseItem = LookItem & { tier: Tier };
+
+/** GET /api/browse response. */
+export type BrowsePage = {
+  items: BrowseItem[];
+  total: number;
+  facets: {
+    colours: { value: string; count: number }[];
+    sizes: { value: string; count: number }[];
+    stores: { value: string; label: string; count: number }[];
+  };
+};
+
 /** Streamed by /api/swap after a piece is swapped: the new try-on and score. */
 export type SwapEvent =
   | { type: "render"; kind: Exclude<RenderKind, "beard">; url: string }

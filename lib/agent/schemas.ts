@@ -107,6 +107,19 @@ export const RefinedOccasionSchema = ParsedOccasionSchema.omit({ occasion: true,
   maxBudget: z.number().positive().nullable(),
 });
 
+/** Query string of GET /api/browse; empty values mean "any". */
+export const BrowseQuerySchema = z.object({
+  category: z.enum(["top", "outerwear", "bottom", "shoes", "watch"]).default("top"),
+  tier: z.enum(TIERS).optional(),
+  price: z.enum(["under-100", "100-250", "250-500", "over-500"]).optional(),
+  colour: z.string().max(40).optional(),
+  size: z.string().max(40).optional(),
+  store: z.string().max(100).optional(),
+  sort: z.enum(["price-asc", "price-desc"]).default("price-asc"),
+  offset: z.coerce.number().int().min(0).max(5000).default(0),
+});
+export type BrowseQuery = z.infer<typeof BrowseQuerySchema>;
+
 export const FitCheckSchema = z.object({
   checks: z.array(z.object({ score: z.number().min(0).max(10), reasoning: z.string() })),
 });

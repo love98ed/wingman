@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Look, LookItem } from "@/lib/agent/events";
 import type { CartLine } from "@/lib/cart";
 import type { ParsedOccasion } from "@/lib/agent/schemas";
@@ -38,6 +38,10 @@ export function LooksStep({
   cart,
   onAddToCart,
   onViewCart,
+  focusLook = 0,
+  hasPrep,
+  onPrep,
+  onBrowse,
 }: {
   looks: Look[];
   photo: Photo | null;
@@ -54,16 +58,28 @@ export function LooksStep({
   cart: CartLine[];
   onAddToCart: (look: Look) => void;
   onViewCart: () => void;
+  /** The card to show first, e.g. the look a piece was just added to. */
+  focusLook?: number;
+  hasPrep: boolean;
+  onPrep: () => void;
+  onBrowse: () => void;
 }) {
   const inCart = new Set(cart.map((l) => l.id));
   const cartTotal = cart.reduce((sum, l) => sum + l.price * l.qty, 0);
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
-  const goTo = (i: number) => {
+  const goTo = (i: number, behavior: ScrollBehavior = "smooth") => {
     const card = track.current?.children[i] as HTMLElement | undefined;
-    card?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    card?.scrollIntoView({ behavior, block: "nearest", inline: "center" });
   };
+
+  // Coming back from Browse or Swap: land on the look that changed
+  useEffect(() => {
+    if (focusLook > 0) goTo(focusLook, "instant");
+    // Only on arrival, not on every render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <FlowShell step={`${TIER_LABELS[tier]}${occasion ? `, ${occasion.setting}` : ""}`} wide>
@@ -137,7 +153,13 @@ export function LooksStep({
         </div>
       )}
 
-      <div className="mx-auto mt-10 max-w-xl">
+      <div className="mx-auto mt-10 flex max-w-xl flex-col items-start">
+        <button type="button" onClick={onPrep} className="text-link min-h-11 font-medium">
+          {hasPrep ? "Your night-before prep plan" : "Prep plan (on its way)"}
+        </button>
+        <button type="button" onClick={onBrowse} className="text-link min-h-11 font-medium">
+          Browse every piece
+        </button>
         <button type="button" onClick={onRestart} className="text-link min-h-11 text-muted-foreground">
           Change the occasion or budget
         </button>

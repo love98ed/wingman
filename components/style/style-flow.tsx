@@ -11,10 +11,12 @@ import {
   type SwapEvent,
   type TierVersion,
 } from "@/lib/agent/events";
-import type { ParsedOccasion } from "@/lib/agent/schemas";
+import { SLOTS } from "@/lib/agent/catalog";
+import type { ParsedOccasion, PrepPlan } from "@/lib/agent/schemas";
 import { isOneSize, type CartLine } from "@/lib/cart";
 import type { Occasion, Tier } from "@/lib/catalog/types";
 import { OCCASION_CHOICES } from "@/lib/occasions";
+import { BrowseStep, type BrowseFilters } from "./browse-step";
 import { CartStep } from "./cart-step";
 import { CompareStep, versionOf, type CompareState } from "./compare-step";
 import { ErrorStep } from "./error-step";
@@ -22,11 +24,12 @@ import { LoadingStep } from "./loading-step";
 import { LooksStep } from "./looks-step";
 import { OccasionStep } from "./occasion-step";
 import { PhotoStep } from "./photo-step";
+import { PrepStep } from "./prep-step";
 import { showsInRender, SwapStep, type SwapOptionsState } from "./swap-step";
 
 export type Photo = { blob: Blob; url: string };
 export type Progress = { step: StyleStep; detail?: string };
-type Phase = "photo" | "occasion" | "loading" | "looks" | "compare" | "swap" | "cart" | "error";
+type Phase = "photo" | "occasion" | "loading" | "looks" | "compare" | "swap" | "cart" | "prep" | "browse" | "error";
 type Slot = LookItem["slot"];
 
 /** The ids of a look's pieces: swap alternatives are cached per look and slot. */
@@ -60,6 +63,10 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   const [swapOptions, setSwapOptions] = useState<Record<string, SwapOptionsState>>({});
   /** Kept across refines and new runs, so pieces from earlier looks stay in the cart. */
   const [cart, setCart] = useState<CartLine[]>([]);
+  const [prep, setPrep] = useState<{ plan: PrepPlan; skinAnalysed: boolean } | null>(null);
+  const [browseFilters, setBrowseFilters] = useState<BrowseFilters>({ category: "top", sort: "price-asc" });
+  /** The look card to bring into view when returning to the looks. */
+  const [focusLook, setFocusLook] = useState(0);
   const abort = useRef<AbortController | null>(null);
   /** Compares and swaps in flight; a new run or refine cancels them. */
   const sideAborts = useRef<AbortController[]>([]);
@@ -140,8 +147,12 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
           case "fitcheck":
             setLooks((prev) => prev.map((look, i) => ({ ...look, fitCheck: event.checks[i] ?? look.fitCheck })));
             break;
+          case "prep":
+            setPrep({ plan: event.prepPlan, skinAnalysed: event.skinAnalysed });
+            break;
           case "result":
             setLooks(event.result.looks);
+            setPrep({ plan: event.result.prepPlan, skinAnalysed: event.result.skinAnalysed });
             break;
           case "error":
             failed = true;
@@ -164,8 +175,10 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     if (!photo) return setPhase("photo");
     setLooks([]);
     setParsed(null);
+    setPrep(null);
     setCompares({});
     setSwapOptions({});
+    setFocusLook(0);
     const form = new FormData();
     form.set("photo", photo.blob, "photo.jpg");
     form.set("occasion", sentence);
@@ -308,15 +321,15 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   };
 
   /**
-   * Put the new piece in at once (items and total update live), then stream the new try-on
-   * and Fit Check. Only a swap of the garment on top clears the render while it re-renders.
+   * Put a piece into a look, replacing the one in its slot or adding the slot (a layer, a watch).
+   * Items and total update at once, then the new try-on and Fit Check stream in. Only a change
+   * to the garment on top clears the render while it re-renders.
    */
-  const applySwap = async (option: LookItem) => {
-    const { look: index, slot } = swapping;
+  const applyPiece = async (index: number, option: LookItem) => {
     const before = looks[index];
     if (!photo || !before) return;
-    const items = before.items.map((i) => (i.slot === slot ? option : i));
-    const rerender = showsInRender(before, slot);
+    const slot = option.slot;
+    const items = SLOTS.flatMap((s) => (s === slot ? [option] : before.items.filter((i) => i.slot === s)));
     const token = (swapTokens.current[index] ?? 0) + 1;
     swapTokens.current[index] = token;
     const current = () => swapTokens.current[index] === token;
@@ -329,7 +342,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       items,
       total: roundTotal(items),
       fitCheck: null,
-      renders: rerender ? { beard: before.renders.beard, errors: [] } : before.renders,
+      renders: showsInRender({ ...before, items }, slot) ? { beard: before.renders.beard, errors: [] } : before.renders,
     };
     setLooks((prev) => prev.map((l, i) => (i === index ? swapped : l)));
     // The comparison was for the old pieces
@@ -339,6 +352,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       return next;
     });
     setNotice(null);
+    setFocusLook(index);
     setPhase("looks");
 
     const controller = sideController();
@@ -364,11 +378,11 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     }
   };
 
-  /** Every piece of a look into the cart (once each); a one-size piece needs no size pick. */
-  const addToCart = (look: Look) => {
+  /** Pieces into the cart (once each); a one-size piece needs no size pick. */
+  const addToCart = (pieces: LookItem[]) => {
     setCart((prev) => {
       const have = new Set(prev.map((l) => l.id));
-      const added: CartLine[] = look.items
+      const added: CartLine[] = pieces
         .filter((item) => !have.has(item.id))
         .map((item) => ({
           id: item.id,
@@ -384,7 +398,6 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         }));
       return [...prev, ...added];
     });
-    setPhase("cart");
   };
 
   if (phase === "photo") {
@@ -444,9 +457,27 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         look={swapLook}
         slot={swapping.slot}
         state={swapOptions[`${signature(swapLook)}|${swapping.slot}`] ?? { status: "loading", options: [] }}
-        onPick={(option) => void applySwap(option)}
+        onPick={(option) => void applyPiece(swapping.look, option)}
         onBack={() => setPhase("looks")}
         onRetry={() => void loadSwapOptions(swapLook, swapping.slot)}
+      />
+    );
+  }
+  if (phase === "prep") {
+    return (
+      <PrepStep plan={prep?.plan ?? null} skinAnalysed={prep?.skinAnalysed ?? false} setting={parsed?.setting} onBack={() => setPhase("looks")} />
+    );
+  }
+  if (phase === "browse") {
+    return (
+      <BrowseStep
+        filters={browseFilters}
+        onFilters={setBrowseFilters}
+        looks={looks}
+        inCart={new Set(cart.map((l) => l.id))}
+        onAddToLook={(index, item) => void applyPiece(index, item)}
+        onAddToCart={(item) => addToCart([item])}
+        onBack={() => setPhase("looks")}
       />
     );
   }
@@ -473,8 +504,15 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       onSwap={parsed ? openSwap : undefined}
       onRefine={parsed ? refine : undefined}
       cart={cart}
-      onAddToCart={addToCart}
+      onAddToCart={(look) => {
+        addToCart(look.items);
+        setPhase("cart");
+      }}
       onViewCart={() => setPhase("cart")}
+      focusLook={focusLook}
+      hasPrep={prep != null}
+      onPrep={() => setPhase("prep")}
+      onBrowse={() => setPhase("browse")}
     />
   );
 }
