@@ -43,7 +43,7 @@ export function SiteFooter() {
       </div>
 
       <p className="mt-20 max-w-[64ch] text-small text-muted-foreground md:mt-28">
-          Wingman, built for the YouCam API hackathon. Model photo by MART PRODUCTION on Pexels; every try-on on this
+          Wingman, built for the YouCam API hackathon. Model photos by MART PRODUCTION, Estefania Milazzo, Gabby K (Monstera Production), Ivan S, Atahan Demir and Alvin Ramadhian on Pexels; every try-on on this
           page is a real YouCam render, in pieces from Colony Clothing, Kevin Seah and Pharaoh&apos;s Horses.
       </p>
     </footer>

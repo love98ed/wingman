@@ -3,7 +3,7 @@ import Link from "next/link";
 import { sgd } from "@/lib/utils/format";
 import { BUDGETS } from "./looks-data";
 
-/** Price Compare, shown with real output: the same white linen look at each budget, edge to edge. */
+/** Price Compare, shown with real output: the same white linen look at each budget, each on a different man, edge to edge. */
 export function Budgets() {
   return (
     <section id="budgets" aria-labelledby="budgets-heading" className="relative z-10 bg-surface pt-28 pb-24 md:pt-40 md:pb-32">
@@ -24,7 +24,7 @@ export function Budgets() {
             <div data-shutter style={{ "--d": `${i * 110}ms` } as React.CSSProperties} className="relative aspect-[3/5] overflow-hidden bg-background md:aspect-[4/5]">
               <Image
                 src={b.render}
-                alt={`The model in the ${b.tier.toLowerCase()} version: ${b.piece.name} from ${b.piece.store}`}
+                alt={`A model in the ${b.tier.toLowerCase()} version: ${b.piece.name} from ${b.piece.store}`}
                 fill
                 sizes="33vw"
                 className="object-cover object-[50%_32%]"

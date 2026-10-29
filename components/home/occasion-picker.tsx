@@ -11,7 +11,7 @@ import { OCCASION_LOOKS, PICKER_OCCASIONS } from "./looks-data";
 const CHOICES = OCCASION_CHOICES.filter((o) => PICKER_OCCASIONS.includes(o.id));
 
 /**
- * The page's live thing: pick an occasion and the same man is shown in the look Wingman put
+ * The page's live thing: pick an occasion and a model is shown in the look Wingman put
  * together for it, as a real try-on, with the real piece, store and price beside it.
  */
 export function OccasionPicker() {
@@ -30,7 +30,7 @@ export function OccasionPicker() {
           Pick the night
         </h2>
         <p data-reveal style={{ "--d": "80ms" } as React.CSSProperties} className="mt-6 max-w-[36ch]">
-          Every look here is a real try-on of one photo, in pieces you can buy today from Singapore stores. Tap an
+          Every look here is a real try-on, in pieces you can buy today from Singapore stores. Tap an
           occasion; first dates, interviews and weddings are in the flow too.
         </p>
       </div>
@@ -78,7 +78,7 @@ export function OccasionPicker() {
             <Image
               key={o.id}
               src={OCCASION_LOOKS[o.id].render}
-              alt={o.id === selected ? `The model in ${OCCASION_LOOKS[o.id].look.toLowerCase()}, tried on by Wingman` : ""}
+              alt={o.id === selected ? `A model in ${OCCASION_LOOKS[o.id].look.toLowerCase()}, tried on by Wingman` : ""}
               aria-hidden={o.id !== selected}
               fill
               sizes="(min-width: 768px) 58vw, 100vw"

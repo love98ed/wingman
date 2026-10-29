@@ -1,14 +1,15 @@
 import type { Occasion } from "@/lib/catalog/types";
 
 /**
- * The home page's material: real YouCam clothes try-ons of one model photo (MART PRODUCTION,
- * Pexels) in real pieces from the catalog, rendered while testing on 28 and 29 Oct 2026.
+ * The home page's material: real YouCam clothes try-ons of Pexels model photos
+ * (fixtures/selfies/CREDITS.md) in real pieces from the catalog, rendered on 28 and 29 Oct 2026.
+ * Each picture on the page shows a different man; only the hero's before and after share one.
  * Prices and links are the stores' own on that date.
  */
 
 export type HomePiece = { name: string; store: string; price: number; url: string; thumb: string };
 
-/** The photo every render below was made from. */
+/** The hero's before photo, the one the date, interview and wedding renders were made from. */
 export const BEFORE = "/home/before.jpg";
 
 /** One real try-on per occasion, shown by the occasion switcher. */
@@ -96,25 +97,25 @@ export const BUDGETS = [
   },
   {
     tier: "Mid-range",
-    render: "/home/date.jpg",
+    render: "/home/mid.jpg",
     piece: { name: "Napoli Linen Shirt", store: "Colony Clothing", price: 360, url: OCCASION_LOOKS.date.piece.url },
   },
   {
     tier: "Luxury",
-    render: "/home/interview.jpg",
+    render: "/home/luxury.jpg",
     piece: { name: "100% Linen Long Sleeve Shirt", store: "Kevin Seah", price: 500, url: OCCASION_LOOKS.interview.piece.url },
   },
 ] as const;
 
 /**
  * The first-date look as Wingman scores and sells it: the mid-range version in Three budgets.
- * Score and reasoning are Wingman's real Fit Check of /home/date.jpg (first two sentences); the
+ * Score and reasoning are Wingman's real Fit Check of /home/mid.jpg (first sentence); the
  * cart link holds these three variants.
  */
 export const FIT_CHECK = {
-  score: 8.2,
+  score: 7.5,
   reasoning:
-    "The white linen shirt sits cleanly on your shoulders, and the rolled sleeves and natural creasing give it a relaxed rooftop look. White looks fresh against your warm skin tone, and the black pants and shoes sharpen it for a night date.",
+    "The white linen shirt with rolled sleeves looks relaxed and sits well through the shoulders, and the crisp white works nicely against your warm olive skin and dark hair.",
   store: "Colony Clothing",
   items: [
     { name: "Napoli Linen Shirt, size S", price: 360 },
