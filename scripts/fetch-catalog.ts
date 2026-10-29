@@ -22,7 +22,8 @@ import { appendRemoved, readStores, writeStores, type Store } from "@/lib/catalo
 import { pool } from "@/lib/pool";
 import { judgeImage, tagBatch, TAG_BATCH_SIZE, type ProductTag } from "@/lib/catalog/tag";
 import { assignTiers, tierCounts } from "@/lib/catalog/tiers";
-import { CATEGORIES, TIERS, type Category, type Product, type ShopifyProduct } from "@/lib/catalog/types";
+import type { ShopifyProduct } from "@/lib/catalog/shopify";
+import { CATEGORIES, TIERS, type Category, type Product } from "@/lib/catalog/types";
 import { supabaseAdmin } from "@/lib/supabase/server";
 
 const { values: args } = parseArgs({

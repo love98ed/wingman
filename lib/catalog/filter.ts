@@ -1,5 +1,5 @@
 import { sizeOptionIndex } from "./shopify";
-import type { ShopifyProduct } from "./types";
+import type { ShopifyProduct } from "./shopify";
 
 /**
  * Cheap keyword pre-filter before Claude tagging. Removes products that are

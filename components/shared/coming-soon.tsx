@@ -16,7 +16,7 @@ export function ComingSoon({ title, body }: { title: string; body: string }) {
         />
       </div>
       <div className="flex flex-col px-(--margin) pt-10 pb-[max(env(safe-area-inset-bottom),2rem)] md:col-span-5 md:justify-center md:py-20">
-        <Link href="/" className="font-display text-small uppercase">
+        <Link href="/" className="inline-flex min-h-11 items-center self-start font-display text-small uppercase">
           Wingman
         </Link>
         <h1 className="mt-10 text-head">{title}</h1>

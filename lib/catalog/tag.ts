@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { generateStructured } from "@/lib/llm/client";
 import type { ImageVerdict } from "./images";
-import { CATEGORIES, FORMALITIES, OCCASIONS, type ShopifyProduct } from "./types";
+import type { ShopifyProduct } from "./shopify";
+import { CATEGORIES, FORMALITIES, OCCASIONS } from "./types";
 
 export const TAG_BATCH_SIZE = 25;
 

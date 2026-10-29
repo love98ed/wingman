@@ -11,7 +11,7 @@ import {
   type SwapEvent,
   type TierVersion,
 } from "@/lib/agent/events";
-import { SLOTS } from "@/lib/agent/catalog";
+import { SLOTS } from "@/lib/agent/slots";
 import type { ParsedOccasion, PrepPlan } from "@/lib/agent/schemas";
 import { isOneSize, type CartLine } from "@/lib/cart";
 import type { Occasion, Tier } from "@/lib/catalog/types";

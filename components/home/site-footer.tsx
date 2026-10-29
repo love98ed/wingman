@@ -35,7 +35,7 @@ export function SiteFooter({ render }: { render: string }) {
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className="inline-block text-head leading-none font-medium tracking-[-0.02em] transition-[color,transform] duration-200 ease-(--ease-out) group-hover/menu:text-muted-foreground hover:translate-x-3 hover:!text-ivory"
+                  className="-my-2 inline-block py-2 text-head leading-none font-medium tracking-[-0.02em] transition-[color,transform] duration-200 ease-(--ease-out) group-hover/menu:text-muted-foreground hover:translate-x-3 hover:!text-ivory"
                 >
                   {item.label}
                 </Link>

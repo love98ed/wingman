@@ -212,7 +212,18 @@ export function BrowseStep({
         </button>
       </div>
 
-      {page && page.total === 0 && status === "done" && <p className="mt-4">Nothing matches. Try fewer filters.</p>}
+      {page && page.total === 0 && status === "done" && (
+        <div className="mt-4">
+          <p>Nothing matches all of those.</p>
+          <button
+            type="button"
+            onClick={() => onFilters({ category: filters.category, sort: filters.sort })}
+            className="text-link mt-1 min-h-11 font-medium"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
 
       <ul className={cn("mt-4 grid grid-cols-2 gap-2 transition-opacity sm:grid-cols-3", status === "loading" && "opacity-50")}>
         {page?.items.map((item) => (
@@ -296,7 +307,8 @@ function ItemSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={name}>
-      <button type="button" aria-label="Close" tabIndex={-1} onClick={onClose} className="absolute inset-0 bg-background/80" />
+      {/* Tapping outside closes; keyboard and screen readers use Escape or the Close button */}
+      <div aria-hidden onClick={onClose} className="absolute inset-0 bg-background/80" />
       <div className="relative max-h-[88dvh] w-full max-w-xl animate-in overflow-y-auto bg-surface px-(--margin) pt-5 pb-[max(env(safe-area-inset-bottom),1.25rem)] duration-300 slide-in-from-bottom-8">
         <div className="flex gap-4">
           <span className="relative size-28 shrink-0 overflow-hidden bg-[#d9d7d2]">

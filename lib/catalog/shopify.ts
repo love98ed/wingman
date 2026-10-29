@@ -1,6 +1,39 @@
 import { z } from "zod";
 import type { PoliteFetcher } from "./polite-fetch";
-import { ShopifyProductSchema, type ShopifyProduct } from "./types";
+
+/** The parts of a Shopify products.json product we use. Extra fields are ignored. */
+export const ShopifyProductSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  handle: z.string(),
+  body_html: z.string().nullish(),
+  vendor: z.string().nullish(),
+  product_type: z.string().nullish(),
+  tags: z.array(z.string()).default([]),
+  updated_at: z.string(),
+  options: z.array(z.object({ name: z.string(), position: z.number() })).default([]),
+  variants: z.array(
+    z.object({
+      id: z.number(),
+      title: z.string(),
+      price: z.string(),
+      available: z.boolean().default(true),
+      option1: z.string().nullish(),
+      option2: z.string().nullish(),
+      option3: z.string().nullish(),
+    }),
+  ),
+  images: z.array(
+    z.object({
+      src: z.string(),
+      width: z.number().nullish(),
+      height: z.number().nullish(),
+      position: z.number().nullish(),
+      alt: z.string().nullish(),
+    }),
+  ),
+});
+export type ShopifyProduct = z.infer<typeof ShopifyProductSchema>;
 
 const PAGE_SIZE = 250;
 const MAX_PAGES = 20;

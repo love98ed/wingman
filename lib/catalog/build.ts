@@ -2,7 +2,8 @@ import { toSgd } from "./fx";
 import { variantSize } from "./shopify";
 import type { Store } from "./stores";
 import type { ProductTag } from "./tag";
-import type { Category, Product, ShopifyProduct } from "./types";
+import type { ShopifyProduct } from "./shopify";
+import type { Category, Product } from "./types";
 
 /** Price of the cheapest in-stock variant, else the cheapest variant. */
 export function listPrice(product: ShopifyProduct): number {

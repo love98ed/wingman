@@ -6,7 +6,7 @@ import { toSgd, UnknownCurrencyError } from "@/lib/catalog/fx";
 import { imageScore, rankImages, sizedUrl, usableForTryOn } from "@/lib/catalog/images";
 import { parseProductsPage, variantSize } from "@/lib/catalog/shopify";
 import { ProductTagSchema, TagBatchSchema } from "@/lib/catalog/tag";
-import type { ShopifyProduct } from "@/lib/catalog/types";
+import type { ShopifyProduct } from "@/lib/catalog/shopify";
 
 const duxton = parseProductsPage(JSON.parse(readFileSync("fixtures/shopify/duxton.com.json", "utf8")));
 const byTitle = (t: string) => duxton.find((p) => p.title === t)!;

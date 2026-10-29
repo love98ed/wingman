@@ -104,13 +104,13 @@ export function HeroWindow({ before, after, alt }: Props) {
           <header className="pointer-events-auto flex h-16 items-center justify-between pt-[env(safe-area-inset-top)] md:h-20">
             <span className="font-display text-small tracking-[-0.01em] uppercase">Wingman</span>
             <nav aria-label="Main" className="flex gap-6 text-small">
-              <a href="#look" className="text-link hidden md:inline">
+              <a href="#look" className="text-link hidden min-h-11 items-center md:inline-flex">
                 The look
               </a>
-              <a href="#how" className="text-link hidden md:inline">
+              <a href="#how" className="text-link hidden min-h-11 items-center md:inline-flex">
                 How it works
               </a>
-              <Link href="/demo" className="text-link">
+              <Link href="/demo" className="text-link inline-flex min-h-11 items-center">
                 Try the demo
               </Link>
             </nav>

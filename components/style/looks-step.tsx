@@ -86,7 +86,8 @@ export function LooksStep({
       <div className="mx-auto max-w-xl">
         <h1 className="mt-4 text-head">Your looks</h1>
         <p className="mt-3">
-          {looks.length} looks from real Singapore stores, tried on your photo. Swipe to compare, tap Swap to change a piece.
+          {looks.length} looks from real Singapore stores, tried on your photo. <span className="lg:hidden">Swipe to compare, tap</span>
+          <span className="hidden lg:inline">Tap</span> Swap to change a piece.
         </p>
         {cart.length > 0 && (
           <button
@@ -136,7 +137,7 @@ export function LooksStep({
       </div>
 
       {looks.length > 1 && (
-        <div className="mt-5 flex justify-center gap-2" role="tablist" aria-label="Choose a look">
+        <div className="mt-5 flex justify-center gap-2 lg:hidden" role="tablist" aria-label="Choose a look">
           {looks.map((look, i) => (
             <button
               key={i}
@@ -202,7 +203,7 @@ function LookCard({
   return (
     <article
       aria-label={`Look ${index + 1} of ${count}: ${look.name}`}
-      className="relative w-[86%] shrink-0 snap-center bg-surface sm:w-[24rem]"
+      className="relative w-[86%] shrink-0 snap-center bg-surface sm:w-[24rem] lg:w-[calc((100%-2rem)/3)]"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-surface-raised">
         {look.renders.outfit ? (

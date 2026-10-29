@@ -59,7 +59,7 @@ export function SwapStep({
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-small text-muted-foreground">Now · {current.storeName}</span>
-          <a href={current.url} target="_blank" rel="noopener" className="text-link line-clamp-2 text-small">
+          <a href={current.url} target="_blank" rel="noopener" className="text-link line-clamp-2 min-h-11 text-small">
             {displayName(current.name, current.storeName)}
           </a>
         </span>

@@ -1,4 +1,5 @@
-import type { Category, ShopifyProduct } from "./types";
+import type { ShopifyProduct } from "./shopify";
+import type { Category } from "./types";
 
 /** Categories rendered with clothes try-on. Only these need a clean garment image. */
 export const TRY_ON_CATEGORIES: Category[] = ["top", "outerwear"];

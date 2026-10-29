@@ -1,11 +1,11 @@
 import { sha256 } from "@/lib/hash";
 import { displayName } from "@/lib/catalog/names";
-import type { Category, Formality, Occasion, Product } from "@/lib/catalog/types";
+import type { Formality, Occasion, Product } from "@/lib/catalog/types";
 import type { LookPick } from "./schemas";
 
-/** The catalog slots a look is built from. Glasses and accessories are out of scope for now. */
-export const SLOTS = ["top", "outerwear", "bottom", "shoes", "watch"] as const satisfies readonly Category[];
-export type Slot = (typeof SLOTS)[number];
+import { SLOTS, type Slot } from "./slots";
+
+export { SLOTS, type Slot };
 
 /** How many candidates per slot Claude sees: enough choice, small prompt. */
 const POOL_SIZE: Record<Slot, number> = { top: 30, outerwear: 12, bottom: 20, shoes: 20, watch: 12 };

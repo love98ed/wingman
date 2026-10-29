@@ -96,7 +96,7 @@ function CartItem({
           <Image src={line.image} alt="" fill sizes="80px" className="object-cover" {...RAW_IMG_PROPS} />
         </span>
         <div className="min-w-0 flex-1">
-          <a href={line.url} target="_blank" rel="noopener" className="text-link line-clamp-2">
+          <a href={line.url} target="_blank" rel="noopener" className="text-link line-clamp-2 min-h-11">
             {name}
           </a>
           <p className="mt-1 tabular-nums">{sgd(line.price)}</p>
