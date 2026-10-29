@@ -9,11 +9,14 @@ export function PrepStep({
   skinAnalysed,
   setting,
   onBack,
+  backLabel = "Back to your looks",
 }: {
   plan: PrepPlan | null;
   skinAnalysed: boolean;
   setting?: string;
   onBack: () => void;
+  /** Names the screen the back button returns to. */
+  backLabel?: string;
 }) {
   return (
     <FlowShell step="Prep plan">
@@ -48,7 +51,7 @@ export function PrepStep({
       )}
 
       <button type="button" onClick={onBack} className="text-link mt-6 min-h-11 text-muted-foreground">
-        Back to your looks
+        {backLabel}
       </button>
     </FlowShell>
   );

@@ -13,11 +13,14 @@ export function CartStep({
   onSize,
   onRemove,
   onBack,
+  backLabel = "Back to your looks",
 }: {
   lines: CartLine[];
   onSize: (id: string, variantId: number) => void;
   onRemove: (id: string) => void;
   onBack: () => void;
+  /** Names the screen the back button returns to. */
+  backLabel?: string;
 }) {
   const stores = groupByStore(lines);
   const total = stores.reduce((sum, s) => sum + s.subtotal, 0);
@@ -72,7 +75,7 @@ export function CartStep({
       )}
 
       <button type="button" onClick={onBack} className="text-link mt-6 min-h-11 text-muted-foreground">
-        Back to your looks
+        {backLabel}
       </button>
     </FlowShell>
   );

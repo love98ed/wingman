@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useId, useRef, useState } from "react";
 import { FlowShell, RAW_IMG_PROPS } from "@/components/style/flow-shell";
 import type { Photo } from "@/components/style/style-flow";
@@ -148,6 +149,9 @@ export function PhotoStep({
         </div>
       )}
       <p className="mt-6 text-small text-muted-foreground">Only used to style you. Try-ons are deleted after 24 hours.</p>
+      <Link href="/" className="text-link mt-4 inline-flex min-h-11 items-center text-muted-foreground">
+        Back to the home page
+      </Link>
     </FlowShell>
   );
 }

@@ -111,6 +111,7 @@ export function BrowseStep({
   onAddToLook,
   onAddToCart,
   onBack,
+  backLabel = "Back to your looks",
 }: {
   filters: BrowseFilters;
   onFilters: (filters: BrowseFilters) => void;
@@ -119,6 +120,8 @@ export function BrowseStep({
   onAddToLook: (look: number, item: BrowseItem) => void;
   onAddToCart: (item: BrowseItem) => void;
   onBack: () => void;
+  /** Names the screen the back button returns to. */
+  backLabel?: string;
 }) {
   const [page, setPage] = useState<BrowsePage | null>(null);
   const [status, setStatus] = useState<"loading" | "done" | "error">("loading");
@@ -258,7 +261,7 @@ export function BrowseStep({
       )}
 
       <button type="button" onClick={onBack} className="text-link mt-8 min-h-11 text-muted-foreground">
-        Back to your looks
+        {backLabel}
       </button>
 
       {selected && (

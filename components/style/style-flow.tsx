@@ -33,6 +33,20 @@ import type { PhotoCheck } from "@/lib/photo/problems";
 export type Photo = { blob: Blob; url: string; check?: PhotoCheck };
 export type Progress = { step: StyleStep; detail?: string };
 type Phase = "photo" | "occasion" | "loading" | "looks" | "compare" | "swap" | "cart" | "prep" | "browse" | "error";
+
+/** What a back button says, by the screen it returns to. */
+const BACK_LABELS: Record<Phase, string> = {
+  photo: "Back to your photo",
+  occasion: "Back to the occasion",
+  loading: "Back",
+  looks: "Back to your looks",
+  compare: "Back to the comparison",
+  swap: "Back to the options",
+  cart: "Back to your cart",
+  prep: "Back to the prep plan",
+  browse: "Back to browsing",
+  error: "Back",
+};
 type Slot = LookItem["slot"];
 
 /** The ids of a look's pieces: swap alternatives are cached per look and slot. */
@@ -43,17 +57,64 @@ const roundTotal = (items: LookItem[]) => Math.round(items.reduce((sum, i) => su
 const errorFrom = async (res: Response, fallback: string) =>
   ((await res.json().catch(() => ({}))) as { error?: string }).error ?? fallback;
 
+/** What the flow keeps when the visitor leaves /style, so coming back picks up where they were. */
+type Saved = {
+  phase: Phase;
+  photo: Photo | null;
+  occasionId: Occasion;
+  sentence: string;
+  tier: Tier;
+  looks: Look[];
+  parsed: ParsedOccasion | null;
+  compares: Record<number, CompareState>;
+  swapOptions: Record<string, SwapOptionsState>;
+  cart: CartLine[];
+  prep: { plan: PrepPlan; skinAnalysed: boolean } | null;
+  browseFilters: BrowseFilters;
+  focusLook: number;
+};
+
+/**
+ * Held in memory only, for moves within the site (to the home page and back). Nothing is
+ * written to the browser's storage, so a refresh or a new tab starts over and the photo is
+ * never kept anywhere but this page.
+ */
+let saved: Saved | null = null;
+
+/** Where a visitor coming back lands: the screen they left, unless they picked an occasion on the way in. */
+function arrival(initialOccasion: Occasion | undefined): Saved | null {
+  if (!saved) return null;
+  const choice = OCCASION_CHOICES.find((o) => o.id === initialOccasion);
+  if (choice) {
+    return { ...saved, occasionId: choice.id, sentence: choice.example, phase: saved.photo ? "occasion" : "photo" };
+  }
+  // Requests in flight were cancelled on the way out: drop what they'd started so it reloads
+  const settledOnly = <T extends { status: string }>(map: Record<string, T>) =>
+    Object.fromEntries(Object.entries(map).filter(([, v]) => v.status !== "loading"));
+  const interrupted = ["loading", "error", "compare", "swap"].includes(saved.phase);
+  const phase = interrupted ? (saved.looks.length ? "looks" : saved.photo ? "occasion" : "photo") : saved.phase;
+  return { ...saved, phase, compares: settledOnly(saved.compares), swapOptions: settledOnly(saved.swapOptions) };
+}
+
 /** Photo, then occasion, then a streamed styling run that lands on the looks. */
 export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   const start = OCCASION_CHOICES.find((o) => o.id === initialOccasion) ?? OCCASION_CHOICES[0];
-  const [phase, setPhase] = useState<Phase>("photo");
-  const [photo, setPhoto] = useState<Photo | null>(null);
-  const [occasionId, setOccasionId] = useState<Occasion>(start.id);
-  const [sentence, setSentence] = useState(start.example);
-  const [tier, setTier] = useState<Tier>("mid");
+  const [returning] = useState(() => arrival(initialOccasion));
+  const [phase, setPhase] = useState<Phase>(returning?.phase ?? "photo");
+  /**
+   * Screens visited, mirrored in the browser history so its back and forward buttons move
+   * between screens too. `at` is the current entry. The loading screen is never kept: the
+   * screen after it takes its place.
+   */
+  const trail = useRef<{ phases: Phase[]; at: number }>({ phases: [returning?.phase ?? "photo"], at: 0 });
+  const previous = trail.current.at > 0 ? trail.current.phases[trail.current.at - 1] : null;
+  const [photo, setPhoto] = useState<Photo | null>(returning?.photo ?? null);
+  const [occasionId, setOccasionId] = useState<Occasion>(returning?.occasionId ?? start.id);
+  const [sentence, setSentence] = useState(returning?.sentence ?? start.example);
+  const [tier, setTier] = useState<Tier>(returning?.tier ?? "mid");
   const [progress, setProgress] = useState<Progress>({ step: "reading" });
-  const [looks, setLooks] = useState<Look[]>([]);
-  const [parsed, setParsed] = useState<ParsedOccasion | null>(null);
+  const [looks, setLooks] = useState<Look[]>(returning?.looks ?? []);
+  const [parsed, setParsed] = useState<ParsedOccasion | null>(returning?.parsed ?? null);
   const [error, setError] = useState<{ code: string; message: string } | null>(null);
   /** The request being applied while the loading screen shows a refine. */
   const [refining, setRefining] = useState<string | null>(null);
@@ -62,16 +123,16 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   /** Confirms "Delete my photo" on the photo screen. */
   const [photoNotice, setPhotoNotice] = useState<string | null>(null);
   /** Price Compare per look index; kept so reopening a comparison is instant. */
-  const [compares, setCompares] = useState<Record<number, CompareState>>({});
+  const [compares, setCompares] = useState<Record<number, CompareState>>(returning?.compares ?? {});
   const [comparing, setComparing] = useState(0);
   const [swapping, setSwapping] = useState<{ look: number; slot: Slot }>({ look: 0, slot: "top" });
-  const [swapOptions, setSwapOptions] = useState<Record<string, SwapOptionsState>>({});
+  const [swapOptions, setSwapOptions] = useState<Record<string, SwapOptionsState>>(returning?.swapOptions ?? {});
   /** Kept across refines and new runs, so pieces from earlier looks stay in the cart. */
-  const [cart, setCart] = useState<CartLine[]>([]);
-  const [prep, setPrep] = useState<{ plan: PrepPlan; skinAnalysed: boolean } | null>(null);
-  const [browseFilters, setBrowseFilters] = useState<BrowseFilters>({ category: "top", sort: "featured" });
+  const [cart, setCart] = useState<CartLine[]>(returning?.cart ?? []);
+  const [prep, setPrep] = useState<{ plan: PrepPlan; skinAnalysed: boolean } | null>(returning?.prep ?? null);
+  const [browseFilters, setBrowseFilters] = useState<BrowseFilters>(returning?.browseFilters ?? { category: "top", sort: "featured" });
   /** The look card to bring into view when returning to the looks. */
-  const [focusLook, setFocusLook] = useState(0);
+  const [focusLook, setFocusLook] = useState(returning?.focusLook ?? 0);
   /** The run has finished rendering and scoring; the loading screen opens the looks once no image is missing. */
   const [settled, setSettled] = useState(false);
   /** Looks whose failed images are being tried again. */
@@ -88,7 +149,9 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   }, [phase]);
   // Every image landed (or the user chose to go on without the missing ones): open the looks
   useEffect(() => {
-    if (phase === "loading" && settled && retrying === 0 && imageStatus(looks).failed.length === 0) setPhase("looks");
+    if (phase === "loading" && settled && retrying === 0 && imageStatus(looks).failed.length === 0) go("looks");
+    // go only reads the trail ref
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, settled, retrying, looks]);
   useEffect(
     () => () => {
@@ -97,14 +160,71 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     },
     [],
   );
-  // Keyed on the URL: adding the photo check result keeps the same image
-  const photoUrl = photo?.url;
-  useEffect(
-    () => () => {
-      if (photoUrl) URL.revokeObjectURL(photoUrl);
-    },
-    [photoUrl],
-  );
+  // Free a photo's image once another replaces it. Not on unmount: the saved flow still shows it.
+  const shownUrl = useRef(photo?.url);
+  useEffect(() => {
+    if (shownUrl.current && shownUrl.current !== photo?.url) URL.revokeObjectURL(shownUrl.current);
+    shownUrl.current = photo?.url;
+  }, [photo?.url]);
+
+  // Keep the flow for a visit to the home page and back
+  useEffect(() => {
+    saved = { phase, photo, occasionId, sentence, tier, looks, parsed, compares, swapOptions, cart, prep, browseFilters, focusLook };
+  }, [phase, photo, occasionId, sentence, tier, looks, parsed, compares, swapOptions, cart, prep, browseFilters, focusLook]);
+
+  const record = (next: Phase, replace: boolean) => {
+    const t = trail.current;
+    if (replace) t.phases[t.at] = next;
+    else {
+      t.phases = [...t.phases.slice(0, t.at + 1), next];
+      t.at++;
+    }
+    window.history[replace ? "replaceState" : "pushState"]({ wingman: t.at }, "");
+    setPhase(next);
+  };
+
+  /** Open a screen. Leaving the loading screen replaces it, or returns to the screen it came from. */
+  const go = (next: Phase) => {
+    const t = trail.current;
+    if (t.phases[t.at] === next) return setPhase(next);
+    if (t.phases[t.at] === "loading" && t.phases[t.at - 1] === next) return back();
+    record(next, t.phases[t.at] === "loading");
+  };
+
+  /**
+   * Back to the screen before this one (the browser's back does the same). The trail moves at
+   * once, so a second call before the browser's popstate lands can't step back twice.
+   */
+  const back = () => {
+    const t = trail.current;
+    if (t.at === 0) return;
+    t.at--;
+    setPhase(t.phases[t.at]);
+    window.history.back();
+  };
+
+  /** Finish a sub-screen: step back if it opened from `to`, otherwise open `to`. */
+  const returnTo = (to: Phase) => (previous === to ? back() : go(to));
+
+  /** Start over at `to` with nothing behind it in the flow, e.g. after deleting the photo. */
+  const resetTo = (to: Phase) => {
+    trail.current = { phases: [to], at: 0 };
+    window.history.replaceState({ wingman: 0 }, "");
+    setPhase(to);
+  };
+
+  // Browser back and forward move through the trail
+  useEffect(() => {
+    window.history.replaceState({ wingman: 0 }, "");
+    const onPop = (event: PopStateEvent) => {
+      const at = (event.state as { wingman?: number } | null)?.wingman;
+      if (typeof at !== "number" || !trail.current.phases[at]) return;
+      trail.current.at = at;
+      setPhase(trail.current.phases[at]);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   const sideController = () => {
     const controller = new AbortController();
@@ -133,7 +253,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     setProgress({ step: "reading" });
     setNotice(null);
     setSettled(false);
-    setPhase("loading");
+    go("loading");
 
     try {
       const res = await fetch(endpoint, { method: "POST", body: form, signal: controller.signal });
@@ -210,7 +330,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   };
 
   const run = () => {
-    if (!photo) return setPhase("photo");
+    if (!photo) return go("photo");
     setLooks([]);
     setParsed(null);
     setPrep(null);
@@ -223,7 +343,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     form.set("tier", tier);
     void streamLooks("/api/style", form, (code, message) => {
       setError({ code, message });
-      setPhase("error");
+      go("error");
     });
   };
 
@@ -249,7 +369,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       setParsed(before.parsed);
       setCompares({});
       setNotice(text);
-      setPhase("looks");
+      returnTo("looks");
     });
   };
 
@@ -301,7 +421,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
 
   const openCompare = (index: number) => {
     setComparing(index);
-    setPhase("compare");
+    go("compare");
     if (!compares[index] || compares[index].status === "error") void startCompare(index);
   };
 
@@ -328,7 +448,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
           : l,
       ),
     );
-    setPhase("looks");
+    returnTo("looks");
   };
 
   const loadSwapOptions = async (look: Look, slot: Slot) => {
@@ -353,7 +473,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
 
   const openSwap = (index: number, slot: Slot) => {
     setSwapping({ look: index, slot });
-    setPhase("swap");
+    go("swap");
     const state = swapOptions[`${signature(looks[index])}|${slot}`];
     if (!state || state.status === "error") void loadSwapOptions(looks[index], slot);
   };
@@ -391,7 +511,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     });
     setNotice(null);
     setFocusLook(index);
-    setPhase("looks");
+    returnTo("looks");
 
     const controller = sideController();
     const form = new FormData();
@@ -468,7 +588,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         renders: { ...l.renders, errors: [...l.renders.errors, ...Object.values(l.renders.failed ?? {})], failed: {} },
       })),
     );
-    setPhase("looks");
+    go("looks");
   };
 
   /** Pieces into the cart (once each); a one-size piece needs no size pick. */
@@ -516,7 +636,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     setSwapOptions({});
     setNotice(null);
     setPhotoNotice("Your photo and every try-on made from it are deleted.");
-    setPhase("photo");
+    resetTo("photo");
   };
 
   if (phase === "photo") {
@@ -527,7 +647,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
           setPhotoNotice(null);
           setPhoto(next);
         }}
-        onNext={() => setPhase("occasion")}
+        onNext={() => go("occasion")}
         notice={photoNotice}
       />
     );
@@ -547,7 +667,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         }}
         onSentence={setSentence}
         onTier={setTier}
-        onBack={() => setPhase("photo")}
+        onBack={() => (previous === "photo" ? back() : go("photo"))}
         onSubmit={run}
       />
     );
@@ -574,9 +694,9 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         onRetry={run}
         onNewPhoto={() => {
           setPhoto(null);
-          setPhase("photo");
+          returnTo("photo");
         }}
-        onBack={() => setPhase("occasion")}
+        onBack={() => returnTo("occasion")}
         onDeletePhoto={() => void deletePhoto()}
       />
     );
@@ -588,7 +708,8 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         state={compares[comparing]}
         photo={photo}
         onChoose={chooseVersion}
-        onBack={() => setPhase("looks")}
+        onBack={back}
+        backLabel={previous ? BACK_LABELS[previous] : undefined}
         onRetry={() => void startCompare(comparing)}
       />
     );
@@ -601,14 +722,15 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         slot={swapping.slot}
         state={swapOptions[`${signature(swapLook)}|${swapping.slot}`] ?? { status: "loading", options: [] }}
         onPick={(option) => void applyPiece(swapping.look, option)}
-        onBack={() => setPhase("looks")}
+        onBack={back}
         onRetry={() => void loadSwapOptions(swapLook, swapping.slot)}
       />
     );
   }
   if (phase === "prep") {
     return (
-      <PrepStep plan={prep?.plan ?? null} skinAnalysed={prep?.skinAnalysed ?? false} setting={parsed?.setting} onBack={() => setPhase("looks")} />
+      <PrepStep plan={prep?.plan ?? null} skinAnalysed={prep?.skinAnalysed ?? false} setting={parsed?.setting} onBack={back}
+        backLabel={previous ? BACK_LABELS[previous] : undefined} />
     );
   }
   if (phase === "browse") {
@@ -620,7 +742,8 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         inCart={new Set(cart.map((l) => l.id))}
         onAddToLook={(index, item) => void applyPiece(index, item)}
         onAddToCart={(item) => addToCart([item])}
-        onBack={() => setPhase("looks")}
+        onBack={back}
+        backLabel={previous ? BACK_LABELS[previous] : undefined}
       />
     );
   }
@@ -630,7 +753,8 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
         lines={cart}
         onSize={(id, variantId) => setCart((prev) => prev.map((l) => (l.id === id ? { ...l, variantId } : l)))}
         onRemove={(id) => setCart((prev) => prev.filter((l) => l.id !== id))}
-        onBack={() => setPhase(looks.length ? "looks" : "occasion")}
+        onBack={back}
+        backLabel={previous ? BACK_LABELS[previous] : undefined}
       />
     );
   }
@@ -642,20 +766,20 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       tier={tier}
       scoring={progress.step === "scoring" || looks.some((l) => !l.fitCheck)}
       notice={notice}
-      onRestart={() => setPhase("occasion")}
+      onRestart={() => go("occasion")}
       onCompare={parsed ? openCompare : undefined}
       onSwap={parsed ? openSwap : undefined}
       onRefine={parsed ? refine : undefined}
       cart={cart}
       onAddToCart={(look) => {
         addToCart(look.items);
-        setPhase("cart");
+        go("cart");
       }}
-      onViewCart={() => setPhase("cart")}
+      onViewCart={() => go("cart")}
       focusLook={focusLook}
       hasPrep={prep != null}
-      onPrep={() => setPhase("prep")}
-      onBrowse={() => setPhase("browse")}
+      onPrep={() => go("prep")}
+      onBrowse={() => go("browse")}
       onDeletePhoto={() => void deletePhoto()}
     />
   );

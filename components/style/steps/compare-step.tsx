@@ -37,6 +37,7 @@ export function CompareStep({
   photo,
   onChoose,
   onBack,
+  backLabel = "Back to your looks",
   onRetry,
 }: {
   look: Look;
@@ -44,6 +45,8 @@ export function CompareStep({
   photo: Photo | null;
   onChoose: (version: TierVersion) => void;
   onBack: () => void;
+  /** Names the screen the back button returns to. */
+  backLabel?: string;
   onRetry: () => void;
 }) {
   const columns = TIERS.map((tier) => (tier === look.tier ? versionOf(look) : state.versions[tier]));
@@ -97,7 +100,7 @@ export function CompareStep({
 
       <div className="mt-10 max-w-xl">
         <button type="button" onClick={onBack} className="text-link min-h-11 text-muted-foreground">
-          Back to your looks
+          {backLabel}
         </button>
       </div>
     </FlowShell>
