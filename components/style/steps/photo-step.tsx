@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useId, useRef, useState } from "react";
 import { FlowShell, RAW_IMG_PROPS } from "@/components/style/flow-shell";
 import type { Photo } from "@/components/style/style-flow";
@@ -76,8 +75,8 @@ export function PhotoStep({
   const shown = hard ? [hard] : soft;
 
   return (
-    <FlowShell step="Photo, then occasion">
-      <h1 className="mt-4 text-head">Your photo</h1>
+    <FlowShell step="Photo, then occasion" back={{ label: "Back to the home page", href: "/" }}>
+      <h1 className="mt-2 text-head">Your photo</h1>
       {notice && (
         <p role="status" className="mt-4 bg-surface p-3">
           {notice}
@@ -185,9 +184,6 @@ export function PhotoStep({
         </ul>
       </section>
       <p className="mt-8 text-small text-muted-foreground">Only used to style you. Try-ons are deleted after 24 hours.</p>
-      <Link href="/" className="text-link mt-4 inline-flex min-h-11 items-center text-muted-foreground">
-        Back to the home page
-      </Link>
     </FlowShell>
   );
 }

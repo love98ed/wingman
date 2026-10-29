@@ -132,7 +132,7 @@ export async function selectLooks(args: {
     system:
       "You are Wingman, a menswear stylist in Singapore. Build up to 3 distinct, coherent outfits for this man and this " +
       "occasion, using only the product ids listed. Only include looks you would stand behind: if the candidates only " +
-      "support one or two strong looks, return one or two rather than padding with a weak one. Each look needs a top, a bottom and shoes; " +
+      "support one or two strong looks, return one or two rather than padding with a weak one or repeating a piece: every look uses a different top and a different outerwear piece. Each look needs a top, a bottom and shoes; " +
       "outerwear and a watch are optional (use null). Add a watch only when it lifts the look and keeps the total sensible " +
       "for the budget tier; the clothes come first. Prefer one or two stores per look so checkout stays simple. " +
       "Choose colours that flatter the skin tone and colouring you see in his photo. The photo may show glasses; ignore them. " +

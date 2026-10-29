@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allowedFormalities, buildPool, lookItems, lookTotal, pickErrors, poolLines, varied } from "@/lib/agent/pick/candidates";
+import { allowedFormalities, buildPool, distinctLooks, lookItems, lookTotal, pickErrors, poolLines, varied } from "@/lib/agent/pick/candidates";
 import type { LookPick } from "@/lib/agent/schemas";
 import type { Product } from "@/lib/catalog/types";
 
@@ -127,6 +127,11 @@ describe("pickErrors", () => {
     expect(errors).toContain("Each look needs a different top.");
   });
 
+  it("rejects two looks wearing the same outerwear", () => {
+    const errors = pickErrors([pick({ outerwear: "o1" }), pick({ top: "t2", outerwear: "o1" })], pool, rules);
+    expect(errors).toContain("Each look needs a different outerwear piece; two looks share one.");
+  });
+
   it("totals a look from its products", () => {
     expect(lookTotal(lookItems(pick({ watch: "w1" }), pool))).toBe(580);
   });
@@ -139,5 +144,22 @@ describe("varied", () => {
     );
     const others = [product("polo", { name: "Knit Polo" }), product("tee", { name: "Pocket Tee" })];
     expect(varied([...shirts, ...others], 4).map((p) => p.id)).toEqual(["9401/6", "9401/14", "polo", "tee"]);
+  });
+});
+
+describe("distinctLooks", () => {
+  const look = (top: string, outerwear: string | null, name = top) => pick({ name, top, outerwear });
+
+  it("drops a look showing the same piece as an earlier one, rather than padding to three", () => {
+    const kept = distinctLooks([look("t1", "o1", "A"), look("t2", "o1", "B"), look("t3", null, "C")]);
+    expect(kept.map((p) => p.name)).toEqual(["A", "C"]);
+  });
+
+  it("drops a repeated top too", () => {
+    expect(distinctLooks([look("t1", null), look("t1", null)])).toHaveLength(1);
+  });
+
+  it("keeps looks that share nothing", () => {
+    expect(distinctLooks([look("t1", "o1"), look("t2", "o2"), look("t3", null)])).toHaveLength(3);
   });
 });

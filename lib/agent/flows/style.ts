@@ -4,7 +4,7 @@ import { AgentError } from "@/lib/agent/errors";
 import type { Look, LookItem, StyleEvent, StyleResult } from "@/lib/agent/events";
 import { BEARD_STYLES, HAIR_STYLES } from "@/lib/agent/grooming";
 import { memo } from "@/lib/agent/memo";
-import { allowedFormalities, buildPool, lookItems, lookTotal, pickErrors, type LookItems } from "@/lib/agent/pick/candidates";
+import { allowedFormalities, buildPool, distinctLooks, lookItems, lookTotal, pickErrors, type LookItems } from "@/lib/agent/pick/candidates";
 import { renderLook } from "@/lib/agent/render";
 import { fromClient, type LookPick, type ParsedOccasion, type RefineRequest, type StyleRequest } from "@/lib/agent/schemas";
 import { SLOTS, type Slot } from "@/lib/agent/slots";
@@ -93,8 +93,8 @@ async function buildLooks(args: {
     console.warn(`[style] retrying selection: ${errors.join(" ")}`);
     picks = await select(errors);
   }
-  // Keep only looks that pass on their own; a still-broken look is dropped rather than shown.
-  const valid: LookPick[] = picks.filter((p) => pickErrors([p], pool, rules).length === 0);
+  // Keep only looks that pass on their own; a still-broken or repeated look is dropped rather than shown.
+  const valid: LookPick[] = distinctLooks(picks.filter((p) => pickErrors([p], pool, rules).length === 0));
   if (valid.length === 0) {
     throw new AgentError(
       "NO_LOOKS",

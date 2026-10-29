@@ -6,9 +6,12 @@ export function FlowShell({
   step,
   children,
   wide = false,
+  back,
 }: {
   step?: string;
   children: React.ReactNode;
+  /** A back link above the page: to a URL, or a step in the flow. */
+  back?: { label: string; href?: string; onClick?: () => void };
   /** The looks carousel uses the full width on larger screens. */
   wide?: boolean;
 }) {
@@ -25,8 +28,32 @@ export function FlowShell({
         </Link>
         {step && <span className="text-right text-small text-muted-foreground">{step}</span>}
       </header>
-      <main className={cn("mx-auto px-(--margin)", wide ? "max-w-5xl" : "max-w-xl")}>{children}</main>
+      <main className={cn("mx-auto px-(--margin)", wide ? "max-w-5xl" : "max-w-xl")}>
+        {back && <BackLink {...back} />}
+        {children}
+      </main>
     </div>
+  );
+}
+
+function BackLink({ label, href, onClick }: { label: string; href?: string; onClick?: () => void }) {
+  const className = "text-link -ml-1 inline-flex min-h-11 items-center gap-1.5 text-muted-foreground";
+  const content = (
+    <>
+      <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
+        <path d="M15 5l-7 7 7 7" />
+      </svg>
+      {label}
+    </>
+  );
+  return href ? (
+    <Link href={href} className={className}>
+      {content}
+    </Link>
+  ) : (
+    <button type="button" onClick={onClick} className={className}>
+      {content}
+    </button>
   );
 }
 

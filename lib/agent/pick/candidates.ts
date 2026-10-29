@@ -110,7 +110,23 @@ export function pickErrors(
   });
   const tops = picks.map((p) => p.top);
   if (new Set(tops).size !== tops.length) errors.push("Each look needs a different top.");
+  const shown = picks.map(triedOn);
+  if (new Set(shown).size !== shown.length) errors.push("Each look needs a different outerwear piece; two looks share one.");
   return errors;
+}
+
+/** The piece the try-on puts on him (outerwear over the top), so the one that makes looks look alike. */
+const triedOn = (pick: LookPick) => pick.outerwear ?? pick.top;
+
+/** Looks in order, dropping any that would show the same piece as an earlier one. Fewer looks beat repeats. */
+export function distinctLooks(picks: LookPick[]): LookPick[] {
+  const seen = new Set<string>();
+  return picks.filter((pick) => {
+    const key = triedOn(pick);
+    if (seen.has(key) || seen.has(pick.top)) return false;
+    seen.add(key).add(pick.top);
+    return true;
+  });
 }
 
 /**

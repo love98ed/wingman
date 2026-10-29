@@ -100,9 +100,13 @@ export function LooksStep({
   }, []);
 
   return (
-    <FlowShell step={`${TIER_LABELS[tier]}${occasion ? `, ${occasion.setting}` : ""}`} wide>
+    <FlowShell
+      step={`${TIER_LABELS[tier]}${occasion ? `, ${occasion.setting}` : ""}`}
+      wide
+      back={{ label: "Back to the occasion", onClick: onRestart }}
+    >
       <div className="max-w-xl">
-        <h1 className="mt-4 text-head">{looks.length === 1 ? "Your look" : "Your looks"}</h1>
+        <h1 className="mt-2 text-head">{looks.length === 1 ? "Your look" : "Your looks"}</h1>
         <p className="mt-3">
           {looks.length === 1 ? "One look" : `${looks.length} looks`} from real Singapore stores, tried on your photo.{" "}
           {looks.length > 1 && <span className="lg:hidden">Swipe to compare them. </span>}
