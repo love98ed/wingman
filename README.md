@@ -1,109 +1,100 @@
 # Wingman
 
-Tell Wingman the occasion and see yourself ready: a full look from real stores, styled on your photo and one tap from checkout.
+**Tell Wingman the occasion and see yourself ready: a full look from real stores, styled on your selfie and one tap from checkout.**
 
-Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eCommerce VTO Hackathon (Perfect Corp, Devpost).
+**Live demo:** https://wingman-eight-beta.vercel.app
 
-**Live:** https://wingman-eight-beta.vercel.app (try-ons there use saved sample renders for now, so the live site spends no YouCam units)
+Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eCommerce VTO Hackathon (Perfect Corp). It picks 2 to 3 full looks from in-stock products at 17 Singapore Shopify stores, tries each one on your photo with YouCam, scores it, and opens each store's own cart with your sizes already in it.
 
-> **Teammates:** start with [docs/HANDOFF.md](docs/HANDOFF.md).
->
-> **Status: in progress.** You can upload a photo, describe the occasion and get 2 to 3 looks from real stores, tried on your photo and scored, compare any look at three price tiers, refine by chat, swap single pieces, check out at each store with the cart pre-filled, browse the whole catalog, and read a night-before prep plan. Demo mode is next. See [Roadmap](#roadmap).
+## Try it in 60 seconds
 
-## How it works
+1. Open https://wingman-eight-beta.vercel.app on your phone (or a narrow browser window).
+2. Tap **Start with a photo** and upload a waist-up, front-facing selfie. Glasses are fine.
+3. Keep "First date Friday night, rooftop bar, want to look effortless", pick **Mid-range** and tap **Style me**. The first look appears in about 30 seconds and the others follow.
 
-1. **Upload one photo.** A waist-up, front-facing shot. Glasses are fine.
-2. **Describe the occasion.** Pick an occasion, adjust the one-sentence description (for example "First date Friday night, rooftop bar, want to look effortless") and choose Budget, Mid-range or Luxury.
-3. **Get 2 to 3 full looks.** Claude picks in-stock products from Singapore Shopify stores, choosing colours for your skin tone. YouCam renders each look on your photo, and each one gets a Fit Check score out of 10. A night-before grooming plan comes with them.
-4. **Compare prices.** Tap "Compare prices" on any look to see the same look at Budget, Mid-range and Luxury side by side: same colours and cut, each piece from its own price tier, tried on your photo, with the real SGD total under each. Tap "Wear this version" to switch.
-5. **Refine and swap.** Tell Wingman what to change in the chat bar ("more casual", "under S$300", "no white sneakers") and it re-picks every look. Or tap Swap on any piece to choose from 6 alternatives that go with the rest of the look; totals update at once and the look is tried on again.
-6. **Browse and prep.** Browse every in-stock piece by category, budget, price, colour, size and store, and drop any of them into a look. "Your night-before prep plan" has three grooming steps for the evening before.
-7. **Buy.** Add a look to the cart, pick an in-stock size for each piece, and tap "Checkout at {store}". Each store's own cart opens with your pieces and sizes already in it; you pay there.
+What to look for:
 
-The first look appears as soon as its try-on is ready (usually 20 to 50 seconds, mostly YouCam render time). The rest fill in as they finish.
+- **The looks:** swipe through 3 complete outfits from real stores, each tried on your photo with a Fit Check score out of 10.
+- **Compare prices:** the same look rebuilt at Budget, Mid-range and Luxury, side by side, with real SGD totals.
+- **Refine and swap:** type "more casual" or "under S$500" in the bar at the bottom, or tap **Swap** on any piece for 6 alternatives that go with the rest of the look.
+- **Prep plan:** a three-step grooming routine for the night before, based on a skin analysis of your photo.
+- **Checkout:** **Add this look to cart**, pick in-stock sizes, and tap **Checkout at {store}**. The store's real cart opens with your pieces in it. You pay there; Wingman never takes payment.
 
-### The style agent
+> **On the live site, try-ons show a saved sample render** (`MOCK_YOUCAM=true`), so public visitors can't use up the hackathon's YouCam units. Everything else is live: occasion parsing, look selection, prices, stock, sizes and checkout. The screenshots below are real renders of the demo photo. "Try the demo" (a fixed, fully cached run) is not built yet; see [Limitations](#limitations-and-future-work).
 
-`POST /api/style` takes the photo, the sentence and the tier, and streams its progress back as newline-delimited JSON:
+## Screenshots
 
-1. Claude reads the occasion (type, formality, setting, time of day, any constraints) while the photo is cropped for each API.
-2. Skin analysis runs in the background. It never blocks: if it fails (a tilted face, glasses), the grooming plan is simply more general.
-3. Claude picks the looks from up to about 90 in-stock candidates in the tier. Every product id and the budget are checked, with one retry if something is off.
-4. YouCam renders the outfit, then the hairstyle on that render, then the beard.
-5. Claude scores each render with a Fit Check and writes the prep plan.
+All at 390px, from a local run with live YouCam renders. Retake with `npm run screenshots`.
 
-`npm run style:demo` calls it with the demo photo and prints every step.
+| | | | | |
+|---|---|---|---|---|
+| ![Home](docs/screenshots/home.png) | ![Your photo](docs/screenshots/photo.png) | ![The occasion](docs/screenshots/occasion.png) | ![Styling you](docs/screenshots/loading.png) | ![Your looks](docs/screenshots/looks.png) |
+| Home | Photo | Occasion | Styling | Looks |
+| ![Price compare](docs/screenshots/compare.png) | ![Swap](docs/screenshots/swap.png) | ![Prep plan](docs/screenshots/prep.png) | ![Browse](docs/screenshots/browse.png) | ![Cart](docs/screenshots/cart.png) |
+| Price compare | Swap | Prep plan | Browse | Cart |
 
-### Price Compare
-
-`POST /api/compare` takes the photo and one look, and streams the same look rebuilt at the other two tiers:
-
-1. For each slot, the in-stock products of the target tier in the same category, ranked by colour, then cut (shared name words like "linen" or "loafer"), then formality.
-2. Claude picks the closest stand-in per slot from those candidates and writes one sentence on what changes at that price. A pick that isn't on the list falls back to the top-ranked candidate.
-3. Each version is tried on and gets its own Fit Check.
-
-Caching keeps it cheap: a shared garment hits the render cache (zero units), and the tier picks, Fit Checks and the face box are cached per photo, so reopening a comparison takes about 2 seconds. A fresh compare costs 4 YouCam units.
-
-### Refine and swap
-
-- **`POST /api/refine`** takes the photo, the request and the current looks. Claude updates the brief (formality, constraints, a budget cap for "under S$300" or "cheaper"), then steps 3 to 5 run again with the previous looks as context. A budget cap also opens the cheaper tiers, and each piece is capped at its share of the budget so a full look can fit. If nothing fits, the old looks stay and Wingman says why.
-- **`POST /api/swap/options`** returns 6 in-stock alternatives for one slot: same tier, suitable formality, cheap enough for any budget cap. Claude picks a varied set that goes with the rest of the look (at most two of the same product in different colours). Cached per look and slot.
-- **`POST /api/swap`** tries the look on again and re-scores it. Only the top layer shows in the try-on, so swapping trousers, shoes or a watch hits the render cache and costs nothing.
-
-## YouCam APIs
+## YouCam APIs used
 
 | API | What it does in Wingman | Units per call |
 |---|---|---|
-| AI Clothes Virtual Try-On (v3, `garment_category: auto`) | Renders the top or outerwear on your photo | 2 |
-| AI Hairstyle Generator (preset styles) | Shows a new haircut | 1 |
-| AI Beard Style Generator | Shows a beard style | 2 |
-| AI Skin Analysis (SD concerns) | Drives the grooming prep plan | 9 for 4 concerns |
+| AI Clothes Virtual Try-On (v3, `garment_category: auto`) | Puts each look's top or jacket on your photo. Also renders every tier in Price Compare and re-renders after a swap. | 2 |
+| AI Hairstyle Generator (preset styles) | Gives each look a haircut that suits the occasion, applied on top of the outfit render | 1 |
+| AI Beard Style Generator | Adds an optional beard style to the look | 2 |
+| AI Skin Analysis (SD concerns) | Reads your skin so the night-before prep plan is about you, not generic tips | 9 for 4 concerns |
 
-Bottoms, shoes and watches appear as product cards rather than renders. A waist-up photo hides legs and feet. YouCam's watch try-on needs a separate back-of-hand photo.
+Bottoms, shoes and watches appear as product cards rather than renders: a waist-up selfie hides legs and feet, and YouCam's watch try-on needs a separate photo of the back of the hand.
 
-### Using one photo for every API
+Each API needs different framing, so Wingman takes one photo and the server prepares it: the full photo for clothes, a head-and-shoulders crop for hair, and a close face crop for beard and skin analysis. Claude finds the face so the crops land in the right place. Location data is stripped before anything leaves the server.
 
-Each API needs different framing. Wingman takes one photo and the server prepares it:
+**Keeping units safe:** every live call reserves its units in Supabase first, and Wingman refuses any call that would pass `YOUCAM_UNIT_LIMIT` (700). Failed tasks release their units. Results are cached by photo, product, API and settings, so a repeat costs nothing; swapping trousers or shoes re-uses the cached render. Building the whole app has used 70 units.
 
-- **Full photo** for clothes try-on
-- **Head and shoulders** crop for hair try-on (it fails without shoulders)
-- **Close face** crop for beard try-on and skin analysis (the face must be large in the frame)
+## How the agent works
 
-Claude finds the face so the crops land in the right place. Location data is stripped from the photo before anything leaves the server.
+```mermaid
+flowchart TD
+    A[Selfie + one sentence + budget tier] --> B[Claude parses the occasion<br/>formality, setting, time, constraints]
+    A --> C[Photo prepared<br/>face found, crop per API]
+    C --> D[YouCam Skin Analysis<br/>in the background, never blocks]
+    B --> E[Candidate pool<br/>in-stock products in the tier,<br/>from 17 Shopify stores]
+    E --> F[Claude picks 2 to 3 looks<br/>ids and budget checked, one retry]
+    F --> G[YouCam renders each look<br/>clothes, then hair, then beard]
+    G --> H[Claude Fit Check<br/>score out of 10 + reason]
+    D --> I[Claude prep plan<br/>3 grooming steps, no medical claims]
+    H --> J[Looks stream to the phone<br/>first one as soon as it's ready]
+    J --> K[Refine by chat / Swap a piece / Compare prices]
+    K --> F
+    J --> L[Cart: in-stock sizes,<br/>one Shopify cart link per store]
+```
 
-### Browse
+- **`POST /api/style`** streams progress as newline-delimited JSON, so the first look shows as soon as its render is done.
+- **`POST /api/refine`**: Claude updates the brief ("more casual", "under S$300"), then look selection, renders and Fit Checks run again with the old looks as context. A budget cap opens the cheaper tiers.
+- **`POST /api/swap/options` and `/api/swap`**: 6 in-stock alternatives for one slot that go with the rest of the look, then a re-render and new score.
+- **`POST /api/compare`**: for each piece, products in the other tiers are ranked by colour, cut (shared name words like "linen") and formality; Claude picks the closest stand-in and says what changes at that price.
+- **`GET /api/browse`**: the whole in-stock catalog, filtered by category, tier, price, colour family and size.
+- **Checkout** builds `https://{store}/cart/{variantId}:{qty},...` per store ([`lib/cart.ts`](lib/cart.ts)). Only in-stock variants are offered; when a size repeats across colours the picker shows "White / Small" so the right colour lands in the cart.
 
-`GET /api/browse` filters the in-stock catalog (held in memory for 10 minutes) by category, tier, price band, colour family, size and store, 24 pieces at a time. Colours are grouped into families ("walnut" and "chestnut" are Brown, stripes and prints are Pattern) and sizes are normalised ("M/46" and "MEDIUM" are M, "EU 42" is 42) in [`lib/catalog/browse.ts`](lib/catalog/browse.ts). Each filter's options are counted against the other filters, so picking a colour doesn't hide the other colours.
-
-### Checkout
-
-Wingman never takes payment. The cart groups pieces by store and builds one Shopify cart permalink per store, `https://{store}/cart/{variantId}:{qty},{variantId}:{qty}` ([`lib/cart.ts`](lib/cart.ts)), which opens that store's checkout with the exact variants. The size picker offers in-stock variants only. When a product repeats a size across colours, the picker shows the full variant title ("White / Small") so the right colour lands in the cart.
-
-### Unit guard and cache
-
-- Every live YouCam call reserves its units in Supabase first. Wingman refuses any call that would pass `YOUCAM_UNIT_LIMIT` (700 by default).
-- YouCam only charges for successful tasks, so failed calls release their units. Timeouts keep them reserved because the task may still finish.
-- Results are cached by photo, product, API and settings. A repeat request costs zero units.
-- `MOCK_YOUCAM=true` serves saved responses from `fixtures/youcam/` so UI work costs nothing.
+**The catalog** comes from each store's public `products.json`. Each store is checked first (feed shape, a Shopify fingerprint, a working cart link). Claude Haiku tags every product (category, colour, formality, occasions) and picks its cleanest image for try-on. Prices are converted to SGD, and Budget, Mid-range and Luxury are computed per category from the catalog's own price spread, because Singapore menswear prices don't fit fixed thresholds.
 
 ## Tech stack
 
 | Layer | Choice |
 |---|---|
 | Framework | Next.js 15 (App Router), TypeScript strict |
-| Styling | Tailwind CSS 4, Panchang + Switzer fonts (self-hosted), design rules from the design-taste-frontend skill |
-| Database and storage | Supabase Postgres + private storage buckets |
-| AI | Claude via `@anthropic-ai/sdk` (Sonnet 5.5 for styling, Haiku 5.5 for product tagging) |
+| Styling | Tailwind CSS 4, Panchang + Switzer fonts (self-hosted) |
+| Database and storage | Supabase Postgres + private storage buckets with signed URLs |
+| AI | Claude via `@anthropic-ai/sdk`: Sonnet 5.5 for styling, Fit Check and prep plans; Haiku 5.5 for catalog tagging |
 | Vision | YouCam API, server-side only |
 | Images | sharp |
-| Validation | Zod |
+| Validation | Zod on every API input and every Claude output |
 | Products and checkout | Shopify `products.json` feeds and cart permalinks |
-| Tests | Vitest (unit) and Playwright (smoke) |
+| Tests | Vitest (147 unit tests) and Playwright (smoke) |
 | Deploy | Vercel |
 
 ## Setup
 
-You need Node 20 or newer, a Supabase project, a YouCam API key and an Anthropic API key.
+You need Node 20 or newer, a [Supabase](https://supabase.com) project, a YouCam API key ([docs](https://docs.perfectcorp.com)) and an [Anthropic API](https://console.anthropic.com) key.
+
+**1. Clone and install**
 
 ```bash
 git clone https://github.com/love98ed/wingman.git
@@ -112,39 +103,44 @@ npm install
 cp .env.example .env.local
 ```
 
-Fill in `.env.local`:
+**2. Environment variables.** Fill in `.env.local`. Every key stays on the server.
 
 | Variable | Where to get it |
 |---|---|
 | `YOUCAM_API_KEY` | YouCam API console, API Keys page (the API key, not the secret key) |
 | `ANTHROPIC_API_KEY` | Claude Console |
 | `SUPABASE_URL` | Supabase: Project Settings, then API |
-| `SUPABASE_ANON_KEY` | Same page |
+| `SUPABASE_ANON_KEY` | Same page (optional; all database access is server-side) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Same page (keep this secret) |
-| `MOCK_YOUCAM` | `true` to use saved fixtures instead of live calls |
+| `SHOPIFY_STORES` | Leave empty; the store list lives in `fixtures/stores.json` |
+| `MOCK_YOUCAM` | `true` serves saved YouCam responses from `fixtures/youcam/` (zero units). `false` for live renders |
 | `YOUCAM_UNIT_LIMIT` | Hard cap on YouCam units (default 700) |
-| `DEMO_MODE` | `true` for the fixed demo flow |
+| `DEMO_MODE` | Reserved for the fixed demo flow (not built yet) |
 
-Then create the database. In the Supabase SQL Editor, run all of [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql). It creates the tables, the unit-reserve function and two private storage buckets.
+**3. Database migration.** In the Supabase SQL Editor, run all of [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql). It creates the catalog, render cache and unit log tables, the unit-reserve function and two private storage buckets.
 
-Build the product catalog (only one person at a time; it fills the shared database):
+**4. Catalog.** Fill the database with products (only one person at a time; it writes to the shared database):
 
 ```bash
 npm run stores:check      # verify each store is a working Shopify store
 npm run catalog:fetch     # fetch, tag, price and tier every product (resumable)
 ```
 
-The tagging cache in `fixtures/catalog-cache/` is committed, so a fresh run mostly reuses it.
+The tagging cache in `fixtures/catalog-cache/` is committed, so a fresh run mostly reuses it instead of re-tagging thousands of products. Expect a few minutes, longer if stores rate-limit.
 
-Start the app:
+**5. Run it.**
 
 ```bash
 npm run dev
 ```
 
-Open http://localhost:3000 at phone width. Tap an occasion, or go straight to http://localhost:3000/style.
+Open http://localhost:3000 at phone width and tap **Start with a photo**. `fixtures/selfies/demo.jpg` works as a test photo.
 
-**Deploying:** the Vercel project needs the same variables (Production). Keep `MOCK_YOUCAM=true` there until demo mode is built, so visitors can't spend YouCam units.
+**Mock mode** (`MOCK_YOUCAM=true`): every try-on returns the saved sample render after a short delay, and skin analysis uses a saved response. Claude, the catalog and checkout still run for real. Use it for UI work so you spend no units.
+
+**Demo mode** (`DEMO_MODE=true`): planned as a fixed golden path with the demo photo, the rooftop-bar occasion and Mid-range, served entirely from the render cache. Not built yet; the "Try the demo" button opens a placeholder.
+
+**Deploying:** add the same variables to the Vercel project. Keep `MOCK_YOUCAM=true` on a public deployment unless you're happy for visitors to spend YouCam units (the unit guard still stops at the limit).
 
 ## Scripts
 
@@ -161,12 +157,13 @@ Open http://localhost:3000 at phone width. Tap an occasion, or go straight to ht
 | `npm run photo:check` | Checks a photo before spending YouCam units: finds the face and writes the crops each API would get. |
 | `npm run style:demo` | Calls `POST /api/style` with the demo photo and prints the looks, Fit Checks and prep plan. Start `npm run dev` first; `MOCK_YOUCAM` decides mock or live renders. Flags: `--tier`, `--occasion`, `--max-budget`, `--photo`, `--url`, `--compare` to also price-compare the first look, `--refine "more casual"` to refine the looks, `--swap shoes` to swap a piece of the first look. |
 | `npm run catalog:colours` | Re-tags the colour of tops and outerwear from their try-on photo (text tags miss multi-colour products). Safe to re-run; new catalog runs already do this. |
+| `npm run screenshots` | Captures every screen at 390px into `docs/screenshots/`. Start `npm run dev` first; with `MOCK_YOUCAM=true` every try-on is the saved sample. |
 | `npm run youcam:smoke` | One real call per YouCam API on `fixtures/selfies/demo.jpg`. Saves responses for mock mode and prints units used. A second run costs zero units. |
 
 ## Project structure
 
 ```
-app/                     Routes (App Router): / home, /style flow, /demo (placeholder),
+app/                     Routes (App Router): / home, /style flow, /demo (placeholder until demo mode),
                          /occasion (redirects to /style), /api/style (style agent, streamed),
                          /api/compare (Price Compare, streamed), /api/refine (chat refine, streamed),
                          /api/swap (swap one piece, streamed), /api/swap/options,
@@ -206,35 +203,42 @@ tests/
   unit/                  Vitest, mirrors lib/
   e2e/                   Playwright smoke tests
   stubs/                 Stand-ins for server-only modules under Vitest
-docs/                    HANDOFF.md, STEP_PROMPTS.md (build plan), screenshots/
+docs/                    HANDOFF.md, STEP_PROMPTS.md (build plan), screenshots/ (390px, see npm run screenshots)
 .taste-skill/            Design direction used by the design-taste-frontend skill
 CLAUDE.md                Project rules for Claude Code
 ```
 
 ## Privacy
 
-- Your photo is sent to the server only to style you. Location data is stripped before anything goes to YouCam.
+- Your photo goes to the server only to style you. Location data is stripped before anything is sent to YouCam.
 - Try-on renders are kept in a private bucket and shown through links that expire after an hour.
-- Planned (demo mode step): photos and renders deleted after 24 hours, and a "Delete my photo" button.
-- Every API key stays on the server.
+- Every API key stays on the server; none reach the browser bundle.
 - Store product images appear only as product cards linking back to the store.
-- Grooming plans make no medical claims.
+- Prep plans are grooming tips only, with no medical claims.
 
-## Roadmap
+## Limitations and future work
 
-- [x] Scaffold, theme and database schema
-- [x] YouCam client with unit guard, render cache and mock mode
-- [x] First real YouCam runs and saved fixtures
-- [x] Store checks and catalog pipeline (17 stores, about 5,000 products, colours read from photos)
-- [x] Style agent (occasion parsing, look selection, renders, Fit Check, prep plan), streamed
-- [x] Home page and core screens (photo, occasion, loading, looks)
-- [x] Budget tiers and price compare
-- [x] Refine and swap
-- [x] Cart and checkout
-- [x] Prep plan and browse screens
-- [ ] Demo mode, photo auto-delete, real demo photo
-- [ ] Polish and deploy
+**Not built yet**
+
+- **Demo mode and "Try the demo":** a fixed, fully cached run for judges and the video. The button opens a placeholder for now.
+- **Photo auto-delete after 24 hours and a "Delete my photo" button.** Renders are private and links expire after an hour, but the files themselves are not deleted yet.
+- **Live renders on the public site:** off to protect a 700-unit budget; the live site shows a saved sample render.
+
+**Known limits**
+
+- Only the top layer is rendered. Trousers, shoes and watches are product cards (a waist-up selfie hides them, and watch try-on needs a hand photo).
+- 17 stores and about 5,000 products. Shoes and budget-tier pieces are the thinnest categories.
+- Prices are converted to SGD with fixed rates in [`lib/catalog/fx.ts`](lib/catalog/fx.ts). A store that charges in USD shows its own price at checkout.
+- Stock and prices are as fresh as the last `npm run catalog:fetch`.
+- Skin analysis needs a straight-on face. When it fails (a tilted head, glasses), the prep plan is general rather than personal; it never blocks the flow.
+
+**Future work**
+
+- **Wingman Pay:** one checkout for a look that spans several stores, instead of one cart per store.
+- **Affiliate links:** earn a commission on each store checkout to fund renders, so the public site can run live try-ons.
+- **More stores:** more Singapore and regional Shopify stores, especially shoes and budget menswear, plus a scheduled catalog refresh.
+- Full-body photos for trousers and shoes, a hand photo for the watch try-on, and saved looks to share before the event.
 
 ## License
 
-MIT
+[MIT](LICENSE)
