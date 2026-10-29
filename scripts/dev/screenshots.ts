@@ -78,6 +78,7 @@ async function main() {
   await shot(page, "compare");
   await backToLooks(page);
 
+  await page.getByRole("tab", { name: "Additional" }).first().click();
   await page.getByRole("button", { name: /^Swap the / }).first().click();
   await page.getByRole("heading", { name: "Alternatives" }).waitFor();
   await page.getByRole("list").locator("li button").first().waitFor({ timeout: SLOW });

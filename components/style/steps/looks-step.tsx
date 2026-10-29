@@ -89,8 +89,8 @@ export function LooksStep({
         <h1 className="mt-4 text-head">{looks.length === 1 ? "Your look" : "Your looks"}</h1>
         <p className="mt-3">
           {looks.length === 1 ? "One look" : `${looks.length} looks`} from real Singapore stores, tried on your photo.{" "}
-          {looks.length > 1 && <span className="lg:hidden">Swipe to compare, then tap</span>}
-          <span className={looks.length > 1 ? "hidden lg:inline" : undefined}>Tap</span> Swap to change a piece.
+          {looks.length > 1 && <span className="lg:hidden">Swipe to compare them. </span>}
+          To change a piece, open Additional.
         </p>
         {cart.length > 0 && (
           <button
@@ -205,6 +205,8 @@ function LookCard({
     look.renders.beard && { url: look.renders.beard, label: `Beard: ${look.beard}` },
   ].filter(Boolean) as { url: string; label: string }[];
   const rendering = !look.renders.outfit && look.renders.errors.length === 0;
+  const [tab, setTab] = useState<"look" | "additional">("look");
+  const tabId = `look-${index}`;
 
   return (
     <article
@@ -267,46 +269,84 @@ function LookCard({
           )}
         </div>
 
-        <div className="mt-5 flex gap-4 bg-surface-raised p-4" aria-live="polite">
-          {look.fitCheck ? (
-            <>
-              <p className="shrink-0">
-                <span className="font-display text-head leading-none text-brass">{look.fitCheck.score.toFixed(1)}</span>
-                <span className="sr-only"> out of 10</span>
-              </p>
-              <div>
-                <p className="font-medium">Fit check</p>
-                <p className="mt-1 text-small">{look.fitCheck.reasoning}</p>
-              </div>
-            </>
-          ) : (
-            <p className="text-small text-muted-foreground">{scoring ? "Scoring this look…" : "No score for this look."}</p>
-          )}
+        <div role="tablist" aria-label={`${look.name}: what to show`} className="mt-5 grid grid-cols-2 gap-1 bg-background/40 p-1">
+          {(
+            [
+              ["look", "The look"],
+              ["additional", "Additional"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              id={`${tabId}-${id}-tab`}
+              aria-selected={tab === id}
+              aria-controls={`${tabId}-${id}`}
+              onClick={() => setTab(id)}
+              className={cn("min-h-11 transition-colors", tab === id ? "bg-ivory text-background" : "hover:bg-surface-raised")}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
-        <p className="mt-5">{look.why}</p>
+        {tab === "look" ? (
+          <div role="tabpanel" id={`${tabId}-look`} aria-labelledby={`${tabId}-look-tab`}>
+            <div className="mt-5 flex gap-4 bg-surface-raised p-4" aria-live="polite">
+              {look.fitCheck ? (
+                <>
+                  <p className="shrink-0">
+                    <span className="font-display text-head leading-none text-brass">{look.fitCheck.score.toFixed(1)}</span>
+                    <span className="sr-only"> out of 10</span>
+                  </p>
+                  <div>
+                    <p className="font-medium">Fit check</p>
+                    <p className="mt-1 text-small">{look.fitCheck.reasoning}</p>
+                  </div>
+                </>
+              ) : (
+                <p className="text-small text-muted-foreground">{scoring ? "Scoring this look…" : "No score for this look."}</p>
+              )}
+            </div>
 
-        {/* Only the outer layer can be tried on (see the README): say which pieces are on you */}
-        {(
-          [
-            ["In the try-on", look.items.filter((i) => showsInRender(look, i.slot))],
-            ["Also in this look", look.items.filter((i) => !showsInRender(look, i.slot))],
-          ] as const
-        ).map(
-          ([title, pieces]) =>
-            pieces.length > 0 && (
-              <section key={title} className="mt-5">
-                <h3 className="font-sans text-small font-medium normal-case tracking-normal text-muted-foreground">{title}</h3>
-                {title === "Also in this look" && (
-                  <p className="mt-1 text-small text-muted-foreground">Picked for the outfit, not shown on you.</p>
-                )}
-                <ul className="mt-2 flex flex-col gap-3">
-                  {pieces.map((item) => (
-                    <PieceRow key={item.slot} item={item} onSwap={onSwap} />
-                  ))}
-                </ul>
-              </section>
-            ),
+            <p className="mt-5">{look.why}</p>
+
+            {/* Only the outer layer can be tried on (see the README): say which pieces are on you */}
+            {(
+              [
+                ["In the try-on", look.items.filter((i) => showsInRender(look, i.slot))],
+                ["Also in this look", look.items.filter((i) => !showsInRender(look, i.slot))],
+              ] as const
+            ).map(
+              ([title, pieces]) =>
+                pieces.length > 0 && (
+                  <section key={title} className="mt-5">
+                    <h3 className="font-sans text-small font-medium normal-case tracking-normal text-muted-foreground">{title}</h3>
+                    {title === "Also in this look" && (
+                      <p className="mt-1 text-small text-muted-foreground">Picked for the outfit, not shown on you.</p>
+                    )}
+                    <ul className="mt-2 flex flex-col gap-3">
+                      {pieces.map((item) => (
+                        <PieceRow key={item.slot} item={item} />
+                      ))}
+                    </ul>
+                  </section>
+                ),
+            )}
+          </div>
+        ) : (
+          <div role="tabpanel" id={`${tabId}-additional`} aria-labelledby={`${tabId}-additional-tab`}>
+            <section className="mt-5">
+              <h3 className="font-sans text-lead font-medium tracking-normal normal-case">Swap a piece</h3>
+              <p className="mt-1 text-small">Six in-stock alternatives for any piece, picked to go with the rest of the look.</p>
+              <ul className="mt-3 flex flex-col gap-3">
+                {look.items.map((item) => (
+                  <PieceRow key={item.slot} item={item} onSwap={onSwap} />
+                ))}
+              </ul>
+            </section>
+          </div>
         )}
 
         {/* Pinned to the bottom, so the buttons line up across cards of different lengths */}
