@@ -88,7 +88,7 @@ export function PhotoStep({
           </label>
         </div>
       )}
-      <p className="mt-6 text-small text-muted-foreground">Your photo is only used to style you. It and your try-ons are deleted after 24 hours, or straight away with “Delete my photo”.</p>
+      <p className="mt-6 text-small text-muted-foreground">Only used to style you. Try-ons are deleted after 24 hours.</p>
     </FlowShell>
   );
 }
