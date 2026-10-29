@@ -7,18 +7,30 @@ import { FlowShell, RAW_IMG_PROPS } from "./flow-shell";
 import type { Photo, Progress } from "./style-flow";
 
 const LABELS: Record<StyleStep, string> = {
-  reading: "Reading your photo and the occasion",
+  reading: "Reading your photo and what you asked for",
   picking: "Picking pieces from real Singapore stores",
   rendering: "Trying the looks on you",
   scoring: "Scoring each look",
 };
 
-export function LoadingStep({ photo, progress }: { photo: Photo | null; progress: Progress }) {
+export function LoadingStep({
+  photo,
+  progress,
+  refining,
+}: {
+  photo: Photo | null;
+  progress: Progress;
+  /** The chat request being applied, when this is a refine rather than the first run. */
+  refining?: string | null;
+}) {
   const current = STYLE_STEPS.indexOf(progress.step);
   return (
-    <FlowShell step="Styling">
-      <h1 className="mt-4 text-head">Styling you</h1>
-      <p className="mt-4">This takes about half a minute. The first look appears as soon as it&apos;s ready.</p>
+    <FlowShell step={refining ? "Refining" : "Styling"}>
+      <h1 className="mt-4 text-head">{refining ? "New looks coming" : "Styling you"}</h1>
+      <p className="mt-4">
+        {refining ? `Re-picking every look for “${refining}”.` : "This takes about half a minute."} The first look appears
+        as soon as it&apos;s ready.
+      </p>
 
       <div className="mt-8 grid grid-cols-[7rem_1fr] gap-5 sm:grid-cols-[10rem_1fr]">
         <div className="relative aspect-[4/5] overflow-hidden bg-surface">

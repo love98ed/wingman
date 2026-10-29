@@ -12,6 +12,8 @@ import {
   LookPicksSchema,
   ParsedOccasionSchema,
   PrepPlanSchema,
+  RefinedOccasionSchema,
+  SwapPicksSchema,
   TierPicksSchema,
   type LookPick,
   type ParsedOccasion,
@@ -41,12 +43,53 @@ export async function parseOccasion(text: string) {
   });
 }
 
+/** A look the user has already seen, for refine context. */
+export type PreviousLook = { name: string; items: string[]; total: number };
+
+const previousLines = (previous: PreviousLook[]) =>
+  previous.map((l) => `- ${l.name} (S$${l.total.toFixed(0)}): ${l.items.join(", ")}`).join("\n");
+
+/** Refine: one chat request applied to the parsed occasion. The occasion type and time stay. */
+export async function refineOccasion(args: {
+  occasion: ParsedOccasion;
+  sentence: string;
+  message: string;
+  previous: PreviousLook[];
+}) {
+  const o = args.occasion;
+  return generateStructured({
+    task: "agent",
+    label: "refine-occasion",
+    effort: "low",
+    schema: RefinedOccasionSchema,
+    system:
+      "A man is refining the outfits Wingman picked for his event. Update the brief to reflect his request and return " +
+      "the full updated brief. formality moves only if he asks for something more casual or dressier. maxBudget is the " +
+      "most a whole look may cost in SGD: set it when he names a price or asks for cheaper (aim about 25% below his " +
+      "cheapest look), keep the current value otherwise, null when there is none or he asks to drop it. constraints " +
+      "is the full list of his wishes and limits as short phrases: keep earlier ones unless he contradicts them and add " +
+      "the new one (\"no white sneakers\", \"shoes under S$150\"). setting stays unless he changes the place.",
+    content: [
+      {
+        type: "text",
+        text:
+          `Event: "${args.sentence}"\n` +
+          `Current brief: formality ${o.formality}; setting ${o.setting}; maxBudget ${o.maxBudget ?? "none"}; ` +
+          `constraints: ${o.constraints.join("; ") || "none"}.\n` +
+          `Looks he saw:\n${previousLines(args.previous)}\n\nHis request: "${args.message}"`,
+      },
+    ],
+  });
+}
+
 /** Step 3: 2 to 3 looks from the candidate pool, colours chosen for his face and skin tone. */
 export async function selectLooks(args: {
   occasion: ParsedOccasion;
   sentence: string;
   pool: Pool;
   face: Buffer;
+  /** A refine request and the looks it reacts to. */
+  refine?: { request: string; previous: PreviousLook[] };
   /** Problems with a previous attempt, sent back for one correction. */
   errors?: string[];
 }): Promise<LookPick[]> {
@@ -57,6 +100,10 @@ export async function selectLooks(args: {
     occasion.constraints.length ? `His constraints: ${occasion.constraints.join("; ")}.` : "",
     `Budget tier: ${occasion.budgetTier}.`,
     occasion.maxBudget ? `Each look must total S$${occasion.maxBudget} or less.` : "",
+    args.refine
+      ? `He saw these looks:\n${previousLines(args.refine.previous)}\nThen he asked: "${args.refine.request}". ` +
+        "Build new looks that clearly answer that request; keep what he liked and didn't ask to change."
+      : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -127,6 +174,37 @@ export async function matchTiers(args: {
     ],
   });
   return result.versions;
+}
+
+/** Swap: up to 6 alternatives for one slot that go with the rest of the look, varied, best first. */
+export async function pickAlternatives(args: {
+  occasion: ParsedOccasion;
+  slot: string;
+  current: string;
+  rest: string[];
+  candidates: string;
+}): Promise<string[]> {
+  const result = await generateStructured({
+    task: "agent",
+    label: "swap-options",
+    effort: "low",
+    schema: SwapPicksSchema,
+    system:
+      "You are Wingman, a menswear stylist in Singapore. A man wants to swap one piece of an outfit. From the listed " +
+      "candidates, choose 6 that go well with the rest of his outfit and the occasion, best first. Make them a real " +
+      "choice: vary colour and style rather than six near-copies of the current piece. Use only listed ids.",
+    content: [
+      {
+        type: "text",
+        text:
+          `Occasion: ${args.occasion.occasion}, ${args.occasion.formality}, ${args.occasion.setting}.\n` +
+          (args.occasion.constraints.length ? `His wishes: ${args.occasion.constraints.join("; ")}.\n` : "") +
+          `Swapping the ${args.slot}: ${args.current}\nThe rest of the outfit: ${args.rest.join("; ") || "nothing else"}\n\n` +
+          `Candidates (id | name | colour | formality | price | store):\n${args.candidates}`,
+      },
+    ],
+  });
+  return result.ids;
 }
 
 /** Step 5: score each rendered look out of 10 with a one or two sentence reason. */

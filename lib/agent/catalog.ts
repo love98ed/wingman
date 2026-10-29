@@ -1,4 +1,5 @@
 import { sha256 } from "@/lib/hash";
+import { displayName } from "@/lib/catalog/names";
 import type { Category, Formality, Occasion, Product } from "@/lib/catalog/types";
 import type { LookPick } from "./schemas";
 
@@ -8,6 +9,12 @@ export type Slot = (typeof SLOTS)[number];
 
 /** How many candidates per slot Claude sees: enough choice, small prompt. */
 const POOL_SIZE: Record<Slot, number> = { top: 30, outerwear: 12, bottom: 20, shoes: 20, watch: 12 };
+
+/**
+ * Largest share of a look's budget one piece may take, so the pool can still make a
+ * full look under the cap. The shares overlap on purpose; the total is checked after.
+ */
+const BUDGET_SHARE: Record<Slot, number> = { top: 0.45, outerwear: 0.5, bottom: 0.4, shoes: 0.5, watch: 0.4 };
 
 /** Formality levels a look may borrow from, nearest first. */
 export function allowedFormalities(target: Formality): Formality[] {
@@ -37,7 +44,7 @@ export function buildPool(
           p.category === slot &&
           isInStock(p) &&
           formalities.includes(p.formality) &&
-          (opts.maxBudget == null || p.price <= opts.maxBudget),
+          (opts.maxBudget == null || p.price <= opts.maxBudget * BUDGET_SHARE[slot]),
       )
       .map((p) => ({
         p,
@@ -51,14 +58,13 @@ export function buildPool(
   return pool;
 }
 
+/** A candidate as Claude sees it: id | name | colour | formality | price | store. */
+export const productLine = (p: Product) =>
+  `${p.id} | ${p.name} | ${p.colour} | ${p.formality} | S$${p.price.toFixed(0)} | ${p.storeName}`;
+
 /** One line per candidate for the selection prompt. */
 export function poolLines(pool: Pool): string {
-  return SLOTS.map((slot) => {
-    const lines = pool[slot].map(
-      (p) => `${p.id} | ${p.name} | ${p.colour} | ${p.formality} | S$${p.price.toFixed(0)} | ${p.storeName}`,
-    );
-    return `## ${slot}\n${lines.join("\n") || "(none)"}`;
-  }).join("\n\n");
+  return SLOTS.map((slot) => `## ${slot}\n${pool[slot].map(productLine).join("\n") || "(none)"}`).join("\n\n");
 }
 
 export type LookItems = Partial<Record<Slot, Product>>;
@@ -108,4 +114,22 @@ export function pickErrors(
   const tops = picks.map((p) => p.top);
   if (new Set(tops).size !== tops.length) errors.push("Each look needs a different top.");
   return errors;
+}
+
+/**
+ * The first `n` products in order, with at most `maxSame` sharing a product name, so a
+ * shirt sold in eight colours can't fill every option. Colour variants still get through.
+ */
+export function varied(products: Product[], n: number, maxSame = 2): Product[] {
+  const seen = new Map<string, number>();
+  const out: Product[] = [];
+  for (const p of products) {
+    const key = `${p.store}|${displayName(p.name, p.storeName).toLowerCase()}`;
+    const count = seen.get(key) ?? 0;
+    if (count >= maxSame) continue;
+    seen.set(key, count + 1);
+    out.push(p);
+    if (out.length === n) break;
+  }
+  return out;
 }

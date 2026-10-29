@@ -5,11 +5,22 @@
  *   npm run style:demo [-- --url http://localhost:3000 --tier mid --occasion "..." --max-budget 400 --photo path.jpg]
  *
  * --compare also calls POST /api/compare with the first look and prints it at all three tiers.
+ * --refine "more casual" then calls POST /api/refine with that request and prints the new looks.
+ * --swap shoes asks for alternatives to the first look's shoes and applies the first one.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { readEvents, type CompareEvent, type Look, type StyleResult, type TierVersion } from "@/lib/agent/events";
+import {
+  readEvents,
+  type CompareEvent,
+  type Look,
+  type LookItem,
+  type StyleEvent,
+  type StyleResult,
+  type SwapEvent,
+  type TierVersion,
+} from "@/lib/agent/events";
 
 const { values: args } = parseArgs({
   options: {
@@ -20,6 +31,8 @@ const { values: args } = parseArgs({
     "max-budget": { type: "string" },
     out: { type: "string" },
     compare: { type: "boolean", default: false },
+    refine: { type: "string" },
+    swap: { type: "string" },
   },
 });
 
@@ -78,22 +91,107 @@ async function main() {
   for (const step of body.prepPlan.steps) console.info(`  - ${step.title}: ${step.detail}`);
 
   if (args.compare) await compare(body.looks[0], body);
+  if (args.refine) await refine(args.refine, body);
+  if (args.swap) await swap(args.swap as LookItem["slot"], body.looks[0], body);
+}
+
+const lookRef = (look: Look, body: StyleResult) => ({
+  name: look.name,
+  tier: look.tier,
+  items: look.items.map((i) => ({ slot: i.slot, id: i.id })),
+  hair: look.hair,
+  occasion: body.occasion,
+});
+
+const elapsed = (started: number) => `${((Date.now() - started) / 1000).toFixed(1)}s`.padStart(6);
+
+/** Refine by chat: the new brief and looks, streamed like /api/style. */
+async function refine(message: string, body: StyleResult) {
+  const form = new FormData();
+  form.set("photo", await photoBlob(), path.basename(args.photo));
+  form.set(
+    "refine",
+    JSON.stringify({
+      message,
+      sentence: args.occasion,
+      tier: args.tier,
+      occasion: body.occasion,
+      previous: body.looks.map((l) => ({ name: l.name, items: l.items.map((i) => i.name), total: l.total })),
+    }),
+  );
+  console.info(`\nPOST ${args.url}/api/refine  "${message}"`);
+  const started = Date.now();
+  const res = await fetch(`${args.url}/api/refine`, { method: "POST", body: form });
+  if (!res.ok || !res.body) {
+    console.error(`HTTP ${res.status}`, await res.text());
+    process.exit(1);
+  }
+  let looks: Look[] = [];
+  await readEvents<StyleEvent>(res.body, (event) => {
+    if (event.type === "progress") console.info(`${elapsed(started)}  ${event.step}${event.detail ? ` (${event.detail})` : ""}`);
+    else if (event.type === "looks") {
+      looks = event.looks;
+      const o = event.occasion;
+      console.info(`${elapsed(started)}  brief: ${o.formality}, max ${o.maxBudget ?? "none"}; constraints: ${o.constraints.join("; ") || "none"}`);
+    } else if (event.type === "render" && event.kind === "outfit") console.info(`${elapsed(started)}  look ${event.look + 1} outfit render`);
+    else if (event.type === "fitcheck") event.checks.forEach((c, i) => (looks[i].fitCheck = c));
+    else if (event.type === "error") {
+      console.error(`${elapsed(started)}  ERROR ${event.code}: ${event.message}`);
+      process.exit(1);
+    }
+  });
+  console.info(`Done in ${elapsed(started).trim()}\n`);
+  for (const look of looks) {
+    console.info(`${look.name}  ·  ${look.tier}  ·  Fit Check ${look.fitCheck?.score ?? "–"}/10  ·  S$${look.total.toFixed(2)}`);
+    for (const item of look.items) console.info(`  ${item.slot.padEnd(9)} S$${item.price.toFixed(2).padStart(8)}  ${item.name} (${item.storeName})`);
+  }
+}
+
+/** Swap one slot of a look for the first alternative offered, then re-render and re-score. */
+async function swap(slot: LookItem["slot"], look: Look, body: StyleResult) {
+  console.info(`\nPOST ${args.url}/api/swap/options  ${slot} of "${look.name}"`);
+  let started = Date.now();
+  const res = await fetch(`${args.url}/api/swap/options`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...lookRef(look, body), slot }),
+  });
+  const { options, error } = (await res.json()) as { options?: LookItem[]; error?: string };
+  if (!options) {
+    console.error(`HTTP ${res.status}`, error);
+    process.exit(1);
+  }
+  console.info(`${elapsed(started)}  ${options.length} options`);
+  for (const o of options) console.info(`  S$${o.price.toFixed(2).padStart(8)}  ${o.name} (${o.storeName})`);
+  if (!options.length) return;
+
+  const items = look.items.map((i) => (i.slot === slot ? options[0] : i));
+  const form = new FormData();
+  form.set("photo", await photoBlob(), path.basename(args.photo));
+  form.set("look", JSON.stringify({ ...lookRef({ ...look, items }, body) }));
+  console.info(`\nPOST ${args.url}/api/swap  ${slot} -> ${options[0].name}`);
+  started = Date.now();
+  const swapRes = await fetch(`${args.url}/api/swap`, { method: "POST", body: form });
+  if (!swapRes.ok || !swapRes.body) {
+    console.error(`HTTP ${swapRes.status}`, await swapRes.text());
+    process.exit(1);
+  }
+  await readEvents<SwapEvent>(swapRes.body, (event) => {
+    if (event.type === "render") console.info(`${elapsed(started)}  ${event.kind} render ${short(event.url)}`);
+    else if (event.type === "fitcheck") console.info(`${elapsed(started)}  Fit Check ${event.check.score}: ${event.check.reasoning}`);
+    else if (event.type === "done") console.info(`${elapsed(started)}  done; new total S$${items.reduce((s, i) => s + i.price, 0).toFixed(2)}`);
+    else if (event.type === "error") {
+      console.error(`${elapsed(started)}  ERROR ${event.code}: ${event.message}`);
+      process.exit(1);
+    }
+  });
 }
 
 /** Price Compare for one look: the original tier plus the two streamed from /api/compare. */
 async function compare(look: Look, body: StyleResult) {
   const form = new FormData();
   form.set("photo", await photoBlob(), path.basename(args.photo));
-  form.set(
-    "look",
-    JSON.stringify({
-      name: look.name,
-      tier: look.tier,
-      items: look.items.map((i) => ({ slot: i.slot, id: i.id })),
-      hair: look.hair,
-      occasion: body.occasion,
-    }),
-  );
+  form.set("look", JSON.stringify(lookRef(look, body)));
   console.info(`\nPOST ${args.url}/api/compare  "${look.name}" from ${look.tier}`);
   const started = Date.now();
   const res = await fetch(`${args.url}/api/compare`, { method: "POST", body: form });

@@ -1,12 +1,13 @@
 import "server-only";
 
 import { YouCamError, friendlyMessage } from "@/lib/youcam/errors";
+import { AgentError } from "./errors";
 
 type ErrorEvent = { type: "error"; code: string; message: string };
 
 /**
  * Run `work` and stream what it emits as newline-delimited JSON. A thrown error becomes
- * a final "error" event: typed YouCam errors keep their code, anything else is UNKNOWN.
+ * a final "error" event: agent and YouCam errors keep their code, anything else is UNKNOWN.
  */
 export function eventStream<E>(label: string, work: (send: (event: E | ErrorEvent) => void) => Promise<unknown>): Response {
   const encoder = new TextEncoder();
@@ -16,7 +17,9 @@ export function eventStream<E>(label: string, work: (send: (event: E | ErrorEven
       try {
         await work(send);
       } catch (err) {
-        if (err instanceof YouCamError) {
+        if (err instanceof AgentError) {
+          send({ type: "error", code: err.code, message: err.message });
+        } else if (err instanceof YouCamError) {
           send({ type: "error", code: err.code, message: friendlyMessage(err.code) });
         } else {
           console.error(`[${label}]`, err);

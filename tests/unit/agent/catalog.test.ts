@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allowedFormalities, buildPool, lookItems, lookTotal, pickErrors, poolLines } from "@/lib/agent/catalog";
+import { allowedFormalities, buildPool, lookItems, lookTotal, pickErrors, poolLines, varied } from "@/lib/agent/catalog";
 import type { LookPick } from "@/lib/agent/schemas";
 import type { Product } from "@/lib/catalog/types";
 
@@ -74,6 +74,12 @@ describe("buildPool", () => {
     expect(buildPool(catalog, { ...opts, maxBudget: 500 }).top.some((p) => p.id === "t-pricey")).toBe(false);
   });
 
+  it("caps each piece at its share of the budget so a full look can still fit", () => {
+    // Tops may take 45% of the budget: S$100 fits S$250 (112.50) but not S$200 (90)
+    expect(buildPool(catalog, { ...opts, maxBudget: 250 }).top.map((p) => p.id)).toContain("t1");
+    expect(buildPool(catalog, { ...opts, maxBudget: 200 }).top.map((p) => p.id)).not.toContain("t1");
+  });
+
   it("drops formality levels too far from the occasion", () => {
     const formal = product("t-formal", { formality: "formal" });
     expect(buildPool([formal], { ...opts, formality: "casual" }).top).toEqual([]);
@@ -123,5 +129,15 @@ describe("pickErrors", () => {
 
   it("totals a look from its products", () => {
     expect(lookTotal(lookItems(pick({ watch: "w1" }), pool))).toBe(580);
+  });
+});
+
+describe("varied", () => {
+  it("keeps at most two of the same product name and fills from the rest in order", () => {
+    const shirts = ["9401/6", "9401/14", "9403/1", "9404/1"].map((code) =>
+      product(code, { store: "colonyclothing.net", storeName: "Colony Clothing", name: `COLONY CLOTHING / NAPOLI LINEN SHIRT / ${code}` }),
+    );
+    const others = [product("polo", { name: "Knit Polo" }), product("tee", { name: "Pocket Tee" })];
+    expect(varied([...shirts, ...others], 4).map((p) => p.id)).toEqual(["9401/6", "9401/14", "polo", "tee"]);
   });
 });

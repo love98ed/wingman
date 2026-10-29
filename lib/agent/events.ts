@@ -15,6 +15,7 @@ export type LookItem = {
   store: string;
   storeName: string;
   price: number;
+  colour: string;
   image: string;
   url: string;
   /** In-stock sizes only. */
@@ -75,6 +76,13 @@ export type CompareEvent =
   | { type: "versions"; versions: TierVersion[] }
   | { type: "render"; tier: Tier; kind: Exclude<RenderKind, "beard">; url: string }
   | { type: "fitcheck"; tier: Tier; check: NonNullable<Look["fitCheck"]> }
+  | { type: "done" }
+  | { type: "error"; code: string; message: string };
+
+/** Streamed by /api/swap after a piece is swapped: the new try-on and score. */
+export type SwapEvent =
+  | { type: "render"; kind: Exclude<RenderKind, "beard">; url: string }
+  | { type: "fitcheck"; check: NonNullable<Look["fitCheck"]> }
   | { type: "done" }
   | { type: "error"; code: string; message: string };
 

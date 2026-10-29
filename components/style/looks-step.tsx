@@ -9,6 +9,7 @@ import { displayName } from "@/lib/catalog/names";
 import { TIER_LABELS } from "@/lib/occasions";
 import { cn } from "@/lib/utils";
 import { FlowShell, RAW_IMG_PROPS } from "./flow-shell";
+import { RefineBar } from "./refine-bar";
 import type { Photo } from "./style-flow";
 
 const sgd = (n: number) => `S$${n.toFixed(2)}`;
@@ -28,17 +29,24 @@ export function LooksStep({
   occasion,
   tier,
   scoring,
+  notice,
   onRestart,
   onCompare,
+  onSwap,
+  onRefine,
 }: {
   looks: Look[];
   photo: Photo | null;
   occasion: ParsedOccasion | null;
   tier: Tier;
   scoring: boolean;
+  /** A refine or swap that didn't work; the looks on screen are unchanged. */
+  notice: string | null;
   onRestart: () => void;
   /** Opens Price Compare for a look; absent until the looks are picked. */
   onCompare?: (index: number) => void;
+  onSwap?: (index: number, slot: LookItem["slot"]) => void;
+  onRefine?: (message: string) => void;
 }) {
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -53,8 +61,13 @@ export function LooksStep({
       <div className="mx-auto max-w-xl">
         <h1 className="mt-4 text-head">Your looks</h1>
         <p className="mt-3">
-          {looks.length} looks from real Singapore stores, tried on your photo. Swipe to compare.
+          {looks.length} looks from real Singapore stores, tried on your photo. Swipe to compare, tap Swap to change a piece.
         </p>
+        {notice && (
+          <p role="alert" className="mt-4 bg-surface-raised p-4">
+            {notice}
+          </p>
+        )}
       </div>
 
       <div
@@ -76,6 +89,7 @@ export function LooksStep({
             photo={photo}
             scoring={scoring && !look.fitCheck}
             onCompare={onCompare && (() => onCompare(i))}
+            onSwap={onSwap && ((slot) => onSwap(i, slot))}
           />
         ))}
       </div>
@@ -103,6 +117,8 @@ export function LooksStep({
           Change the occasion or budget
         </button>
       </div>
+
+      {onRefine && <RefineBar onRefine={onRefine} />}
     </FlowShell>
   );
 }
@@ -114,6 +130,7 @@ function LookCard({
   photo,
   scoring,
   onCompare,
+  onSwap,
 }: {
   look: Look;
   index: number;
@@ -121,6 +138,7 @@ function LookCard({
   photo: Photo | null;
   scoring: boolean;
   onCompare?: () => void;
+  onSwap?: (slot: LookItem["slot"]) => void;
 }) {
   const grooming = [
     look.renders.hair && { url: look.renders.hair, label: `Hair: ${look.hair}` },
@@ -206,13 +224,8 @@ function LookCard({
 
         <ul className="mt-5 flex flex-col gap-3">
           {look.items.map((item) => (
-            <li key={item.id}>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener"
-                className="group flex items-center gap-3 bg-background/40 p-2 transition-colors hover:bg-surface-raised"
-              >
+            <li key={item.slot} className="flex items-center gap-3 bg-background/40 p-2">
+              <a href={item.url} target="_blank" rel="noopener" className="group flex min-w-0 flex-1 items-center gap-3">
                 <span className="relative size-16 shrink-0 overflow-hidden bg-[#d9d7d2]">
                   <Image src={item.image} alt="" fill sizes="64px" className="object-cover" {...RAW_IMG_PROPS} />
                 </span>
@@ -220,10 +233,20 @@ function LookCard({
                   <span className="block text-small text-muted-foreground">
                     {SLOT_LABELS[item.slot]} · {item.storeName}
                   </span>
-                  <span className="line-clamp-2 text-small">{displayName(item.name, item.storeName)}</span>
+                  <span className="line-clamp-2 text-small group-hover:underline">{displayName(item.name, item.storeName)}</span>
+                  <span className="block text-small tabular-nums">{sgd(item.price)}</span>
                 </span>
-                <span className="shrink-0 text-small tabular-nums">{sgd(item.price)}</span>
               </a>
+              {onSwap && (
+                <button
+                  type="button"
+                  onClick={() => onSwap(item.slot)}
+                  aria-label={`Swap the ${SLOT_LABELS[item.slot].toLowerCase()}`}
+                  className="min-h-11 shrink-0 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
+                >
+                  Swap
+                </button>
+              )}
             </li>
           ))}
         </ul>

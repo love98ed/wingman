@@ -77,6 +77,7 @@ const PAGE = 1000;
 export type CatalogFilter = {
   inStock?: boolean;
   tier?: Product["tier"];
+  tiers?: Product["tier"][];
   categories?: Product["category"][];
   formalities?: Product["formality"][];
   ids?: string[];
@@ -88,6 +89,7 @@ export async function loadCatalog(db: SupabaseClient, filter: CatalogFilter = {}
     let query = db.from("products").select("*").order("id");
     if (filter.inStock) query = query.eq("in_stock", true);
     if (filter.tier) query = query.eq("tier", filter.tier);
+    if (filter.tiers) query = query.in("tier", filter.tiers);
     if (filter.categories) query = query.in("category", filter.categories);
     if (filter.formalities) query = query.in("formality", filter.formalities);
     if (filter.ids) query = query.in("id", filter.ids);

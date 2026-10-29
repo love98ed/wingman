@@ -1,6 +1,6 @@
 import { sha256 } from "@/lib/hash";
 import type { Product, Tier } from "@/lib/catalog/types";
-import { isInStock, SLOTS, type LookItems, type Slot } from "./catalog";
+import { isInStock, productLine, SLOTS, type LookItems, type Slot } from "./catalog";
 import type { TierPick } from "./schemas";
 
 /** How many same-tier stand-ins per slot Claude chooses from. */
@@ -60,12 +60,7 @@ export function tierPool(look: LookItems, products: Product[], tier: Tier, seed:
 /** Candidate lines for the matching prompt, one section per slot. */
 export function tierPoolLines(pool: TierPool): string {
   return SLOTS.filter((slot) => pool[slot])
-    .map((slot) => {
-      const lines = pool[slot]!.map(
-        (p) => `${p.id} | ${p.name} | ${p.colour} | ${p.formality} | S$${p.price.toFixed(0)} | ${p.storeName}`,
-      );
-      return `### ${slot}\n${lines.join("\n") || "(none)"}`;
-    })
+    .map((slot) => `### ${slot}\n${pool[slot]!.map(productLine).join("\n") || "(none)"}`)
     .join("\n");
 }
 

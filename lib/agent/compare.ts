@@ -9,7 +9,7 @@ import type { CompareEvent, TierVersion } from "./events";
 import { resolveTier, tierPickErrors, tierPool, type TierPool } from "./match";
 import { memo } from "./memo";
 import { renderLook } from "./render";
-import type { CompareRequest, ParsedOccasion, TierPick } from "./schemas";
+import { fromClient, type CompareRequest, type TierPick } from "./schemas";
 import { fitCheck, matchTiers } from "./steps";
 import { cachedFace, toItem } from "./style";
 
@@ -23,7 +23,7 @@ const itemIds = (items: LookItems) => SLOTS.map((slot) => items[slot]?.id ?? nul
 export async function runCompare(photoBytes: Buffer, req: CompareRequest, emit: (event: CompareEvent) => void) {
   const started = Date.now();
   const lap = (label: string) => console.info(`[compare] ${label} at ${((Date.now() - started) / 1000).toFixed(1)}s`);
-  const occasion: ParsedOccasion = { ...req.occasion, budgetTier: req.tier };
+  const occasion = fromClient(req.occasion, req.tier);
   const db = supabaseAdmin();
   const slots = req.items.map((i) => i.slot);
 

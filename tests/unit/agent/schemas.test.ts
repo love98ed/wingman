@@ -6,6 +6,9 @@ import {
   PrepPlanSchema,
   StyleRequestSchema,
   CompareRequestSchema,
+  RefinedOccasionSchema,
+  RefineRequestSchema,
+  SwapOptionsRequestSchema,
   TierPicksSchema,
 } from "@/lib/agent/schemas";
 import { BEARD_STYLES, BEARD_TEMPLATES, HAIR_STYLES, HAIR_TEMPLATES } from "@/lib/agent/grooming";
@@ -77,6 +80,35 @@ describe("Price Compare schemas", () => {
     expect(TierPicksSchema.safeParse({ versions: [version, { ...version, tier: "luxury" }] }).success).toBe(true);
     expect(TierPicksSchema.safeParse({ versions: [] }).success).toBe(false);
     expect(TierPicksSchema.safeParse({ versions: [{ ...version, tier: "cheap" }] }).success).toBe(false);
+  });
+});
+
+describe("Refine and swap schemas", () => {
+  const occasion = { occasion: "date", formality: "smart-casual", setting: "rooftop bar", timeOfDay: "night", constraints: [] };
+  const refine = {
+    message: "more casual",
+    sentence: "First date Friday night, rooftop bar",
+    tier: "mid",
+    occasion: { ...occasion, maxBudget: null },
+    previous: [{ name: "Rooftop easy", items: ["Linen shirt", "Chinos"], total: 410 }],
+  };
+
+  it("accepts a refine request, trims it and rejects an empty one", () => {
+    expect(RefineRequestSchema.parse({ ...refine, message: "  no white sneakers " }).message).toBe("no white sneakers");
+    expect(RefineRequestSchema.safeParse({ ...refine, message: " " }).success).toBe(false);
+  });
+
+  it("takes a budget cap or null from Claude, never a negative one", () => {
+    const brief = { formality: "casual", setting: "rooftop bar", constraints: ["no white sneakers"] };
+    expect(RefinedOccasionSchema.safeParse({ ...brief, maxBudget: 300 }).success).toBe(true);
+    expect(RefinedOccasionSchema.safeParse({ ...brief, maxBudget: null }).success).toBe(true);
+    expect(RefinedOccasionSchema.safeParse({ ...brief, maxBudget: -5 }).success).toBe(false);
+  });
+
+  it("needs a known slot to swap", () => {
+    const look = { name: "Rooftop easy", tier: "mid", items: [{ slot: "shoes", id: "a" }], hair: null, occasion };
+    expect(SwapOptionsRequestSchema.safeParse({ ...look, slot: "shoes" }).success).toBe(true);
+    expect(SwapOptionsRequestSchema.safeParse({ ...look, slot: "hat" }).success).toBe(false);
   });
 });
 
