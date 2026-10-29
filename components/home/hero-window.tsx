@@ -104,8 +104,8 @@ export function HeroWindow({ before, after, alt }: Props) {
           <header className="pointer-events-auto flex h-16 items-center justify-between pt-[env(safe-area-inset-top)] md:h-20">
             <span className="font-display text-small tracking-[-0.01em] uppercase">Wingman</span>
             <nav aria-label="Main" className="flex gap-6 text-small">
-              <a href="#look" className="text-link hidden min-h-11 items-center md:inline-flex">
-                The look
+              <a href="#looks" className="text-link hidden min-h-11 items-center md:inline-flex">
+                The looks
               </a>
               <a href="#how" className="text-link hidden min-h-11 items-center md:inline-flex">
                 How it works

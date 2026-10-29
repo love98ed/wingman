@@ -3,10 +3,11 @@ import Link from "next/link";
 
 const MENU = [
   { label: "Style me", href: "/style" },
-  { label: "The occasion", href: "#start" },
-  { label: "The look", href: "#look" },
+  { label: "Pick the night", href: "#looks" },
+  { label: "Three budgets", href: "#budgets" },
   { label: "Fit check", href: "#fit" },
   { label: "How it works", href: "#how" },
+  { label: "The stores", href: "#stores" },
 ];
 
 /** A designed close: the render, closer than anywhere above, beside the menu set large. */
@@ -14,7 +15,7 @@ export function SiteFooter({ render }: { render: string }) {
   return (
     <footer className="relative z-10 grid bg-background md:min-h-svh md:grid-cols-12">
       <div data-shutter className="relative h-[50svh] overflow-hidden md:col-span-6 md:h-auto">
-        <div className="absolute inset-0 origin-[46%_24%] scale-[1.6]">
+        <div className="absolute inset-0 origin-[50%_22%] scale-[1.35]">
           <Image
             src={render}
             alt="Close-up of the styled render"
@@ -48,12 +49,12 @@ export function SiteFooter({ render }: { render: string }) {
             Try-on and skin analysis by YouCam AI. Products from independent Singapore stores; you check out on their
             site.
           </p>
-          <p>Your photo stays private and is deleted after 24 hours.</p>
+          <p>Your photo is never stored, and your try-ons are deleted after 24 hours.</p>
         </div>
 
         <p className="mt-auto pt-16 text-small text-muted-foreground">
-          Wingman, built for the YouCam API hackathon. Sample photo by MART PRODUCTION on Pexels; shirt and trousers
-          from DUXTON.
+          Wingman, built for the YouCam API hackathon. Model photo by MART PRODUCTION on Pexels; every try-on on this
+          page is a real YouCam render, in pieces from Colony Clothing, Kevin Seah and Pharaoh&apos;s Horses.
         </p>
       </div>
     </footer>

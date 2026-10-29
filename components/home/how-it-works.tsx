@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils/cn";
 const STAGES = [
   {
     name: "Snap one photo",
-    body: "Waist up, facing the camera. It's deleted after 24 hours.",
+    body: "Waist up, facing the camera. Your try-ons are deleted after 24 hours.",
     span: "md:col-span-3",
     tile: "h-[34vw] md:h-[30vh] bg-surface-raised",
-    picture: { src: "/demo/before.jpg", alt: "The original photo, waist up in a white T-shirt" },
+    picture: { src: "/home/before.jpg", alt: "The original photo, waist up in a white T-shirt" },
   },
   {
     name: "Say where you're going",
@@ -22,7 +22,7 @@ const STAGES = [
     body: "Each look on you with a Fit Check, and one cart per store.",
     span: "md:col-span-5",
     tile: "h-[62vw] md:h-[60vh] bg-surface-raised",
-    picture: { src: "/demo/after.jpg", alt: "The same photo, styled in the camp collar shirt" },
+    picture: { src: "/home/night-out.jpg", alt: "The same photo, tried on in an olive ikat shirt" },
   },
 ] as const;
 
