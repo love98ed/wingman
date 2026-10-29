@@ -10,13 +10,13 @@ Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eC
 
 1. Open https://wingman-eight-beta.vercel.app on your phone or laptop.
 2. Tap **Start with a photo** and upload a waist-up, front-facing selfie. Glasses are fine.
-3. Keep "First date Friday night, rooftop bar, want to look effortless", pick **Mid-range** and tap **Style me**. The first look appears in about 30 seconds and the others follow.
+3. Keep "First date Friday night, rooftop bar, want to look effortless", pick **Mid-range** and tap **Style me**. Each try-on fills in on the loading screen ("3 of 5 ready"), and your looks open once every one is ready, in about a minute. If one fails you can try it again or go on without it.
 
 What to look for:
 
 - **The looks:** swipe through 3 complete outfits from real stores, each tried on your photo with a Fit Check score out of 10.
 - **Compare prices:** the same look rebuilt at Budget, Mid-range and Luxury, side by side, with real SGD totals.
-- **Refine and swap:** type "more casual" or "under S$500" in the bar at the bottom and Wingman says in a sentence what it changed (it turns down requests it can't act on, like hats or a new hair colour, before spending anything), or tap **Swap** on any piece for 6 alternatives that go with the rest of the look.
+- **Refine and swap:** type "more casual" or "under S$500" in the bar at the bottom and Wingman says in a sentence what it changed (it turns down requests it can't act on, like hats or a new hair colour, before spending anything), or open a look's **Additional** tab to **Swap** any piece for 6 alternatives that go with the rest of the look, or see **Cheaper** ones that cost at least 10% less.
 - **Prep plan:** a three-step grooming routine for the night before, based on a skin analysis of your photo.
 - **Checkout:** **Add this look to cart**, pick in-stock sizes, and tap **Checkout at {store}**. The store's real cart opens with your pieces in it. You pay there; Wingman never takes payment.
 
@@ -61,13 +61,14 @@ flowchart TD
     G --> H[Claude Fit Check<br/>score out of 10 + reason]
     D --> I[Claude prep plan<br/>3 grooming steps, no medical claims]
     H --> P[Looks scoring under 6 dropped]
-    P --> J[Looks stream to the phone<br/>first one as soon as it's ready]
+    P --> J[Looks open once every try-on<br/>has landed, with a retry for any that failed]
     J --> K[Refine by chat / Swap a piece / Compare prices]
     K --> F
     J --> L[Cart: in-stock sizes,<br/>one Shopify cart link per store]
 ```
 
-- **`POST /api/style`** streams progress as newline-delimited JSON, so the first look shows as soon as its render is done.
+- **`POST /api/style`** streams progress as newline-delimited JSON: each try-on as it lands, any that failed, then a ready signal once the looks are scored.
+- **`POST /api/photo/check`**: checks a photo when it's chosen (brightness, blur, and a Claude look at framing: one person, head in frame, shoulders visible, facing the camera) and says why one won't work, with a tip. No YouCam units.
 - **`POST /api/refine`**: Claude first decides whether the request is something Wingman can do. Off-topic requests, changes to your body or hair colour, and things it doesn't sell (hats, bags, ties) are turned down with a one-line reply and an example of what to ask instead, before any units are spent. Otherwise Claude updates the brief ("more casual", "under S$300"), replies with what it changed, and look selection, renders and Fit Checks run again with the old looks as context. A budget cap opens the cheaper tiers.
 - **`POST /api/swap/options` and `/api/swap`**: 6 in-stock alternatives for one slot that go with the rest of the look, then a re-render and new score.
 - **`POST /api/compare`**: for each piece, products in the other tiers are ranked by colour, cut (shared name words like "linen") and formality; Claude picks the closest stand-in and says what changes at that price.
@@ -88,7 +89,7 @@ flowchart TD
 | Images | sharp |
 | Validation | Zod on every API input and every Claude output |
 | Products and checkout | Shopify `products.json` feeds and cart permalinks |
-| Tests | Vitest (192 unit tests) and Playwright (smoke) |
+| Tests | Vitest (212 unit tests) and Playwright (smoke) |
 | Deploy | Vercel |
 
 ## Setup
@@ -114,6 +115,7 @@ cp .env.example .env.local
 | `SUPABASE_ANON_KEY` | Same page (optional; all database access is server-side) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Same page (keep this secret) |
 | `MOCK_YOUCAM` | `true` serves saved YouCam responses from `fixtures/youcam/` (zero units). `false` for live renders |
+| `MOCK_YOUCAM_FAIL` | Mock mode only: comma-separated APIs (`clothes`, `hair`, `beard`) whose first call per image fails, to see the retry screen |
 | `YOUCAM_UNIT_LIMIT` | Hard cap on YouCam units (default 700) |
 
 **3. Database migration.** In the Supabase SQL Editor, run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql), then [`0002_catalog_tags.sql`](supabase/migrations/0002_catalog_tags.sql). They create the tables (see [Database](#database)), the unit-reserve function and two private storage buckets.
