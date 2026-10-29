@@ -68,7 +68,7 @@ export function HowItWorks() {
                 style={{ "--d": `${120 + i * 90}ms` } as React.CSSProperties}
                 className={cn("-mt-3 md:row-start-2 md:mt-0", stage.span)}
               >
-                <h3 className="font-sans text-lead font-medium tracking-normal normal-case">{stage.name}</h3>
+                <h3 className="subhead">{stage.name}</h3>
                 <p className="mt-1 max-w-[36ch]">{stage.body}</p>
               </div>
             </li>

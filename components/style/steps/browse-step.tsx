@@ -247,7 +247,7 @@ export function BrowseStep({
               <span className="flex flex-1 flex-col p-3">
                 <span className="line-clamp-2 text-small">{displayName(item.name, item.storeName)}</span>
                 <span className="mt-1 block text-small text-muted-foreground">{item.storeName}</span>
-                <span className="card-foot block pt-1 text-small tabular-nums">{sgd(item.price, { whole: true })}</span>
+                <span className="card-foot block pt-1 text-small tabular-nums">{sgd(item.price)}</span>
               </span>
             </button>
           </li>
@@ -255,7 +255,7 @@ export function BrowseStep({
       </ul>
 
       {page && page.items.length < page.total && (
-        <button type="button" onClick={loadMore} disabled={more} className="mt-6 min-h-12 w-full bg-surface-raised transition-colors hover:bg-surface disabled:opacity-50">
+        <button type="button" onClick={loadMore} disabled={more} className="btn-quiet mt-6 w-full">
           {more ? "Loading…" : `Show more (${page.total - page.items.length} left)`}
         </button>
       )}
@@ -321,7 +321,7 @@ function ItemSheet({
         <div className="flex gap-4">
           <ProductImage src={item.image} sizes="112px" className="size-28" />
           <div className="min-w-0 flex-1">
-            <h2 className="font-sans text-lead leading-snug font-medium tracking-normal normal-case">{name}</h2>
+            <h2 className="subhead">{name}</h2>
             <p className="mt-1 text-small text-muted-foreground">
               {item.storeName} · {TIER_LABELS[item.tier]} · <span className="capitalize">{item.colour}</span>
             </p>

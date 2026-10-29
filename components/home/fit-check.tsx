@@ -30,7 +30,7 @@ export function FitCheck() {
       </div>
 
       <div className="flex flex-col md:col-span-5 md:col-start-8 md:justify-end">
-        <h3 data-reveal className="font-sans text-lead font-medium tracking-normal normal-case">The bill</h3>
+        <h3 data-reveal className="subhead">The bill</h3>
         <ul className="mt-6 flex flex-col gap-4">
           {FIT_CHECK.items.map((item, i) => (
             <li

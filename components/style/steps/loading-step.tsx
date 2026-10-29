@@ -78,7 +78,7 @@ export function LoadingStep({
 
       {status.total > 0 ? (
         <section aria-labelledby="images-heading" className="mt-8">
-          <h2 id="images-heading" className="font-sans text-lead font-medium tracking-normal normal-case" aria-live="polite">
+          <h2 id="images-heading" className="subhead" aria-live="polite">
             <span className="tabular-nums">
               {status.ready} of {status.total}
             </span>{" "}
@@ -131,7 +131,7 @@ export function LoadingStep({
 
       {!stuck && (
         <section aria-labelledby="wait-heading" className="mt-10 bg-surface p-5">
-          <h2 id="wait-heading" className="font-sans text-lead font-medium tracking-normal normal-case">
+          <h2 id="wait-heading" className="subhead">
             While you wait
           </h2>
           <p className="mt-2">

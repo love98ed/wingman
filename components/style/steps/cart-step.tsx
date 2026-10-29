@@ -91,7 +91,7 @@ export function CartStep({
             </p>
             {group.checkoutUrl ? (
               <a href={group.checkoutUrl} target="_blank" rel="noopener" className="btn mt-3 w-full">
-                Checkout at {group.storeName}
+                Check out at {group.storeName}
                 <span className="sr-only"> (opens the store&apos;s site)</span>
                 <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
                   <path d="M7 17 17 7M9 7h8v8" />

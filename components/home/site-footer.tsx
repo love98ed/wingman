@@ -42,7 +42,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <p className="mt-20 max-w-[80ch] text-small text-muted-foreground md:mt-28">
+      <p className="mt-20 max-w-[64ch] text-small text-muted-foreground md:mt-28">
           Wingman, built for the YouCam API hackathon. Model photo by MART PRODUCTION on Pexels; every try-on on this
           page is a real YouCam render, in pieces from Colony Clothing, Kevin Seah and Pharaoh&apos;s Horses.
       </p>

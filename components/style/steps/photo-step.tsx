@@ -149,7 +149,7 @@ export function PhotoStep({
         </div>
       )}
       <section aria-labelledby="photo-tips" className="mt-10">
-        <h2 id="photo-tips" className="font-sans text-lead font-medium tracking-normal normal-case">
+        <h2 id="photo-tips" className="subhead">
           What works best
         </h2>
         <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 marker:text-muted-foreground">

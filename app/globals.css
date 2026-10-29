@@ -11,6 +11,8 @@
   --color-brass: var(--brass);
   --color-ivory: var(--text);
   --color-danger: var(--danger);
+  /* The light ground behind store product photos, close to their own backgrounds */
+  --color-product: var(--product);
 
   /* Two faces: Panchang for display, Switzer for everything else */
   --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
@@ -70,6 +72,7 @@
   --text-muted: #9c978e;
   --brass: #c8a96a;
   --brass-strong: #d9bd85;
+  --product: #d9d7d2;
   --success: #5fb58a;
   --danger: #e06c5f;
 
@@ -135,6 +138,40 @@
   }
   .card-foot {
     margin-top: auto;
+  }
+  /* A heading inside a block (a card, a list, a note): the text face, not the display face */
+  .subhead {
+    font-family: var(--font-sans);
+    font-size: var(--step-lead);
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 1.3;
+    text-transform: none;
+  }
+  /* The secondary button: a step up in tone, never brass, so the one primary action stays clear */
+  .btn-quiet {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.875rem;
+    background: var(--surface-raised);
+    font-size: var(--step-small);
+    font-weight: 500;
+    transition:
+      transform var(--t-press) var(--ease-out),
+      background-color var(--t-hover) ease;
+  }
+  .btn-quiet:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .btn-quiet:disabled {
+    opacity: 0.5;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-quiet:hover:not(:disabled) {
+      background: var(--bg);
+    }
   }
   /* The one button: flat brass, square corners */
   .btn {

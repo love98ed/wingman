@@ -65,7 +65,7 @@ export function SwapStep({
             {displayName(current.name, current.storeName)}
           </a>
         </span>
-        <span className="shrink-0 text-small tabular-nums">{sgd(current.price, { whole: true })}</span>
+        <span className="shrink-0 text-small tabular-nums">{sgd(current.price)}</span>
       </div>
 
       <h2 className="mt-10 text-lead">{cheaper ? "Cheaper picks" : "Alternatives"}</h2>
@@ -107,7 +107,7 @@ export function SwapStep({
                     <span className="capitalize">{option.colour}</span> · {option.storeName}
                   </span>
                   <span className="card-foot block pt-1 text-small tabular-nums">
-                    {sgd(option.price, { whole: true })}{" "}
+                    {sgd(option.price)}{" "}
                     <span className="text-muted-foreground">({priceDiff(option.price, current.price)})</span>
                   </span>
                 </span>

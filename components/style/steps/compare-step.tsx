@@ -145,7 +145,7 @@ function Column({
         <p className="text-small font-medium">{TIER_LABELS[tier]}</p>
         {version ? (
           <>
-            <p className="mt-1 text-lead tabular-nums">{sgd(version.total, { whole: true })}</p>
+            <p className="mt-1 text-lead tabular-nums">{sgd(version.total)}</p>
             <p className="mt-1 text-small tabular-nums text-muted-foreground">
               {version.fitCheck ? (
                 <>
@@ -165,7 +165,7 @@ function Column({
                     <ProductImage src={item.image} alt={displayName(item.name, item.storeName)} sizes="(min-width: 640px) 14rem, 28vw" className="aspect-square" />
                     <span className="mt-1 line-clamp-2 text-small group-hover:underline">{displayName(item.name, item.storeName)}</span>
                     <span className="block text-small tabular-nums text-muted-foreground">
-                      {item.storeName} · {sgd(item.price, { whole: true })}
+                      {item.storeName} · {sgd(item.price)}
                     </span>
                   </a>
                 </li>
@@ -180,7 +180,7 @@ function Column({
                 <button
                   type="button"
                   onClick={() => onChoose(version)}
-                  className="min-h-11 w-full bg-surface-raised px-2 text-small font-medium transition-colors hover:bg-background active:scale-[0.97]"
+                  className="btn-quiet w-full px-2"
                 >
                   Wear this version
                 </button>

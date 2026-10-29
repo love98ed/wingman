@@ -21,7 +21,7 @@ export function RefineBar({ onRefine }: { onRefine: (message: string) => void })
               key={s}
               type="button"
               onClick={() => send(s)}
-              className="min-h-11 shrink-0 bg-surface-raised px-4 text-small transition-colors hover:bg-surface active:scale-[0.97]"
+              className="btn-quiet shrink-0 px-4"
             >
               {s}
             </button>

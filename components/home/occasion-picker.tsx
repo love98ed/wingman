@@ -91,7 +91,7 @@ export function OccasionPicker() {
         </div>
         <figcaption aria-live="polite" className="mt-4 flex items-center gap-4 px-(--margin) md:px-0">
           <a href={look.piece.url} target="_blank" rel="noopener" className="group flex min-w-0 flex-1 items-center gap-4 overflow-hidden">
-            <span className="relative size-16 shrink-0 overflow-hidden bg-[#d9d7d2]">
+            <span className="relative size-16 shrink-0 overflow-hidden bg-product">
               <Image src={look.piece.thumb} alt="" fill sizes="64px" className="object-cover" />
             </span>
             <span className="min-w-0 flex-1">

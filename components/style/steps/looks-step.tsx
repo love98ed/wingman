@@ -330,7 +330,7 @@ function LookCard({
               ([title, pieces]) =>
                 pieces.length > 0 && (
                   <section key={title} className="mt-5">
-                    <h3 className="font-sans text-small font-medium normal-case tracking-normal text-muted-foreground">{title}</h3>
+                    <h3 className="subhead text-small text-muted-foreground">{title}</h3>
                     {title === "Also in this look" && (
                       <p className="mt-1 text-small text-muted-foreground">Picked for the outfit, not shown on you.</p>
                     )}
@@ -346,7 +346,7 @@ function LookCard({
         ) : (
           <div role="tabpanel" id={`${tabId}-additional`} aria-labelledby={`${tabId}-additional-tab`}>
             <section className="mt-5">
-              <h3 className="font-sans text-lead font-medium tracking-normal normal-case">Swap or save</h3>
+              <h3 className="subhead">Swap or save</h3>
               <p className="mt-1 text-small">
                 Swap any piece for one of six in-stock alternatives, or see cheaper ones that go with the rest of the look.
               </p>
@@ -405,7 +405,7 @@ function PieceRow({
               type="button"
               onClick={() => onSwap(item.slot)}
               aria-label={`Swap the ${SLOT_LABELS[item.slot].toLowerCase()}`}
-              className="min-h-11 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
+              className="btn-quiet"
             >
               Swap
             </button>
@@ -415,7 +415,7 @@ function PieceRow({
               type="button"
               onClick={() => onCheaper(item.slot)}
               aria-label={`Cheaper ${SLOT_LABELS[item.slot].toLowerCase()} options`}
-              className="min-h-11 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
+              className="btn-quiet"
             >
               Cheaper
             </button>
