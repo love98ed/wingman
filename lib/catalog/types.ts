@@ -30,7 +30,8 @@ export type Product = {
   image: string;
   images: string[];
   url: string;
-  variants: { id: number; size: string; available: boolean }[];
+  /** `title` is Shopify's full variant title ("Navy / M"); it tells colour variants of one size apart. */
+  variants: { id: number; size: string; title?: string; available: boolean }[];
   updatedAt: string;
 };
 

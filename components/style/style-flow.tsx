@@ -12,8 +12,10 @@ import {
   type TierVersion,
 } from "@/lib/agent/events";
 import type { ParsedOccasion } from "@/lib/agent/schemas";
+import { isOneSize, type CartLine } from "@/lib/cart";
 import type { Occasion, Tier } from "@/lib/catalog/types";
 import { OCCASION_CHOICES } from "@/lib/occasions";
+import { CartStep } from "./cart-step";
 import { CompareStep, versionOf, type CompareState } from "./compare-step";
 import { ErrorStep } from "./error-step";
 import { LoadingStep } from "./loading-step";
@@ -24,7 +26,7 @@ import { showsInRender, SwapStep, type SwapOptionsState } from "./swap-step";
 
 export type Photo = { blob: Blob; url: string };
 export type Progress = { step: StyleStep; detail?: string };
-type Phase = "photo" | "occasion" | "loading" | "looks" | "compare" | "swap" | "error";
+type Phase = "photo" | "occasion" | "loading" | "looks" | "compare" | "swap" | "cart" | "error";
 type Slot = LookItem["slot"];
 
 /** The ids of a look's pieces: swap alternatives are cached per look and slot. */
@@ -56,6 +58,8 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   const [comparing, setComparing] = useState(0);
   const [swapping, setSwapping] = useState<{ look: number; slot: Slot }>({ look: 0, slot: "top" });
   const [swapOptions, setSwapOptions] = useState<Record<string, SwapOptionsState>>({});
+  /** Kept across refines and new runs, so pieces from earlier looks stay in the cart. */
+  const [cart, setCart] = useState<CartLine[]>([]);
   const abort = useRef<AbortController | null>(null);
   /** Compares and swaps in flight; a new run or refine cancels them. */
   const sideAborts = useRef<AbortController[]>([]);
@@ -360,6 +364,29 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     }
   };
 
+  /** Every piece of a look into the cart (once each); a one-size piece needs no size pick. */
+  const addToCart = (look: Look) => {
+    setCart((prev) => {
+      const have = new Set(prev.map((l) => l.id));
+      const added: CartLine[] = look.items
+        .filter((item) => !have.has(item.id))
+        .map((item) => ({
+          id: item.id,
+          store: item.store,
+          storeName: item.storeName,
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          url: item.url,
+          sizes: item.sizes,
+          variantId: isOneSize(item.sizes) ? item.sizes[0].variantId : null,
+          qty: 1,
+        }));
+      return [...prev, ...added];
+    });
+    setPhase("cart");
+  };
+
   if (phase === "photo") {
     return <PhotoStep photo={photo} onPhoto={setPhoto} onNext={() => setPhase("occasion")} />;
   }
@@ -423,6 +450,16 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       />
     );
   }
+  if (phase === "cart") {
+    return (
+      <CartStep
+        lines={cart}
+        onSize={(id, variantId) => setCart((prev) => prev.map((l) => (l.id === id ? { ...l, variantId } : l)))}
+        onRemove={(id) => setCart((prev) => prev.filter((l) => l.id !== id))}
+        onBack={() => setPhase(looks.length ? "looks" : "occasion")}
+      />
+    );
+  }
   return (
     <LooksStep
       looks={looks}
@@ -435,6 +472,9 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       onCompare={parsed ? openCompare : undefined}
       onSwap={parsed ? openSwap : undefined}
       onRefine={parsed ? refine : undefined}
+      cart={cart}
+      onAddToCart={addToCart}
+      onViewCart={() => setPhase("cart")}
     />
   );
 }

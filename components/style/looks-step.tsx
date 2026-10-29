@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import type { Look, LookItem } from "@/lib/agent/events";
+import type { CartLine } from "@/lib/cart";
 import type { ParsedOccasion } from "@/lib/agent/schemas";
 import type { Tier } from "@/lib/catalog/types";
 import { displayName } from "@/lib/catalog/names";
@@ -34,6 +35,9 @@ export function LooksStep({
   onCompare,
   onSwap,
   onRefine,
+  cart,
+  onAddToCart,
+  onViewCart,
 }: {
   looks: Look[];
   photo: Photo | null;
@@ -47,7 +51,12 @@ export function LooksStep({
   onCompare?: (index: number) => void;
   onSwap?: (index: number, slot: LookItem["slot"]) => void;
   onRefine?: (message: string) => void;
+  cart: CartLine[];
+  onAddToCart: (look: Look) => void;
+  onViewCart: () => void;
 }) {
+  const inCart = new Set(cart.map((l) => l.id));
+  const cartTotal = cart.reduce((sum, l) => sum + l.price * l.qty, 0);
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
@@ -63,6 +72,19 @@ export function LooksStep({
         <p className="mt-3">
           {looks.length} looks from real Singapore stores, tried on your photo. Swipe to compare, tap Swap to change a piece.
         </p>
+        {cart.length > 0 && (
+          <button
+            type="button"
+            onClick={onViewCart}
+            className="mt-4 flex min-h-12 w-full items-center justify-between bg-surface-raised px-4 text-left transition-colors hover:bg-surface"
+          >
+            <span>
+              Cart: {cart.length} {cart.length === 1 ? "piece" : "pieces"},{" "}
+              <span className="tabular-nums">{sgd(cartTotal)}</span>
+            </span>
+            <span className="font-medium">View cart</span>
+          </button>
+        )}
         {notice && (
           <p role="alert" className="mt-4 bg-surface-raised p-4">
             {notice}
@@ -90,6 +112,9 @@ export function LooksStep({
             scoring={scoring && !look.fitCheck}
             onCompare={onCompare && (() => onCompare(i))}
             onSwap={onSwap && ((slot) => onSwap(i, slot))}
+            inCart={look.items.every((item) => inCart.has(item.id))}
+            onAddToCart={() => onAddToCart(look)}
+            onViewCart={onViewCart}
           />
         ))}
       </div>
@@ -131,6 +156,9 @@ function LookCard({
   scoring,
   onCompare,
   onSwap,
+  inCart,
+  onAddToCart,
+  onViewCart,
 }: {
   look: Look;
   index: number;
@@ -139,6 +167,9 @@ function LookCard({
   scoring: boolean;
   onCompare?: () => void;
   onSwap?: (slot: LookItem["slot"]) => void;
+  inCart: boolean;
+  onAddToCart: () => void;
+  onViewCart: () => void;
 }) {
   const grooming = [
     look.renders.hair && { url: look.renders.hair, label: `Hair: ${look.hair}` },
@@ -252,6 +283,16 @@ function LookCard({
             </li>
           ))}
         </ul>
+
+        {inCart ? (
+          <button type="button" onClick={onViewCart} className="text-link mt-5 min-h-11 font-medium">
+            In your cart. View cart
+          </button>
+        ) : (
+          <button type="button" onClick={onAddToCart} className="btn mt-5 w-full">
+            Add this look to cart
+          </button>
+        )}
       </div>
     </article>
   );

@@ -8,7 +8,7 @@ Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eC
 
 > **Teammates:** start with [docs/HANDOFF.md](docs/HANDOFF.md).
 >
-> **Status: in progress.** You can upload a photo, describe the occasion and get 2 to 3 looks from real stores, tried on your photo and scored, compare any look at three price tiers, refine by chat and swap single pieces. Checkout and demo mode are next. See [Roadmap](#roadmap).
+> **Status: in progress.** You can upload a photo, describe the occasion and get 2 to 3 looks from real stores, tried on your photo and scored, compare any look at three price tiers, refine by chat, swap single pieces, and check out at each store with the cart pre-filled. Demo mode is next. See [Roadmap](#roadmap).
 
 ## How it works
 
@@ -17,7 +17,7 @@ Wingman is an AI occasion stylist for men, built for the YouCam API Skin AI & eC
 3. **Get 2 to 3 full looks.** Claude picks in-stock products from Singapore Shopify stores, choosing colours for your skin tone. YouCam renders each look on your photo, and each one gets a Fit Check score out of 10. A night-before grooming plan comes with them.
 4. **Compare prices.** Tap "Compare prices" on any look to see the same look at Budget, Mid-range and Luxury side by side: same colours and cut, each piece from its own price tier, tried on your photo, with the real SGD total under each. Tap "Wear this version" to switch.
 5. **Refine and swap.** Tell Wingman what to change in the chat bar ("more casual", "under S$300", "no white sneakers") and it re-picks every look. Or tap Swap on any piece to choose from 6 alternatives that go with the rest of the look; totals update at once and the look is tried on again.
-6. **Buy** *(coming next)*. Pick an in-stock size and tap checkout to open each store's cart pre-filled.
+6. **Buy.** Add a look to the cart, pick an in-stock size for each piece, and tap "Checkout at {store}". Each store's own cart opens with your pieces and sizes already in it; you pay there.
 
 The first look appears as soon as its try-on is ready (usually 20 to 50 seconds, mostly YouCam render time). The rest fill in as they finish.
 
@@ -69,6 +69,10 @@ Each API needs different framing. Wingman takes one photo and the server prepare
 - **Close face** crop for beard try-on and skin analysis (the face must be large in the frame)
 
 Claude finds the face so the crops land in the right place. Location data is stripped from the photo before anything leaves the server.
+
+### Checkout
+
+Wingman never takes payment. The cart groups pieces by store and builds one Shopify cart permalink per store, `https://{store}/cart/{variantId}:{qty},{variantId}:{qty}` ([`lib/cart.ts`](lib/cart.ts)), which opens that store's checkout with the exact variants. The size picker offers in-stock variants only. When a product repeats a size across colours, the picker shows the full variant title ("White / Small") so the right colour lands in the cart.
 
 ### Unit guard and cache
 
@@ -165,7 +169,7 @@ app/                     Routes (App Router): / home, /style flow, /demo (placeh
   globals.css            Design tokens, type steps, motion
 components/
   style/                 The style flow at /style: photo, occasion, loading (streamed progress), looks, price compare,
-                         swap, refine bar
+                         swap, refine bar, cart
   home/                  Home page sections: hero window, occasion list, look frames, Fit Check, how it works, footer
   shared/                Used across routes: placeholder screen, scroll-entrance helper
 lib/
@@ -177,6 +181,7 @@ lib/
   llm/                   Claude model config and JSON-output helper
   photo/                 Face box and crops for each YouCam API; in-browser photo shrinking
   occasions.ts           Occasion choices and tier labels shared by home and the flow
+  cart.ts                Cart permalinks per store, grouping, in-stock size choices
   supabase/              Server client (service role)
   env.ts, env.server.ts  Env validated with Zod; import env.server.ts from server code only
   hash.ts, pool.ts       sha256 helper, small concurrency limiter
@@ -218,7 +223,7 @@ CLAUDE.md                Project rules for Claude Code
 - [x] Home page and core screens (photo, occasion, loading, looks)
 - [x] Budget tiers and price compare
 - [x] Refine and swap
-- [ ] Cart and checkout
+- [x] Cart and checkout
 - [ ] Prep plan and browse screens
 - [ ] Demo mode, photo auto-delete, real demo photo
 - [ ] Polish and deploy

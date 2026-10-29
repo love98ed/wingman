@@ -42,7 +42,12 @@ export function buildProduct(
     image,
     images: product.images.map((i) => i.src),
     url: `https://${store.domain}/products/${product.handle}`,
-    variants: product.variants.map((v) => ({ id: v.id, size: variantSize(product, v), available: v.available })),
+    variants: product.variants.map((v) => ({
+      id: v.id,
+      size: variantSize(product, v),
+      title: v.title,
+      available: v.available,
+    })),
     updatedAt: product.updated_at,
   };
 }

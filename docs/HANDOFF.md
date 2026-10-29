@@ -19,7 +19,8 @@ Read this first, then `CLAUDE.md` (the project rules) and `docs/STEP_PROMPTS.md`
 | 5. Core screens | Done. `/style`: photo, occasion, streamed loading, swipeable looks with Fit Check. Works in mock mode and with real renders |
 | 6. Price compare | Done. "Compare prices" on each look shows it at Budget, Mid-range and Luxury side by side, tried on, with real SGD totals; "Wear this version" swaps the look. `npm run style:demo -- --compare` |
 | 7. Refine and swap | Done. A chat bar under the looks re-picks all of them ("More casual", "Under S$500", "No white sneakers"); Swap on any piece offers 6 alternatives and tries the look on again. `npm run style:demo -- --refine "more casual" --swap shoes`. 62 of 700 YouCam units used |
-| 8 to 12 | Not started |
+| 8. Cart and checkout | Done. "Add this look to cart" on each look; the cart groups pieces by store, offers only in-stock sizes, and "Checkout at {store}" opens that store's cart pre-filled (checked against the live carts of Colony Clothing, Senja Bali Co. and Arden Teal) |
+| 9 to 12 | Not started |
 
 ## 1. Get set up (once)
 

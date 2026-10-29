@@ -1,5 +1,6 @@
 import "server-only";
 
+import { sizeChoices } from "@/lib/cart";
 import { loadCatalog } from "@/lib/catalog/repo";
 import { TIERS, type Product, type Tier } from "@/lib/catalog/types";
 import { locateFace, preparePhoto, type FaceLocator, type PreparedPhoto } from "@/lib/photo/prepare";
@@ -37,7 +38,7 @@ export const toItem = (slot: Slot, p: Product): LookItem => ({
   colour: p.colour,
   image: p.image,
   url: p.url,
-  sizes: p.variants.filter((v) => v.available).map((v) => ({ variantId: v.id, size: v.size })),
+  sizes: sizeChoices(p.variants),
 });
 
 /** "oiliness 71, redness 96" from an SD skin analysis response, or null. */
