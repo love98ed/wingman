@@ -1,6 +1,7 @@
+import "./globals.css";
+
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
 
 /* Panchang (display) and Switzer (text), Fontshare, ITF Free Font License */
 const panchang = localFont({

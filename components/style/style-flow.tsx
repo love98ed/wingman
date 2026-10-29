@@ -1,6 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { BrowseStep, type BrowseFilters } from "@/components/style/steps/browse-step";
+import { CartStep } from "@/components/style/steps/cart-step";
+import { CompareStep, versionOf, type CompareState } from "@/components/style/steps/compare-step";
+import { ErrorStep } from "@/components/style/steps/error-step";
+import { LoadingStep } from "@/components/style/steps/loading-step";
+import { LooksStep } from "@/components/style/steps/looks-step";
+import { OccasionStep } from "@/components/style/steps/occasion-step";
+import { PhotoStep } from "@/components/style/steps/photo-step";
+import { PrepStep } from "@/components/style/steps/prep-step";
+import { showsInRender, SwapStep, type SwapOptionsState } from "@/components/style/steps/swap-step";
 import {
   readEvents,
   type CompareEvent,
@@ -11,21 +21,11 @@ import {
   type SwapEvent,
   type TierVersion,
 } from "@/lib/agent/events";
-import { SLOTS } from "@/lib/agent/slots";
 import type { ParsedOccasion, PrepPlan } from "@/lib/agent/schemas";
+import { SLOTS } from "@/lib/agent/slots";
 import { isOneSize, type CartLine } from "@/lib/cart";
 import type { Occasion, Tier } from "@/lib/catalog/types";
 import { OCCASION_CHOICES } from "@/lib/occasions";
-import { BrowseStep, type BrowseFilters } from "./browse-step";
-import { CartStep } from "./cart-step";
-import { CompareStep, versionOf, type CompareState } from "./compare-step";
-import { ErrorStep } from "./error-step";
-import { LoadingStep } from "./loading-step";
-import { LooksStep } from "./looks-step";
-import { OccasionStep } from "./occasion-step";
-import { PhotoStep } from "./photo-step";
-import { PrepStep } from "./prep-step";
-import { showsInRender, SwapStep, type SwapOptionsState } from "./swap-step";
 
 export type Photo = { blob: Blob; url: string };
 export type Progress = { step: StyleStep; detail?: string };

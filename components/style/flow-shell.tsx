@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 /** Shared frame for the style flow: wordmark, where you are, one phone-width column. */
 export function FlowShell({

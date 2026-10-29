@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { BEARD_STYLES, BEARD_TEMPLATES, HAIR_STYLES, HAIR_TEMPLATES } from "@/lib/agent/grooming";
 import {
   FitCheckSchema,
   LookPicksSchema,
@@ -11,9 +12,8 @@ import {
   SwapOptionsRequestSchema,
   TierPicksSchema,
 } from "@/lib/agent/schemas";
-import { BEARD_STYLES, BEARD_TEMPLATES, HAIR_STYLES, HAIR_TEMPLATES } from "@/lib/agent/grooming";
-import hairTemplates from "../../../fixtures/youcam/hair-templates.json";
 import beardTemplates from "../../../fixtures/youcam/beard-templates.json";
+import hairTemplates from "../../../fixtures/youcam/hair-templates.json";
 
 const look = {
   name: "Rooftop easy",

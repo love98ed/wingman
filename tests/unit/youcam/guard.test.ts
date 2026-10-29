@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { MemoryUsageStore, UnitGuard } from "@/lib/youcam/guard";
 import { YouCamError } from "@/lib/youcam/errors";
+import { UnitGuard } from "@/lib/youcam/guard";
+import { MemoryUsageStore } from "../../fakes/youcam";
 
 const ok = async () => "done";
 const fail = (code: "TIMEOUT" | "NO_FACE") => async () => {

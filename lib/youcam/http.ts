@@ -1,13 +1,13 @@
 import { YouCamError, fromEngineError } from "./errors";
 
-export const YOUCAM_BASE_URL = "https://yce-api-01.makeupar.com";
+const YOUCAM_BASE_URL = "https://yce-api-01.makeupar.com";
 
 type FetchLike = typeof fetch;
 
-export type TaskStatus = "running" | "success" | "error";
+type TaskStatus = "running" | "success" | "error";
 
 /** Shape of GET /s2s/v2.0/task/{feature}/{task_id} (per YouCam reference). */
-export type TaskPollResponse = {
+type TaskPollResponse = {
   status: number;
   data: {
     task_status: TaskStatus;

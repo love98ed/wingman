@@ -6,7 +6,7 @@ export const FIXTURE_DIR = path.join(process.cwd(), "fixtures", "youcam");
 
 export type Fixture = { response: unknown; image?: Buffer };
 
-/** Fixtures saved by scripts/youcam-smoke.ts: `{name}.json` plus `{name}.jpg` for image APIs. */
+/** Fixtures saved by scripts/dev/youcam-smoke.ts: `{name}.json` plus `{name}.jpg` for image APIs. */
 export async function loadFixture(name: string, delayMs = 400): Promise<Fixture> {
   await new Promise((r) => setTimeout(r, delayMs));
   try {

@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { findResultUrl, skinUnits } from "@/lib/youcam/apis";
-import { MemoryRenderCache } from "@/lib/youcam/cache";
 import { YouCamClient } from "@/lib/youcam/client";
 import { fromEngineError } from "@/lib/youcam/errors";
-import { MemoryUsageStore, UnitGuard } from "@/lib/youcam/guard";
+import { UnitGuard } from "@/lib/youcam/guard";
 import { YouCamHttp } from "@/lib/youcam/http";
+import { MemoryRenderCache, MemoryUsageStore } from "../../fakes/youcam";
 
 /** Fake YouCam server: file API, task create, one "running" poll then success. */
 function fakeFetch() {

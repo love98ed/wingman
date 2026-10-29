@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { OCCASION_CHOICES } from "@/lib/occasions";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 const OCCASIONS = OCCASION_CHOICES;
 

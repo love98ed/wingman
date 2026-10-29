@@ -46,33 +46,18 @@ Read this first, then `CLAUDE.md` (the project rules) and `docs/STEP_PROMPTS.md`
    ```
 5. **Optional, for building with Claude Code:** install Claude Code and open it in the `wingman` folder. It reads `CLAUDE.md` automatically. Paste one prompt from `docs/STEP_PROMPTS.md` at a time and check the result before the next.
 
-## 2. Next job: finish the catalog (step 3)
+## 2. Refreshing the catalog
 
-1. **Use home Wi-Fi or a phone hotspot.** Shopify blocks product feeds on some networks (it did on the office network). Quick test, which should print `200`:
+Stock, prices and sizes are as fresh as the last `npm run catalog:fetch`. To refresh:
+
+1. **Use home Wi-Fi or a phone hotspot.** Shopify blocks product feeds on some networks. This should print `200` (a `429` means switch networks):
    ```bash
    curl -s -o /dev/null -w "%{http_code}\n" "https://duxton.com/products.json?limit=1"
    ```
-   If it prints `429`, switch networks.
-2. **Pull the latest code and cache:** `git pull`
-3. **Run the fetch:**
-   ```bash
-   npm run catalog:fetch
-   ```
-   - It resumes from `fixtures/catalog-cache/`: finished stores are skipped in seconds, Rugged Gentlemen continues where it stopped, then it does the 8 stores not started (Cufflinks.com.sg, BOLDR, WHY&CO, Arden Teal, The Jacket Maker, Zelos, Vario, Red Army Watches). Duxton gets re-tagged once (about 2 minutes) because its cache came from an older copy of the feed.
-   - Expect about 30 to 40 minutes and about US$1 of Claude usage. No YouCam units are used.
-   - It prints progress (`tagged 75/120`, `images 40/88`). If it stops or you press Ctrl+C, run the same command again and it picks up where it left off.
-4. **Read the two tables at the end:**
-   - Products kept per store
-   - In-stock items per category and tier, plus a "Gaps" line. Step 3 is done when tops, bottoms and shoes each have at least 5 items per tier and there are at least 3 watches.
-5. **Commit the updated cache** so nobody repeats the work:
-   ```bash
-   git add fixtures/catalog-cache
-   git commit -m "chore: catalog cache after full fetch"
-   git push
-   ```
-6. Share the two tables with the team. If there are gaps, decide which store to add before step 4.
+2. **Run it:** `npm run catalog:fetch`. Claude's tags and image picks are kept in the `catalog_tags` table, so only new or changed products are tagged, and an interrupted run picks up where it stopped. No YouCam units are used.
+3. **Read the two tables at the end:** products kept per store, then in-stock items per category and tier with a "Gaps" line.
 
-**Only one person runs `catalog:fetch` at a time.** Everyone shares the same database and cache files.
+**Only one person runs `catalog:fetch` at a time.** Everyone shares the same database.
 
 ## 3. After that: steps 4 to 12
 

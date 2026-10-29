@@ -21,21 +21,19 @@ export const TEMPLATE_PATHS = {
 } as const;
 
 /** SD concern names from the skin analysis reference. Never mix with hd_* concerns. */
-export const SD_CONCERNS = [
-  "acne",
-  "age_spot",
-  "dark_circle_v2",
-  "eye_bag",
-  "firmness",
-  "moisture",
-  "oiliness",
-  "pore",
-  "radiance",
-  "redness",
-  "texture",
-  "wrinkle",
-] as const;
-export type SdConcern = (typeof SD_CONCERNS)[number];
+export type SdConcern =
+  | "acne"
+  | "age_spot"
+  | "dark_circle_v2"
+  | "eye_bag"
+  | "firmness"
+  | "moisture"
+  | "oiliness"
+  | "pore"
+  | "radiance"
+  | "redness"
+  | "texture"
+  | "wrinkle";
 
 /** Grooming-relevant default: 4 concerns = 9 units. */
 export const DEFAULT_SKIN_CONCERNS: SdConcern[] = ["oiliness", "redness", "texture", "dark_circle_v2"];

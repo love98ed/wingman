@@ -2,8 +2,8 @@
  * Shapes the style route streams to the browser, plus a reader for the stream.
  * Safe to import from client components (no server-only code).
  */
+import type { Slot } from "@/lib/agent/slots";
 import type { Tier } from "@/lib/catalog/types";
-import type { Slot } from "./catalog";
 import type { ParsedOccasion, PrepPlan } from "./schemas";
 
 export type RenderKind = "outfit" | "hair" | "beard";

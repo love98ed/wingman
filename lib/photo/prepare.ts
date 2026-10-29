@@ -3,9 +3,9 @@ import "server-only";
 import sharp from "sharp";
 import { z } from "zod";
 import { generateStructured } from "@/lib/llm/client";
-import { sha256 } from "@/lib/hash";
-import { cropBoxes, fitBox, rollDegrees, rotatePoint, type Box } from "./crops";
+import { sha256 } from "@/lib/utils/hash";
 import { YouCamError } from "@/lib/youcam/errors";
+import { cropBoxes, fitBox, rollDegrees, rotatePoint, type Box } from "./crops";
 
 /** Face box in pixels plus head tilt in degrees (positive = clockwise). */
 export type Face = Box & { roll: number };

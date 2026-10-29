@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { SLOTS } from "@/lib/agent/catalog";
 import type { BrowsePage } from "@/lib/agent/events";
+import { toItem } from "@/lib/agent/flows/style";
 import { BrowseQuerySchema } from "@/lib/agent/schemas";
-import { toItem } from "@/lib/agent/style";
+import { SLOTS } from "@/lib/agent/slots";
 import { browse } from "@/lib/catalog/browse";
 import { loadCatalog } from "@/lib/catalog/repo";
 import type { Product } from "@/lib/catalog/types";

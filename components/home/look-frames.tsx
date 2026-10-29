@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 /** The sample look, piece by piece: a full-bleed close-up of the render with one card per piece. */
 const PIECES = [

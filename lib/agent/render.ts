@@ -1,14 +1,14 @@
 import "server-only";
 
-import { sizedUrl } from "@/lib/catalog/images";
+import type { LookItems } from "@/lib/agent/pick/candidates";
+import { sizedUrl } from "@/lib/catalog/pipeline/images";
 import { headShouldersFrom, type PreparedPhoto } from "@/lib/photo/prepare";
-import { YouCamError, type YouCamErrorCode } from "@/lib/youcam/errors";
 import { renderUrl, youcam } from "@/lib/youcam";
-import type { LookItems } from "./catalog";
+import { YouCamError, type YouCamErrorCode } from "@/lib/youcam/errors";
 import type { RenderKind } from "./events";
 import { BEARD_TEMPLATES, HAIR_TEMPLATES } from "./grooming";
 
-export type LookRenders = {
+type LookRenders = {
   /** Clothes try-on on the whole photo. */
   outfit?: string;
   /** Hair try-on chained on the outfit render (head and shoulders). */

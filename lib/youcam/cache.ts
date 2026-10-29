@@ -1,4 +1,4 @@
-import { sha256 } from "@/lib/hash";
+import { sha256 } from "@/lib/utils/hash";
 
 /** JSON with sorted keys, so equal params always hash the same. */
 export function stableStringify(value: unknown): string {
@@ -36,15 +36,4 @@ export interface RenderCacheStore {
   put(
     entry: CachedRender & { selfieHash: string; productId?: string | null; params: Record<string, unknown> },
   ): Promise<CachedRender>;
-}
-
-export class MemoryRenderCache implements RenderCacheStore {
-  entries = new Map<string, CachedRender>();
-  async get(key: string) {
-    return this.entries.get(key) ?? null;
-  }
-  async put(entry: CachedRender) {
-    this.entries.set(entry.cacheKey, entry);
-    return entry;
-  }
 }

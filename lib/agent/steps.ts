@@ -2,10 +2,11 @@ import "server-only";
 
 import type Anthropic from "@anthropic-ai/sdk";
 import sharp from "sharp";
-import { generateStructured } from "@/lib/llm/client";
+import { poolLines, type LookItems, type Pool } from "@/lib/agent/pick/candidates";
+import { tierPoolLines, type TierPool } from "@/lib/agent/pick/match";
+import { SLOTS } from "@/lib/agent/slots";
 import type { Tier } from "@/lib/catalog/types";
-import { poolLines, SLOTS, type LookItems, type Pool } from "./catalog";
-import { tierPoolLines, type TierPool } from "./match";
+import { generateStructured } from "@/lib/llm/client";
 import { BEARD_STYLES, HAIR_STYLES } from "./grooming";
 import {
   FitCheckSchema,

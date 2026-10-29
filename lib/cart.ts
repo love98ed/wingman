@@ -5,7 +5,7 @@
  */
 import type { Product } from "@/lib/catalog/types";
 
-export type SizeChoice = { variantId: number; size: string };
+type SizeChoice = { variantId: number; size: string };
 
 /** What a size picker offers for one product: in-stock variants only. */
 export function sizeChoices(variants: Product["variants"]): SizeChoice[] {
@@ -58,7 +58,7 @@ export type CartLine = {
   qty: number;
 };
 
-export type StoreCart = {
+type StoreCart = {
   store: string;
   storeName: string;
   lines: CartLine[];

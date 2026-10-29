@@ -17,7 +17,7 @@ This file is the source of truth for the project. Read it at the start of every 
 | Layer | Choice |
 |---|---|
 | Framework | Next.js 15 (App Router), TypeScript strict |
-| Styling | Tailwind CSS + shadcn/ui, mobile-first |
+| Styling | Tailwind CSS 4, mobile-first (no component library) |
 | Database | Supabase Postgres (catalog, render cache, unit log) |
 | Storage | Supabase Storage, private buckets, signed URLs |
 | LLM | Anthropic Claude via `@anthropic-ai/sdk` |
@@ -102,10 +102,10 @@ type Product = {
 
 Other tables: `render_cache`, `youcam_usage`, `selfies` (with `expires_at`, auto-delete after 24 hours).
 
-### Tiers are relative, not fixed (`lib/catalog/tiers.ts`)
+### Tiers are relative, not fixed (`lib/catalog/pipeline/tiers.ts`)
 
 Local budget menswear stores are scarce, so tiers are computed from the catalog itself:
-1. Convert every price to SGD first (store currency comes from the feed; keep FX rates in `lib/catalog/fx.ts`)
+1. Convert every price to SGD first (store currency comes from the feed; keep FX rates in `lib/catalog/pipeline/fx.ts`)
 2. Group in-stock products by category
 3. Sort by price within each category
 4. Cheapest third = `budget`, middle third = `mid`, top third = `luxury` (use price percentiles, not counts, so ties stay in one tier)

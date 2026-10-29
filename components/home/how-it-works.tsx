@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 /** Three stages, each tile larger than the one before, so size carries the order. */
 const STAGES = [

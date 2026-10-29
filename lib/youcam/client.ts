@@ -1,5 +1,5 @@
+import { sha256 } from "@/lib/utils/hash";
 import { YOUCAM_APIS, findResultUrl, skinUnits, TEMPLATE_PATHS, DEFAULT_SKIN_CONCERNS, type SdConcern, type YouCamApi } from "./apis";
-import { sha256 } from "@/lib/hash";
 import { renderCacheKey, type RenderCacheStore } from "./cache";
 import { YouCamError } from "./errors";
 import type { UnitGuard } from "./guard";
@@ -20,7 +20,7 @@ export type YouCamResult = {
 
 export type Template = { id: string; title: string; category_name?: string; thumb?: string };
 
-export type YouCamDeps = {
+type YouCamDeps = {
   http: YouCamHttp;
   guard: UnitGuard;
   cache: RenderCacheStore;

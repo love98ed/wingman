@@ -1,3 +1,5 @@
+import { sgd } from "@/lib/utils/format";
+
 /** The sample look's Fit Check and bill, set as a plain list of facts. */
 const ITEMS = [
   { slot: "Camp collar shirt, size XL", price: 136.25 },
@@ -10,7 +12,6 @@ const CART = "https://duxton.com/cart/42831543140552:1,44241014685896:1";
 
 const SCORE = 8.6;
 
-const sgd = (n: number) => `S$${n.toFixed(2)}`;
 
 export function FitCheck() {
   const total = ITEMS.reduce((sum, i) => sum + i.price, 0);

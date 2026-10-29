@@ -117,7 +117,7 @@ cp .env.example .env.local
 | `YOUCAM_UNIT_LIMIT` | Hard cap on YouCam units (default 700) |
 | `DEMO_MODE` | Reserved for the fixed demo flow (not built yet) |
 
-**3. Database migration.** In the Supabase SQL Editor, run all of [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql). It creates the catalog, render cache and unit log tables, the unit-reserve function and two private storage buckets.
+**3. Database migration.** In the Supabase SQL Editor, run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql), then [`0002_catalog_tags.sql`](supabase/migrations/0002_catalog_tags.sql). They create the tables (see [Database](#database)), the unit-reserve function and two private storage buckets.
 
 **4. Catalog.** Fill the database with products (only one person at a time; it writes to the shared database):
 
@@ -126,7 +126,7 @@ npm run stores:check      # verify each store is a working Shopify store
 npm run catalog:fetch     # fetch, tag, price and tier every product (resumable)
 ```
 
-The tagging cache in `fixtures/catalog-cache/` is committed, so a fresh run mostly reuses it instead of re-tagging thousands of products. Expect a few minutes, longer if stores rate-limit.
+The first run tags about 5,000 products with Claude Haiku and checks their photos, which takes a while. Tags are saved to `catalog_tags` as it goes, so an interrupted run resumes and later refreshes only re-tag products whose text or photos changed.
 
 **5. Run it.**
 
@@ -156,57 +156,61 @@ Open http://localhost:3000 at phone width and tap **Start with a photo**. `fixtu
 | `npm run catalog:fetch` | Builds the catalog: fetches feeds, keeps menswear, tags with Claude, converts to SGD, picks try-on images and colours, assigns relative tiers, writes to Supabase. Resumable. `--store <domain>` for one store, `--dry-run` to skip writes. |
 | `npm run photo:check` | Checks a photo before spending YouCam units: finds the face and writes the crops each API would get. |
 | `npm run style:demo` | Calls `POST /api/style` with the demo photo and prints the looks, Fit Checks and prep plan. Start `npm run dev` first; `MOCK_YOUCAM` decides mock or live renders. Flags: `--tier`, `--occasion`, `--max-budget`, `--photo`, `--url`, `--compare` to also price-compare the first look, `--refine "more casual"` to refine the looks, `--swap shoes` to swap a piece of the first look. |
-| `npm run catalog:colours` | Re-tags the colour of tops and outerwear from their try-on photo (text tags miss multi-colour products). Safe to re-run; new catalog runs already do this. |
 | `npm run screenshots` | Captures every screen at 390px into `docs/screenshots/`. Start `npm run dev` first; with `MOCK_YOUCAM=true` every try-on is the saved sample. |
 | `npm run youcam:smoke` | One real call per YouCam API on `fixtures/selfies/demo.jpg`. Saves responses for mock mode and prints units used. A second run costs zero units. |
 
 ## Project structure
 
 ```
-app/                     Routes (App Router): / home, /style flow, /demo (placeholder until demo mode),
-                         /occasion (redirects to /style), /api/style (style agent, streamed),
-                         /api/compare (Price Compare, streamed), /api/refine (chat refine, streamed),
-                         /api/swap (swap one piece, streamed), /api/swap/options,
-                         /api/browse (catalog filters)
-  fonts/                 Panchang and Switzer, self-hosted
-  globals.css            Design tokens, type steps, motion
+app/
+  page.tsx, style/, demo/      Home, the style flow, demo placeholder (/occasion redirects to /style)
+  api/                         style, refine, compare, swap, swap/options (streamed), browse
+  fonts/, globals.css          Self-hosted Panchang and Switzer; design tokens, type steps, motion
 components/
-  style/                 The style flow at /style: photo, occasion, loading (streamed progress), looks, price compare,
-                         swap, refine bar, cart, prep plan, browse
-  home/                  Home page sections: hero window, occasion list, look frames, Fit Check, how it works, footer
-  shared/                Used across routes: placeholder screen, scroll-entrance helper
+  home/                        Home page sections: hero window, occasions, look frames, Fit Check, footer
+  style/                       style-flow.tsx runs the flow; flow-shell, refine-bar, product-image
+    steps/                     One screen each: photo, occasion, loading, looks, compare, swap, cart, prep, browse, error
+  shared/                      Placeholder screen, scroll-entrance helper
 lib/
-  agent/                 Style agent: occasion parsing, candidate pool, look selection, renders, Fit Check,
-                         prep plan, refine (style.ts), swap (swap.ts) and Price Compare
-                         (match.ts ranks tier stand-ins, compare.ts runs it)
-  catalog/               Shopify feeds: fetch, filter, Claude tagging, prices in SGD, relative tiers, store checks,
-                         browse filters (colour families, sizes)
-  youcam/                YouCam client, unit guard, render cache, mock mode (index.ts is the entry point)
-  llm/                   Claude model config and JSON-output helper
-  photo/                 Face box and crops for each YouCam API; in-browser photo shrinking
-  occasions.ts           Occasion choices and tier labels shared by home and the flow
-  cart.ts                Cart permalinks per store, grouping, in-stock size choices
-  supabase/              Server client (service role)
-  env.ts, env.server.ts  Env validated with Zod; import env.server.ts from server code only
-  hash.ts, pool.ts       sha256 helper, small concurrency limiter
-  utils.ts               Tailwind class merging
-scripts/                 Command-line tools (run with tsx, see Scripts)
-supabase/migrations/     Database schema
-fixtures/
-  stores.json            Verified Shopify stores (failures go to stores-removed.json)
-  catalog-cache/         Resumable tagging cache, one file per store
-  shopify/               Saved products.json feed for tests
-  youcam/                Saved YouCam responses for MOCK_YOUCAM
-  selfies/               Demo photo and its credit
-public/demo/             Before and after images for the home page
-tests/
-  unit/                  Vitest, mirrors lib/
-  e2e/                   Playwright smoke tests
-  stubs/                 Stand-ins for server-only modules under Vitest
-docs/                    HANDOFF.md, STEP_PROMPTS.md (build plan), screenshots/ (390px, see npm run screenshots)
-.taste-skill/            Design direction used by the design-taste-frontend skill
-CLAUDE.md                Project rules for Claude Code
+  agent/                       The style agent
+    flows/                     Route entry points: style.ts (style + refine), compare.ts, swap.ts
+    pick/                      candidates.ts builds the per-slot pool; match.ts ranks tier stand-ins
+    steps.ts                   Claude calls: occasion, look selection, Fit Check, prep plan, refine
+    render.ts, grooming.ts     YouCam renders per look; hair and beard choices
+    events.ts, schemas.ts      Streamed event types (shared with the browser); Zod schemas for input and Claude output
+  api/stream.ts                Shared route plumbing: multipart photo + JSON in, newline-delimited JSON out
+  catalog/
+    types.ts, repo.ts          Product type; read and write the products table
+    browse.ts, names.ts        Browse filters (colour families, sizes); display names
+    pipeline/                  Catalog build: Shopify fetch, store checks, filter, Claude tags and tag cache,
+                               image choice, SGD conversion, relative tiers
+  youcam/                      YouCam client, unit guard, render cache, mock mode (index.ts is the entry point)
+  llm/                         Claude model config and JSON-output helper
+  photo/                       Face box and crops for each YouCam API; in-browser photo shrinking
+  supabase/                    Server client (service role)
+  utils/                       sha256, concurrency limiter, price formatting, class merging
+  cart.ts, occasions.ts        Cart permalinks per store; occasion choices and tier labels
+  env.ts, env.server.ts        Env validated with Zod; import env.server.ts from server code only
+scripts/
+  catalog/                     stores:check, catalog:fetch
+  dev/                         youcam:smoke, photo:check, style:demo, screenshots
+supabase/migrations/           Database schema (run in order)
+fixtures/                      Verified store list, a saved Shopify feed, saved YouCam responses, demo photos
+tests/                         unit/ (Vitest, mirrors lib/), e2e/ (Playwright), fakes/ and stubs/ for tests
+docs/                          HANDOFF.md, STEP_PROMPTS.md (build plan), screenshots/
 ```
+
+### Database
+
+| Table | What it holds |
+|---|---|
+| `products` | The catalog: every in-stock menswear product with its SGD price, tier, tags, try-on image and variants |
+| `catalog_tags` | Claude's tags and image picks per product, keyed by a hash of the product's text and photos, so a refresh only re-tags what changed |
+| `render_cache` | YouCam results by photo, product, API and settings, plus cached Claude results (Fit Checks, tier picks); images live in the private `renders` bucket |
+| `youcam_usage` | Every YouCam call and its units, for the unit guard |
+| `selfies` | Reserved for photo auto-delete (not used yet) |
+
+All tables have row-level security on and no policies, so only the server's service role key can read them.
 
 ## Privacy
 
@@ -228,7 +232,7 @@ CLAUDE.md                Project rules for Claude Code
 
 - Only the top layer is rendered. Trousers, shoes and watches are product cards (a waist-up selfie hides them, and watch try-on needs a hand photo).
 - 17 stores and about 5,000 products. Shoes and budget-tier pieces are the thinnest categories.
-- Prices are converted to SGD with fixed rates in [`lib/catalog/fx.ts`](lib/catalog/fx.ts). A store that charges in USD shows its own price at checkout.
+- Prices are converted to SGD with fixed rates in [`lib/catalog/pipeline/fx.ts`](lib/catalog/pipeline/fx.ts). A store that charges in USD shows its own price at checkout.
 - Stock and prices are as fresh as the last `npm run catalog:fetch`.
 - Skin analysis needs a straight-on face. When it fails (a tilted head, glasses), the prep plan is general rather than personal; it never blocks the flow.
 

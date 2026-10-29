@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { AgentError } from "@/lib/agent/errors";
+import { swapOptions } from "@/lib/agent/flows/swap";
 import { SwapOptionsRequestSchema } from "@/lib/agent/schemas";
-import { swapOptions } from "@/lib/agent/swap";
 
 /** POST JSON: a look (name, tier, items, hair, occasion) and the slot to swap. Returns { options: LookItem[] }. */
 export async function POST(request: Request) {

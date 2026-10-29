@@ -69,18 +69,18 @@ export function compareSizes(a: string, b: string): number {
 }
 
 /** In-stock sizes of a product, normalised. */
-export const productSizes = (p: Product) =>
+const productSizes = (p: Product) =>
   new Set(p.variants.filter((v) => v.available).flatMap((v) => normaliseSize(v.size) ?? []));
 
-export const PRICE_BANDS = {
+const PRICE_BANDS = {
   "under-100": [0, 100],
   "100-250": [100, 250],
   "250-500": [250, 500],
   "over-500": [500, Infinity],
 } as const satisfies Record<string, readonly [number, number]>;
-export type PriceBand = keyof typeof PRICE_BANDS;
+type PriceBand = keyof typeof PRICE_BANDS;
 
-export type BrowseFilter = {
+type BrowseFilter = {
   category: Category;
   tier?: Tier;
   price?: PriceBand;
@@ -90,7 +90,7 @@ export type BrowseFilter = {
   sort?: "price-asc" | "price-desc";
 };
 
-export type Facets = {
+type Facets = {
   colours: { value: string; count: number }[];
   sizes: { value: string; count: number }[];
   stores: { value: string; label: string; count: number }[];

@@ -23,7 +23,7 @@ export type ParsedOccasion = z.infer<typeof ParsedOccasionSchema> & {
 };
 
 /** One look as Claude picks it: product ids from the candidate list, grooming by template title. */
-export const LookPickSchema = z.object({
+const LookPickSchema = z.object({
   name: z.string(),
   top: z.string(),
   outerwear: z.string().nullable(),
@@ -39,7 +39,7 @@ export type LookPick = z.infer<typeof LookPickSchema>;
 export const LookPicksSchema = z.object({ looks: z.array(LookPickSchema).min(2).max(3) });
 
 /** The same look rebuilt at another tier: one product id per slot the look fills. */
-export const TierPickSchema = z.object({
+const TierPickSchema = z.object({
   tier: z.enum(TIERS),
   top: z.string().nullable(),
   outerwear: z.string().nullable(),
@@ -118,7 +118,6 @@ export const BrowseQuerySchema = z.object({
   sort: z.enum(["price-asc", "price-desc"]).default("price-asc"),
   offset: z.coerce.number().int().min(0).max(5000).default(0),
 });
-export type BrowseQuery = z.infer<typeof BrowseQuerySchema>;
 
 export const FitCheckSchema = z.object({
   checks: z.array(z.object({ score: z.number().min(0).max(10), reasoning: z.string() })),

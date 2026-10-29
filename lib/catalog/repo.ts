@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { inStock } from "./build";
+import { inStock } from "@/lib/catalog/pipeline/build";
 import type { Product } from "./types";
 
 type Row = {
@@ -24,7 +24,7 @@ type Row = {
   updated_at: string;
 };
 
-export function toRow(p: Product): Row {
+function toRow(p: Product): Row {
   return {
     id: p.id,
     store: p.store,
@@ -48,7 +48,7 @@ export function toRow(p: Product): Row {
   };
 }
 
-export function fromRow(r: Row): Product {
+function fromRow(r: Row): Product {
   return {
     id: r.id,
     store: r.store,
@@ -74,7 +74,7 @@ export function fromRow(r: Row): Product {
 /** Supabase returns at most 1,000 rows per request, so read in pages. */
 const PAGE = 1000;
 
-export type CatalogFilter = {
+type CatalogFilter = {
   inStock?: boolean;
   tier?: Product["tier"];
   tiers?: Product["tier"][];

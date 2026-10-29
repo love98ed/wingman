@@ -5,7 +5,7 @@ const bool = z
   .default("false")
   .transform((v) => v === "true");
 
-export const serverEnvSchema = z.object({
+const serverEnvSchema = z.object({
   YOUCAM_API_KEY: z.string().min(1),
   ANTHROPIC_API_KEY: z.string().min(1),
   SUPABASE_URL: z.url(),

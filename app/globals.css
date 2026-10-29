@@ -1,43 +1,20 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   /* Wingman tokens (CLAUDE.md section 8) */
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-muted-foreground: var(--text-muted);
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-brass: var(--brass);
-  --color-brass-strong: var(--brass-strong);
   --color-ivory: var(--text);
-  --color-success: var(--success);
   --color-danger: var(--danger);
-
-  /* shadcn tokens */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
 
   /* Two faces: Panchang for display, Switzer for everything else */
   --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-panchang), var(--font-switzer), ui-sans-serif, sans-serif;
-  --font-heading: var(--font-display);
 
   /* Five type steps */
   --text-small: var(--step-small);
@@ -96,24 +73,6 @@
   --success: #5fb58a;
   --danger: #e06c5f;
 
-  --background: var(--bg);
-  --foreground: var(--text);
-  --card: var(--surface);
-  --card-foreground: var(--text);
-  --popover: var(--surface);
-  --popover-foreground: var(--text);
-  --primary: var(--brass);
-  --primary-foreground: var(--bg);
-  --secondary: var(--surface-raised);
-  --secondary-foreground: var(--text);
-  --muted: var(--surface);
-  --muted-foreground: var(--text-muted);
-  --accent: var(--surface-raised);
-  --accent-foreground: var(--text);
-  --destructive: var(--danger);
-  --border: var(--line);
-  --input: var(--line);
-  --ring: var(--brass);
   --radius: 0px;
 
   --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
@@ -137,7 +96,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--line);
   }
   html {
     @apply font-sans;

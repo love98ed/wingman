@@ -8,7 +8,7 @@ import { LLM, type LlmTask } from "./config";
 let client: Anthropic | undefined;
 const anthropic = () => (client ??= new Anthropic());
 
-export type StructuredRequest<T extends z.ZodType> = {
+type StructuredRequest<T extends z.ZodType> = {
   task: LlmTask;
   /** Short label for dev usage logs, e.g. "face-box". */
   label: string;
