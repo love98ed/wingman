@@ -23,10 +23,14 @@ function priceDiff(next: number, current: number) {
   return d > 0 ? `S$${d} more` : `S$${-d} less`;
 }
 
-/** Six alternatives for one piece of a look. Picking one swaps it in and tries the look on again. */
+/**
+ * Six alternatives for one piece of a look, or with `cheaper` only ones that cost less. Picking
+ * one swaps it in and tries the look on again.
+ */
 export function SwapStep({
   look,
   slot,
+  cheaper = false,
   state,
   onPick,
   onBack,
@@ -34,6 +38,7 @@ export function SwapStep({
 }: {
   look: Look;
   slot: LookItem["slot"];
+  cheaper?: boolean;
   state: SwapOptionsState;
   onPick: (option: LookItem) => void;
   onBack: () => void;
@@ -44,8 +49,9 @@ export function SwapStep({
 
   return (
     <FlowShell step={look.name}>
-      <h1 className="mt-4 text-head">Swap the {name}</h1>
+      <h1 className="mt-4 text-head">{cheaper ? `Cheaper ${name}` : `Swap the ${name}`}</h1>
       <p className="mt-3">
+        {cheaper && "Each costs at least 10% less, from this budget or a lower one. "}
         {showsInRender(look, slot)
           ? "Pick one and Wingman tries the look on you again."
           : `Pick one to update the look and its total. The ${name} show as a product card, not in the try-on.`}
@@ -62,10 +68,11 @@ export function SwapStep({
         <span className="shrink-0 text-small tabular-nums">{sgd(current.price, { whole: true })}</span>
       </div>
 
-      <h2 className="mt-10 text-lead">Alternatives</h2>
+      <h2 className="mt-10 text-lead">{cheaper ? "Cheaper picks" : "Alternatives"}</h2>
       {state.status === "loading" && (
         <p className="mt-4 text-muted-foreground" aria-live="polite">
-          Finding {name} that go with the rest of the look…
+          Finding {cheaper ? "cheaper " : ""}
+          {name} that go with the rest of the look…
         </p>
       )}
       {state.status === "error" && (
@@ -77,7 +84,11 @@ export function SwapStep({
         </div>
       )}
       {state.status === "done" && state.options.length === 0 && (
-        <p className="mt-4">Nothing else in stock fits this look and budget right now.</p>
+        <p className="mt-4">
+          {cheaper
+            ? `Nothing cheaper in stock goes with this look right now. This ${name} is already one of the best-priced picks.`
+            : "Nothing else in stock fits this look and budget right now."}
+        </p>
       )}
 
       {state.options.length > 0 && (

@@ -54,7 +54,7 @@ export function LooksStep({
   onRestart: () => void;
   /** Opens Price Compare for a look; absent until the looks are picked. */
   onCompare?: (index: number) => void;
-  onSwap?: (index: number, slot: LookItem["slot"]) => void;
+  onSwap?: (index: number, slot: LookItem["slot"], cheaper?: boolean) => void;
   onRefine?: (message: string) => void;
   cart: CartLine[];
   onAddToCart: (look: Look) => void;
@@ -132,6 +132,7 @@ export function LooksStep({
             scoring={scoring && !look.fitCheck}
             onCompare={onCompare && (() => onCompare(i))}
             onSwap={onSwap && ((slot) => onSwap(i, slot))}
+            onCheaper={onSwap && ((slot) => onSwap(i, slot, true))}
             inCart={look.items.every((item) => inCart.has(item.id))}
             onAddToCart={() => onAddToCart(look)}
             onViewCart={onViewCart}
@@ -185,6 +186,7 @@ function LookCard({
   scoring,
   onCompare,
   onSwap,
+  onCheaper,
   inCart,
   onAddToCart,
   onViewCart,
@@ -196,6 +198,7 @@ function LookCard({
   scoring: boolean;
   onCompare?: () => void;
   onSwap?: (slot: LookItem["slot"]) => void;
+  onCheaper?: (slot: LookItem["slot"]) => void;
   inCart: boolean;
   onAddToCart: () => void;
   onViewCart: () => void;
@@ -338,11 +341,13 @@ function LookCard({
         ) : (
           <div role="tabpanel" id={`${tabId}-additional`} aria-labelledby={`${tabId}-additional-tab`}>
             <section className="mt-5">
-              <h3 className="font-sans text-lead font-medium tracking-normal normal-case">Swap a piece</h3>
-              <p className="mt-1 text-small">Six in-stock alternatives for any piece, picked to go with the rest of the look.</p>
+              <h3 className="font-sans text-lead font-medium tracking-normal normal-case">Swap or save</h3>
+              <p className="mt-1 text-small">
+                Swap any piece for one of six in-stock alternatives, or see cheaper ones that go with the rest of the look.
+              </p>
               <ul className="mt-3 flex flex-col gap-3">
                 {look.items.map((item) => (
-                  <PieceRow key={item.slot} item={item} onSwap={onSwap} />
+                  <PieceRow key={item.slot} item={item} onSwap={onSwap} onCheaper={onCheaper} />
                 ))}
               </ul>
             </section>
@@ -366,8 +371,16 @@ function LookCard({
   );
 }
 
-/** One piece of a look: photo, store, name and price linking to the store, and a Swap button. */
-function PieceRow({ item, onSwap }: { item: LookItem; onSwap?: (slot: LookItem["slot"]) => void }) {
+/** One piece of a look: photo, store, name and price linking to the store, and Swap and Cheaper buttons. */
+function PieceRow({
+  item,
+  onSwap,
+  onCheaper,
+}: {
+  item: LookItem;
+  onSwap?: (slot: LookItem["slot"]) => void;
+  onCheaper?: (slot: LookItem["slot"]) => void;
+}) {
   return (
     <li className="flex items-center gap-3 bg-background/40 p-2">
       <a href={item.url} target="_blank" rel="noopener" className="group flex min-w-0 flex-1 items-center gap-3">
@@ -380,15 +393,29 @@ function PieceRow({ item, onSwap }: { item: LookItem; onSwap?: (slot: LookItem["
           <span className="block text-small tabular-nums">{sgd(item.price)}</span>
         </span>
       </a>
-      {onSwap && (
-        <button
-          type="button"
-          onClick={() => onSwap(item.slot)}
-          aria-label={`Swap the ${SLOT_LABELS[item.slot].toLowerCase()}`}
-          className="min-h-11 shrink-0 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
-        >
-          Swap
-        </button>
+      {(onSwap || onCheaper) && (
+        <span className="flex shrink-0 flex-col gap-1">
+          {onSwap && (
+            <button
+              type="button"
+              onClick={() => onSwap(item.slot)}
+              aria-label={`Swap the ${SLOT_LABELS[item.slot].toLowerCase()}`}
+              className="min-h-11 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
+            >
+              Swap
+            </button>
+          )}
+          {onCheaper && (
+            <button
+              type="button"
+              onClick={() => onCheaper(item.slot)}
+              aria-label={`Cheaper ${SLOT_LABELS[item.slot].toLowerCase()} options`}
+              className="min-h-11 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
+            >
+              Cheaper
+            </button>
+          )}
+        </span>
       )}
     </li>
   );

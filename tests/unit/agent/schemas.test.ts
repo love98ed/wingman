@@ -111,6 +111,12 @@ describe("Refine and swap schemas", () => {
     expect(SwapOptionsRequestSchema.safeParse({ ...look, slot: "shoes" }).success).toBe(true);
     expect(SwapOptionsRequestSchema.safeParse({ ...look, slot: "hat" }).success).toBe(false);
   });
+
+  it("takes an optional cheaper flag", () => {
+    const look = { name: "Rooftop easy", tier: "mid", items: [{ slot: "shoes", id: "a" }], hair: null, occasion };
+    expect(SwapOptionsRequestSchema.safeParse({ ...look, slot: "shoes", cheaper: true }).success).toBe(true);
+    expect(SwapOptionsRequestSchema.safeParse({ ...look, slot: "shoes", cheaper: "yes" }).success).toBe(false);
+  });
 });
 
 describe("grooming templates", () => {

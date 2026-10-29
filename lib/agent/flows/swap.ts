@@ -9,11 +9,23 @@ import { fromClient, type SwapOptionsRequest, type SwapRequest } from "@/lib/age
 import { SLOTS } from "@/lib/agent/slots";
 import { fitCheck, pickAlternatives } from "@/lib/agent/steps";
 import { loadCatalog } from "@/lib/catalog/repo";
+import { TIERS, type Tier } from "@/lib/catalog/types";
 import { preparePhoto } from "@/lib/photo/prepare";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { cachedFace, toItem } from "./style";
 
 const OPTIONS = 6;
+/** A cheaper pick saves at least this share of the piece's price. */
+export const CHEAPER_BY = 0.1;
+
+/**
+ * Where alternatives come from: the look's tier and the most a piece may cost (the budget cap's
+ * headroom). Cheaper ones also come from lower tiers and must save at least CHEAPER_BY.
+ */
+export function optionScope(tier: Tier, price: number, headroom: number, cheaper: boolean) {
+  if (!cheaper) return { tiers: [tier], ceiling: headroom };
+  return { tiers: TIERS.slice(0, TIERS.indexOf(tier) + 1), ceiling: Math.min(headroom, price * (1 - CHEAPER_BY)) };
+}
 
 /** The look's products by slot, read fresh from the catalog. */
 async function loadLook(items: { slot: (typeof SLOTS)[number]; id: string }[]): Promise<LookItems> {
@@ -34,17 +46,25 @@ async function loadLook(items: { slot: (typeof SLOTS)[number]; id: string }[]): 
 export async function swapOptions(req: SwapOptionsRequest): Promise<LookItem[]> {
   const occasion = fromClient(req.occasion, req.tier);
   const db = supabaseAdmin();
+  const cheaper = req.cheaper ?? false;
+  // The tiers don't depend on the piece, so the catalog loads alongside the look
   const [look, products] = await Promise.all([
     loadLook(req.items),
-    loadCatalog(db, { inStock: true, tier: req.tier, categories: [req.slot], formalities: allowedFormalities(occasion.formality) }),
+    loadCatalog(db, {
+      inStock: true,
+      tiers: optionScope(req.tier, 0, Infinity, cheaper).tiers,
+      categories: [req.slot],
+      formalities: allowedFormalities(occasion.formality),
+    }),
   ]);
   const current = look[req.slot];
   if (!current) throw new AgentError("NOT_FOUND", "That piece is no longer in the catalog.");
 
   const inLook = new Set(req.items.map((i) => i.id));
   const headroom = occasion.maxBudget != null ? occasion.maxBudget - (lookTotal(look) - current.price) : Infinity;
+  const { ceiling } = optionScope(req.tier, current.price, headroom, cheaper);
   const pool = buildPool(
-    products.filter((p) => !inLook.has(p.id) && p.price <= headroom),
+    products.filter((p) => !inLook.has(p.id) && p.price <= ceiling),
     { occasion: occasion.occasion, formality: occasion.formality, seed: current.id },
   );
   const candidates = pool[req.slot];
@@ -54,7 +74,14 @@ export async function swapOptions(req: SwapOptionsRequest): Promise<LookItem[]> 
     {
       selfieHash: "swap",
       api: "swap-options",
-      params: { ids: SLOTS.map((s) => look[s]?.id ?? null), slot: req.slot, occasion: occasion.occasion, constraints: occasion.constraints, headroom },
+      params: {
+        ids: SLOTS.map((s) => look[s]?.id ?? null),
+        slot: req.slot,
+        occasion: occasion.occasion,
+        constraints: occasion.constraints,
+        headroom,
+        cheaper,
+      },
     },
     () =>
       pickAlternatives({

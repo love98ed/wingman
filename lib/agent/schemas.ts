@@ -81,7 +81,11 @@ export const CompareRequestSchema = LookRefSchema;
 export type CompareRequest = z.infer<typeof CompareRequestSchema>;
 
 /** JSON body of /api/swap/options: which slot of which look to offer alternatives for. */
-export const SwapOptionsRequestSchema = LookRefSchema.extend({ slot: SlotSchema });
+export const SwapOptionsRequestSchema = LookRefSchema.extend({
+  slot: SlotSchema,
+  /** Only pieces at least CHEAPER_BY cheaper, from this tier or a lower one. */
+  cheaper: z.boolean().optional(),
+});
 export type SwapOptionsRequest = z.infer<typeof SwapOptionsRequestSchema>;
 
 /** JSON field `look` posted to /api/swap: the look with the new piece already in place. */

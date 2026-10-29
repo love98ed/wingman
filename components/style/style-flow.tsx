@@ -51,6 +51,7 @@ type Slot = LookItem["slot"];
 
 /** The ids of a look's pieces: swap alternatives are cached per look and slot. */
 const signature = (look: Look) => look.items.map((i) => i.id).join(",");
+const optionsKey = (look: Look, slot: LookItem["slot"], cheaper: boolean) => `${signature(look)}|${slot}${cheaper ? "|cheaper" : ""}`;
 const roundTotal = (items: LookItem[]) => Math.round(items.reduce((sum, i) => sum + i.price, 0) * 100) / 100;
 
 /** Read an error body from a failed JSON or stream request. */
@@ -125,7 +126,7 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
   /** Price Compare per look index; kept so reopening a comparison is instant. */
   const [compares, setCompares] = useState<Record<number, CompareState>>(returning?.compares ?? {});
   const [comparing, setComparing] = useState(0);
-  const [swapping, setSwapping] = useState<{ look: number; slot: Slot }>({ look: 0, slot: "top" });
+  const [swapping, setSwapping] = useState<{ look: number; slot: Slot; cheaper: boolean }>({ look: 0, slot: "top", cheaper: false });
   const [swapOptions, setSwapOptions] = useState<Record<string, SwapOptionsState>>(returning?.swapOptions ?? {});
   /** Kept across refines and new runs, so pieces from earlier looks stay in the cart. */
   const [cart, setCart] = useState<CartLine[]>(returning?.cart ?? []);
@@ -451,15 +452,15 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     returnTo("looks");
   };
 
-  const loadSwapOptions = async (look: Look, slot: Slot) => {
-    const key = `${signature(look)}|${slot}`;
+  const loadSwapOptions = async (look: Look, slot: Slot, cheaper: boolean) => {
+    const key = optionsKey(look, slot, cheaper);
     const controller = sideController();
     setSwapOptions((prev) => ({ ...prev, [key]: { status: "loading", options: [] } }));
     try {
       const res = await fetch("/api/swap/options", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...lookRef(look), slot }),
+        body: JSON.stringify({ ...lookRef(look), slot, cheaper }),
         signal: controller.signal,
       });
       if (!res.ok) throw new Error(await errorFrom(res, "We couldn't load alternatives. Please try again."));
@@ -471,11 +472,12 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     }
   };
 
-  const openSwap = (index: number, slot: Slot) => {
-    setSwapping({ look: index, slot });
+  /** Alternatives for one piece; `cheaper` shows only pieces that cost less. */
+  const openSwap = (index: number, slot: Slot, cheaper = false) => {
+    setSwapping({ look: index, slot, cheaper });
     go("swap");
-    const state = swapOptions[`${signature(looks[index])}|${slot}`];
-    if (!state || state.status === "error") void loadSwapOptions(looks[index], slot);
+    const state = swapOptions[optionsKey(looks[index], slot, cheaper)];
+    if (!state || state.status === "error") void loadSwapOptions(looks[index], slot, cheaper);
   };
 
   /**
@@ -720,10 +722,11 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       <SwapStep
         look={swapLook}
         slot={swapping.slot}
-        state={swapOptions[`${signature(swapLook)}|${swapping.slot}`] ?? { status: "loading", options: [] }}
+        cheaper={swapping.cheaper}
+        state={swapOptions[optionsKey(swapLook, swapping.slot, swapping.cheaper)] ?? { status: "loading", options: [] }}
         onPick={(option) => void applyPiece(swapping.look, option)}
         onBack={back}
-        onRetry={() => void loadSwapOptions(swapLook, swapping.slot)}
+        onRetry={() => void loadSwapOptions(swapLook, swapping.slot, swapping.cheaper)}
       />
     );
   }
