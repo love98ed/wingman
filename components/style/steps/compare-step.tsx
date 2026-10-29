@@ -51,14 +51,14 @@ export function CompareStep({
 
   return (
     <FlowShell step="Price compare" wide>
-      <div className="mx-auto max-w-xl">
+      <div className="max-w-xl">
         <h1 className="mt-4 text-head">One look, three budgets</h1>
         <p className="mt-3">
           {look.name}, rebuilt from each price tier with the same colours and cut. Totals are real prices in SGD.
         </p>
       </div>
 
-      <div className="mx-auto mt-8 grid max-w-3xl grid-cols-3 gap-2 sm:gap-4" aria-live="polite">
+      <div className="mt-8 grid max-w-3xl grid-cols-3 gap-2 sm:gap-4" aria-live="polite">
         {columns.map((version, i) => (
           <Column
             key={TIERS[i]}
@@ -73,7 +73,7 @@ export function CompareStep({
       </div>
 
       {state.status === "error" && (
-        <div className="mx-auto mt-6 max-w-xl">
+        <div className="mt-6 max-w-xl">
           <p role="alert">{state.error}</p>
           <button type="button" onClick={onRetry} className="text-link mt-2 min-h-11">
             Try the comparison again
@@ -82,7 +82,7 @@ export function CompareStep({
       )}
 
       {notes.length > 0 && (
-        <div className="mx-auto mt-10 max-w-xl">
+        <div className="mt-10 max-w-xl">
           <h2 className="text-lead">What changes</h2>
           <dl className="mt-4 flex flex-col gap-4">
             {notes.map((v) => (
@@ -95,7 +95,7 @@ export function CompareStep({
         </div>
       )}
 
-      <div className="mx-auto mt-10 max-w-xl">
+      <div className="mt-10 max-w-xl">
         <button type="button" onClick={onBack} className="text-link min-h-11 text-muted-foreground">
           Back to your looks
         </button>

@@ -14,7 +14,7 @@ export function RefineBar({ onRefine }: { onRefine: (message: string) => void })
 
   return (
     <div className="sticky bottom-0 -mx-(--margin) mt-10 bg-background px-(--margin) pt-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
-      <div className="mx-auto max-w-xl">
+      <div className="max-w-xl">
         <div className="no-scrollbar -mx-(--margin) flex gap-2 overflow-x-auto px-(--margin)">
           {SUGGESTIONS.map((s) => (
             <button

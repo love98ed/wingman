@@ -118,7 +118,7 @@ export function HeroWindow({ before, after, alt }: Props) {
 
           <h1
             id="hero-heading"
-            className="absolute top-[calc(env(safe-area-inset-top)+4.5rem)] left-(--margin) text-[10vw] min-[900px]:top-auto min-[900px]:bottom-[calc(var(--bottom)-0.08em)] min-[900px]:max-w-[calc(var(--side)-3rem)] min-[900px]:text-[min(3.9vw,4rem)]"
+            className="absolute top-[calc(env(safe-area-inset-top)+4.5rem)] left-(--margin) text-[10vw] min-[900px]:top-auto min-[900px]:bottom-[calc(var(--bottom)-0.08em)] min-[900px]:max-w-[calc(var(--side)-3rem)] min-[900px]:text-[min(calc((32vw-3rem)/5.9),5.5rem)]"
           >
             <span className="rise-line">
               <span style={{ "--i": 0 } as React.CSSProperties}>See it</span>

@@ -45,10 +45,19 @@ export function PhotoStep({
           {notice}
         </p>
       )}
-      <p className="mt-4 max-w-[36ch]">
-        One photo, waist up, facing the camera in good light. Glasses are fine. Wingman tries the shirt or jacket on you;
-        trousers, shoes and watches come as picks beside it.
-      </p>
+      <div className="mt-4 flex items-start justify-between gap-4">
+        <p className="max-w-[36ch]">
+          One photo, waist up, facing the camera in good light. Glasses are fine. Wingman tries the shirt or jacket on
+          you; trousers, shoes and watches come as picks beside it.
+        </p>
+        {/* The framing that works, shown rather than described */}
+        <figure className="w-16 shrink-0 sm:w-20">
+          <div className="relative aspect-[4/5] overflow-hidden bg-surface">
+            <Image src="/home/before.jpg" alt="Example: waist up, facing the camera" fill sizes="80px" className="object-cover object-[50%_25%]" />
+          </div>
+          <figcaption className="mt-1.5 text-small text-muted-foreground">Like this</figcaption>
+        </figure>
+      </div>
 
       <label
         htmlFor={inputId}

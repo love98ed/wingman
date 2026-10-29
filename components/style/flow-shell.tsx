@@ -14,7 +14,12 @@ export function FlowShell({
 }) {
   return (
     <div className="min-h-dvh pb-[max(env(safe-area-inset-bottom),2rem)]">
-      <header className="mx-auto flex h-16 max-w-xl items-center justify-between px-(--margin) pt-[env(safe-area-inset-top)]">
+      <header
+        className={cn(
+          "mx-auto flex h-16 items-center justify-between px-(--margin) pt-[env(safe-area-inset-top)]",
+          wide ? "max-w-5xl" : "max-w-xl",
+        )}
+      >
         <Link href="/" className="inline-flex min-h-11 items-center font-display text-small uppercase">
           Wingman
         </Link>

@@ -208,7 +208,7 @@
   transform-origin: 50% 30%;
 }
 .hero__text {
-  opacity: clamp(0, 1 - var(--p) * 2.4, 1);
+  opacity: clamp(0, 1 - var(--p) * 5, 1);
   transform: translateY(calc(var(--p) * -48px));
 }
 .hero[data-open] .hero__text {
