@@ -301,17 +301,16 @@ function LookCard({
 
         {tab === "look" ? (
           <div role="tabpanel" id={`${tabId}-look`} aria-labelledby={`${tabId}-look-tab`}>
-            <div className="mt-5 flex gap-4 bg-surface-raised p-4" aria-live="polite">
+            {/* Score and label on one line, the reasoning full width below, so it reads at any width */}
+            <div className="mt-5 bg-surface-raised p-4" aria-live="polite">
               {look.fitCheck ? (
                 <>
-                  <p className="shrink-0">
+                  <p className="flex items-baseline gap-3">
                     <span className="font-display text-head leading-none text-brass">{look.fitCheck.score.toFixed(1)}</span>
                     <span className="sr-only"> out of 10</span>
+                    <span className="font-medium">Fit check</span>
                   </p>
-                  <div>
-                    <p className="font-medium">Fit check</p>
-                    <p className="mt-1 text-small">{look.fitCheck.reasoning}</p>
-                  </div>
+                  <p className="mt-3">{look.fitCheck.reasoning}</p>
                 </>
               ) : (
                 <p className="text-small text-muted-foreground">{scoring ? "Scoring this look…" : "No score for this look."}</p>
