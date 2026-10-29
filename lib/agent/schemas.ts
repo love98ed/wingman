@@ -36,7 +36,7 @@ const LookPickSchema = z.object({
 });
 export type LookPick = z.infer<typeof LookPickSchema>;
 
-export const LookPicksSchema = z.object({ looks: z.array(LookPickSchema).min(2).max(3) });
+export const LookPicksSchema = z.object({ looks: z.array(LookPickSchema).min(1).max(3) });
 
 /** The same look rebuilt at another tier: one product id per slot the look fills. */
 const TierPickSchema = z.object({

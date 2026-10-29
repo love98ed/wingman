@@ -53,6 +53,14 @@ const timer = (label: string) => {
 const tiersFor = (occasion: ParsedOccasion): Tier[] =>
   occasion.maxBudget != null ? TIERS.slice(0, TIERS.indexOf(occasion.budgetTier) + 1) : [occasion.budgetTier];
 
+/** Fit Check scores below this drop a look. */
+export const MIN_SCORE = 6;
+
+/** Indexes of the looks worth showing: those scoring at least MIN_SCORE. Can be none. */
+export function keepLooks(scores: number[]): number[] {
+  return scores.flatMap((score, i) => (score >= MIN_SCORE ? [i] : []));
+}
+
 /**
  * CLAUDE.md section 6, steps 3 to 5: pick looks from the in-stock catalog, render them
  * on the photo and score them. Shared by the first run and by refine.
@@ -140,7 +148,21 @@ async function buildLooks(args: {
   });
   checks.forEach((c, i) => (looks[i].fitCheck = { score: Math.round(c.score * 10) / 10, reasoning: c.reasoning }));
   emit({ type: "fitcheck", checks: looks.map((l) => l.fitCheck!) });
-  return looks;
+
+  // A weak look does more harm than showing fewer: drop those the Fit Check scored low,
+  // and say so plainly when none are good enough.
+  const keep = keepLooks(looks.map((l) => l.fitCheck!.score));
+  if (keep.length === 0) {
+    throw new AgentError(
+      "NO_LOOKS",
+      "None of the looks Wingman put together scored well enough to show you. Try another budget, or describe the occasion differently.",
+    );
+  }
+  if (keep.length < looks.length) {
+    lap(`dropped ${looks.length - keep.length} low-scoring look(s)`);
+    emit({ type: "prune", keep, dropped: looks.length - keep.length });
+  }
+  return keep.map((i) => looks[i]);
 }
 
 /** CLAUDE.md section 6, steps 1 to 6. `emit` receives each event as it happens. */

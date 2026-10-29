@@ -6,7 +6,7 @@ import { FlowShell, RAW_IMG_PROPS } from "@/components/style/flow-shell";
 import { ProductImage } from "@/components/style/product-image";
 import { RefineBar } from "@/components/style/refine-bar";
 import type { Photo } from "@/components/style/style-flow";
-import type { Look, LookItem } from "@/lib/agent/events";
+import { showsInRender, type Look, type LookItem } from "@/lib/agent/events";
 import type { ParsedOccasion } from "@/lib/agent/schemas";
 import type { CartLine } from "@/lib/cart";
 import { displayName } from "@/lib/catalog/names";
@@ -88,8 +88,9 @@ export function LooksStep({
       <div className="mx-auto max-w-xl">
         <h1 className="mt-4 text-head">Your looks</h1>
         <p className="mt-3">
-          {looks.length} looks from real Singapore stores, tried on your photo. <span className="lg:hidden">Swipe to compare, tap</span>
-          <span className="hidden lg:inline">Tap</span> Swap to change a piece.
+          {looks.length === 1 ? "One look" : `${looks.length} looks`} from real Singapore stores, tried on your photo.{" "}
+          {looks.length > 1 && <span className="lg:hidden">Swipe to compare, then tap</span>}
+          <span className={looks.length > 1 ? "hidden lg:inline" : undefined}>Tap</span> Swap to change a piece.
         </p>
         {cart.length > 0 && (
           <button
@@ -285,32 +286,28 @@ function LookCard({
 
         <p className="mt-5">{look.why}</p>
 
-        <ul className="mt-5 flex flex-col gap-3">
-          {look.items.map((item) => (
-            <li key={item.slot} className="flex items-center gap-3 bg-background/40 p-2">
-              <a href={item.url} target="_blank" rel="noopener" className="group flex min-w-0 flex-1 items-center gap-3">
-                <ProductImage src={item.image} sizes="64px" className="size-16" />
-                <span className="min-w-0 flex-1">
-                  <span className="block text-small text-muted-foreground">
-                    {SLOT_LABELS[item.slot]} · {item.storeName}
-                  </span>
-                  <span className="line-clamp-2 text-small group-hover:underline">{displayName(item.name, item.storeName)}</span>
-                  <span className="block text-small tabular-nums">{sgd(item.price)}</span>
-                </span>
-              </a>
-              {onSwap && (
-                <button
-                  type="button"
-                  onClick={() => onSwap(item.slot)}
-                  aria-label={`Swap the ${SLOT_LABELS[item.slot].toLowerCase()}`}
-                  className="min-h-11 shrink-0 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
-                >
-                  Swap
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
+        {/* Only the outer layer can be tried on (see the README): say which pieces are on you */}
+        {(
+          [
+            ["In the try-on", look.items.filter((i) => showsInRender(look, i.slot))],
+            ["Also in this look", look.items.filter((i) => !showsInRender(look, i.slot))],
+          ] as const
+        ).map(
+          ([title, pieces]) =>
+            pieces.length > 0 && (
+              <section key={title} className="mt-5">
+                <h3 className="font-sans text-small font-medium normal-case tracking-normal text-muted-foreground">{title}</h3>
+                {title === "Also in this look" && (
+                  <p className="mt-1 text-small text-muted-foreground">Picked for the outfit, not shown on you.</p>
+                )}
+                <ul className="mt-2 flex flex-col gap-3">
+                  {pieces.map((item) => (
+                    <PieceRow key={item.slot} item={item} onSwap={onSwap} />
+                  ))}
+                </ul>
+              </section>
+            ),
+        )}
 
         {/* Pinned to the bottom, so the buttons line up across cards of different lengths */}
         <div className="mt-auto pt-5">
@@ -326,5 +323,33 @@ function LookCard({
         </div>
       </div>
     </article>
+  );
+}
+
+/** One piece of a look: photo, store, name and price linking to the store, and a Swap button. */
+function PieceRow({ item, onSwap }: { item: LookItem; onSwap?: (slot: LookItem["slot"]) => void }) {
+  return (
+    <li className="flex items-center gap-3 bg-background/40 p-2">
+      <a href={item.url} target="_blank" rel="noopener" className="group flex min-w-0 flex-1 items-center gap-3">
+        <ProductImage src={item.image} sizes="64px" className="size-16" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-small text-muted-foreground">
+            {SLOT_LABELS[item.slot]} · {item.storeName}
+          </span>
+          <span className="line-clamp-2 text-small group-hover:underline">{displayName(item.name, item.storeName)}</span>
+          <span className="block text-small tabular-nums">{sgd(item.price)}</span>
+        </span>
+      </a>
+      {onSwap && (
+        <button
+          type="button"
+          onClick={() => onSwap(item.slot)}
+          aria-label={`Swap the ${SLOT_LABELS[item.slot].toLowerCase()}`}
+          className="min-h-11 shrink-0 bg-surface-raised px-3 text-small font-medium transition-colors hover:bg-surface active:scale-[0.97]"
+        >
+          Swap
+        </button>
+      )}
+    </li>
   );
 }

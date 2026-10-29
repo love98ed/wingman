@@ -2,7 +2,7 @@
 
 import { FlowShell } from "@/components/style/flow-shell";
 import { ProductImage } from "@/components/style/product-image";
-import type { Look, LookItem } from "@/lib/agent/events";
+import { showsInRender, type Look, type LookItem } from "@/lib/agent/events";
 import { displayName } from "@/lib/catalog/names";
 import { sgd } from "@/lib/utils/format";
 
@@ -17,9 +17,6 @@ const SLOT_NAMES: Record<LookItem["slot"], string> = {
 };
 
 /** Only the garment on top shows in the try-on (see docs: YouCam framing limits). */
-export const showsInRender = (look: Look, slot: LookItem["slot"]) =>
-  slot === (look.items.some((i) => i.slot === "outerwear") ? "outerwear" : "top");
-
 function priceDiff(next: number, current: number) {
   const d = Math.round(next - current);
   if (d === 0) return "Same price";

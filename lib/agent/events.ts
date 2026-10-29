@@ -44,6 +44,10 @@ export type StyleResult = {
   skinAnalysed: boolean;
 };
 
+/** Whether a piece is drawn in the try-on: only the outer layer is (jacket if there is one, else the top). */
+export const showsInRender = (look: Look, slot: LookItem["slot"]) =>
+  slot === (look.items.some((i) => i.slot === "outerwear") ? "outerwear" : "top");
+
 /** Progress steps the loading screen shows, in order. */
 export const STYLE_STEPS = ["reading", "picking", "rendering", "scoring"] as const;
 export type StyleStep = (typeof STYLE_STEPS)[number];
@@ -54,6 +58,8 @@ export type StyleEvent =
   | { type: "looks"; occasion: ParsedOccasion; looks: Look[] }
   | { type: "render"; look: number; kind: RenderKind; url: string }
   | { type: "fitcheck"; checks: NonNullable<Look["fitCheck"]>[] }
+  /** Looks that scored too low are dropped after the Fit Check: keep these indexes, in order. */
+  | { type: "prune"; keep: number[]; dropped: number }
   | { type: "prep"; prepPlan: PrepPlan; skinAnalysed: boolean }
   | { type: "result"; result: StyleResult }
   | { type: "error"; code: string; message: string };

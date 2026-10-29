@@ -23,7 +23,9 @@ export function ErrorStep({
   const photoProblem = PHOTO_CODES.has(code);
   return (
     <FlowShell step="Styling">
-      <h1 className="mt-4 text-head">{photoProblem ? "Try another photo" : "That didn't work"}</h1>
+      <h1 className="mt-4 text-head">
+        {photoProblem ? "Try another photo" : code === "NO_LOOKS" ? "No looks worth showing" : "That didn't work"}
+      </h1>
       <p role="alert" className="mt-4 max-w-[38ch] text-lead">
         {message}
       </p>

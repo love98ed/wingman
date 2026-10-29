@@ -47,8 +47,9 @@ describe("LLM output schemas", () => {
     expect(ParsedOccasionSchema.safeParse({ ...ok, occasion: "funeral" }).success).toBe(false);
   });
 
-  it("needs 2 to 3 looks", () => {
-    expect(LookPicksSchema.safeParse({ looks: [look] }).success).toBe(false);
+  it("takes 1 to 3 looks, so Claude never pads with a weak one", () => {
+    expect(LookPicksSchema.safeParse({ looks: [] }).success).toBe(false);
+    expect(LookPicksSchema.safeParse({ looks: [look] }).success).toBe(true);
     expect(LookPicksSchema.safeParse({ looks: [look, look] }).success).toBe(true);
     expect(LookPicksSchema.safeParse({ looks: [look, look, look, look] }).success).toBe(false);
   });

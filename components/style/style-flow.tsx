@@ -10,9 +10,10 @@ import { LooksStep } from "@/components/style/steps/looks-step";
 import { OccasionStep } from "@/components/style/steps/occasion-step";
 import { PhotoStep } from "@/components/style/steps/photo-step";
 import { PrepStep } from "@/components/style/steps/prep-step";
-import { showsInRender, SwapStep, type SwapOptionsState } from "@/components/style/steps/swap-step";
+import { SwapStep, type SwapOptionsState } from "@/components/style/steps/swap-step";
 import {
   readEvents,
+  showsInRender,
   type CompareEvent,
   type Look,
   type LookItem,
@@ -148,6 +149,12 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
             break;
           case "fitcheck":
             setLooks((prev) => prev.map((look, i) => ({ ...look, fitCheck: event.checks[i] ?? look.fitCheck })));
+            break;
+          case "prune":
+            setLooks((prev) => event.keep.flatMap((i) => (prev[i] ? [prev[i]] : [])));
+            setNotice(`Wingman left out ${event.dropped === 1 ? "a look" : `${event.dropped} looks`} that didn't score well enough to show you.`);
+            setCompares({});
+            setFocusLook(0);
             break;
           case "prep":
             setPrep({ plan: event.prepPlan, skinAnalysed: event.skinAnalysed });
