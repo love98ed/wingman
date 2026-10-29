@@ -65,7 +65,7 @@ export async function locateFace(jpeg: Buffer, width: number, height: number): P
     ],
   });
   if (!result.face_found) {
-    throw new YouCamError("NO_FACE", "No clear front-facing face found in the photo");
+    throw new YouCamError("NO_FACE", "No clear front-facing face found in the photo", undefined, "NO_PERSON");
   }
   return {
     x: Math.round(clamp01(result.left) * width),
@@ -159,12 +159,12 @@ export async function normalisePhoto(input: Buffer) {
 export async function preparePhoto(input: Buffer, locate: FaceLocator = locateFace): Promise<PreparedPhoto> {
   const { normalised, width, height, hash } = await normalisePhoto(input);
   if (Math.min(width, height) < 512) {
-    throw new YouCamError("NO_FACE", "Photo is too small. Use a photo at least 512px wide.");
+    throw new YouCamError("NO_FACE", "Photo is too small. Use a photo at least 512px wide.", undefined, "TOO_SMALL");
   }
 
   const face = await locate(normalised, width, height, hash);
   if (face.width < MIN_FACE_PX) {
-    throw new YouCamError("NO_FACE", "Face is too small in the photo. Move closer to the camera.");
+    throw new YouCamError("NO_FACE", "Face is too small in the photo. Move closer to the camera.", undefined, "FACE_TOO_SMALL");
   }
   const boxes = cropBoxes(face, width, height);
 

@@ -5,7 +5,7 @@ import type { ZodType } from "zod";
 import { AgentError } from "@/lib/agent/errors";
 import { deleteExpired } from "@/lib/privacy";
 import { supabaseAdmin } from "@/lib/supabase/server";
-import { YouCamError, friendlyMessage } from "@/lib/youcam/errors";
+import { YouCamError, userMessage } from "@/lib/youcam/errors";
 
 type ErrorEvent = { type: "error"; code: string; message: string };
 
@@ -33,7 +33,7 @@ export function eventStream<E>(label: string, work: (send: (event: E | ErrorEven
         if (err instanceof AgentError) {
           send({ type: "error", code: err.code, message: err.message });
         } else if (err instanceof YouCamError) {
-          send({ type: "error", code: err.code, message: friendlyMessage(err.code) });
+          send({ type: "error", code: err.code, message: userMessage(err) });
         } else {
           console.error(`[${label}]`, err);
           send({ type: "error", code: "UNKNOWN", message: "Something went wrong while styling. Please try again." });

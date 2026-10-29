@@ -1,0 +1,109 @@
+import "server-only";
+
+import sharp from "sharp";
+import { z } from "zod";
+import { memo } from "@/lib/agent/memo";
+import { generateStructured } from "@/lib/llm/client";
+import { normalisePhoto } from "./prepare";
+import { photoProblem, type PhotoCheck, type PhotoProblem } from "./problems";
+
+/**
+ * Edge strength relative to the photo's own contrast, measured on the test photos at 1024px:
+ * sharp ones 160 to 250 (dark or bright), a slight blur 100 to 140, a clear blur 33 to 61.
+ */
+const BLUR_BELOW = 65;
+/** Mean grey level 0 to 255: well-lit photos sit near 200, a dim room near 70. */
+const DARK_BELOW = 60;
+const BRIGHT_ABOVE = 245;
+/** Same limits preparePhoto enforces before any render. */
+const MIN_SIDE = 512;
+const MIN_FACE_PX = 200;
+
+export type PhotoMetrics = { width: number; height: number; brightness: number; sharpness: number };
+
+const VisionSchema = z.object({
+  /** People visible, including partly visible ones. */
+  people: z.number().int().min(0),
+  face_visible: z.boolean(),
+  /** Any part of the head (top of hair, chin, ears) cut off by the photo's edge. */
+  face_cut_off: z.boolean(),
+  shoulders_visible: z.boolean(),
+  facing_camera: z.boolean(),
+  /** A hand, mask, hat brim or hair hides a large part of the face. Glasses never count. */
+  face_covered: z.boolean(),
+  /** Face width (ear to ear) as a fraction of the photo's width. */
+  face_width: z.number().min(0).max(1),
+});
+export type PhotoVision = z.infer<typeof VisionSchema>;
+
+/** Brightness, and sharpness as Laplacian spread over grey spread (x1000), on a 1024px greyscale copy. */
+export async function measurePhoto(normalised: Buffer, width: number, height: number): Promise<PhotoMetrics> {
+  const grey = await sharp(normalised).resize(1024, 1024, { fit: "inside" }).greyscale().raw().toBuffer({ resolveWithObject: true });
+  // stats() reads its input, so measure rendered buffers rather than a pipeline
+  const { mean: brightness, stdev: contrast } = (await sharp(grey.data, { raw: grey.info }).stats()).channels[0];
+  const edges = await sharp(grey.data, { raw: grey.info })
+    .convolve({ width: 3, height: 3, kernel: [0, 1, 0, 1, -4, 1, 0, 1, 0], offset: 128 })
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  // Relative to contrast, so a dark but sharp photo isn't mistaken for a blurry one
+  const sharpness = ((await sharp(edges.data, { raw: edges.info }).stats()).channels[0].stdev / Math.max(contrast, 1)) * 1000;
+  return { width, height, brightness, sharpness };
+}
+
+/** Problems found, hard ones first. `vision` is null when the Claude check couldn't run. */
+export function problemsFrom(metrics: PhotoMetrics, vision: PhotoVision | null): PhotoProblem[] {
+  const codes: Parameters<typeof photoProblem>[0][] = [];
+  if (Math.min(metrics.width, metrics.height) < MIN_SIDE) codes.push("TOO_SMALL");
+  if (vision) {
+    if (vision.people > 1) codes.push("MULTIPLE_PEOPLE");
+    else if (vision.people === 0 || !vision.face_visible) codes.push("NO_PERSON");
+    else {
+      if (vision.face_cut_off) codes.push("FACE_CUT_OFF");
+      if (!vision.shoulders_visible) codes.push("SHOULDERS_CUT_OFF");
+      if (vision.face_width * metrics.width < MIN_FACE_PX) codes.push("FACE_TOO_SMALL");
+      if (vision.face_covered) codes.push("FACE_COVERED");
+      if (!vision.facing_camera) codes.push("NOT_FACING");
+    }
+  }
+  if (metrics.brightness < DARK_BELOW) codes.push("TOO_DARK");
+  else if (metrics.brightness > BRIGHT_ABOVE) codes.push("TOO_BRIGHT");
+  if (metrics.sharpness < BLUR_BELOW) codes.push("BLURRY");
+  return codes.map(photoProblem).sort((a, b) => Number(a.soft) - Number(b.soft));
+}
+
+async function lookAtPhoto(normalised: Buffer): Promise<PhotoVision> {
+  const preview = await sharp(normalised).resize(1568, 1568, { fit: "inside" }).jpeg({ quality: 85 }).toBuffer();
+  return generateStructured({
+    task: "agent",
+    label: "photo-check",
+    effort: "low",
+    schema: VisionSchema,
+    content: [
+      { type: "image", source: { type: "base64", media_type: "image/jpeg", data: preview.toString("base64") } },
+      {
+        type: "text",
+        text:
+          "This photo is for a virtual clothes try-on: one person, waist up, facing the camera. Report what you see. " +
+          "people counts every person visible, even partly. face_cut_off is true when the photo's edge cuts through the " +
+          "head (top of the hair, chin or an ear). shoulders_visible is true when both shoulders and the upper chest are " +
+          "in the photo. facing_camera is false only when the head or body is clearly turned (profile, three-quarter " +
+          "or more). face_covered is true only when a hand, mask, hat brim or hair hides a large part of the face; " +
+          "glasses and sunglasses never count. face_width is the face's width, ear to ear, as a fraction of the photo's width.",
+      },
+    ],
+  });
+}
+
+/** Check an uploaded photo before styling. Cached per photo; a failed Claude call never blocks. */
+export async function checkPhoto(input: Buffer): Promise<PhotoCheck> {
+  const { normalised, width, height, hash } = await normalisePhoto(input);
+  const [metrics, vision] = await Promise.all([
+    measurePhoto(normalised, width, height),
+    memo({ selfieHash: hash, api: "photo-check", params: { v: 1 } }, () => lookAtPhoto(normalised)).catch((err: Error) => {
+      console.warn(`[photo-check] vision skipped: ${err.message}`);
+      return null;
+    }),
+  ]);
+  const problems = problemsFrom(metrics, vision);
+  return { ok: problems.every((p) => p.soft), problems };
+}

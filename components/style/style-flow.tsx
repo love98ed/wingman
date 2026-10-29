@@ -28,8 +28,9 @@ import { SLOTS } from "@/lib/agent/slots";
 import { isOneSize, type CartLine } from "@/lib/cart";
 import type { Occasion, Tier } from "@/lib/catalog/types";
 import { OCCASION_CHOICES } from "@/lib/occasions";
+import type { PhotoCheck } from "@/lib/photo/problems";
 
-export type Photo = { blob: Blob; url: string };
+export type Photo = { blob: Blob; url: string; check?: PhotoCheck };
 export type Progress = { step: StyleStep; detail?: string };
 type Phase = "photo" | "occasion" | "loading" | "looks" | "compare" | "swap" | "cart" | "prep" | "browse" | "error";
 type Slot = LookItem["slot"];
@@ -96,11 +97,13 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
     },
     [],
   );
+  // Keyed on the URL: adding the photo check result keeps the same image
+  const photoUrl = photo?.url;
   useEffect(
     () => () => {
-      if (photo) URL.revokeObjectURL(photo.url);
+      if (photoUrl) URL.revokeObjectURL(photoUrl);
     },
-    [photo],
+    [photoUrl],
   );
 
   const sideController = () => {

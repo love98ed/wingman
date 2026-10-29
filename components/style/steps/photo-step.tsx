@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { FlowShell, RAW_IMG_PROPS } from "@/components/style/flow-shell";
 import type { Photo } from "@/components/style/style-flow";
 import { downscalePhoto } from "@/lib/photo/downscale";
+import type { PhotoCheck } from "@/lib/photo/problems";
 
 export function PhotoStep({
   photo,
@@ -22,20 +23,36 @@ export function PhotoStep({
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
 
+  const [checking, setChecking] = useState(false);
+  /** The latest photo chosen, so a slow check of an earlier one is dropped. */
+  const latest = useRef<string | null>(null);
+
   async function choose(file: File | undefined) {
     if (!file) return;
     setProblem(null);
     if (!file.type.startsWith("image/")) return setProblem("That file isn't a photo. Choose a JPEG or PNG.");
     setBusy(true);
+    let blob: Blob;
     try {
-      const blob = await downscalePhoto(file);
-      onPhoto({ blob, url: URL.createObjectURL(blob) });
+      blob = await downscalePhoto(file);
     } catch {
-      setProblem("We couldn't read that photo. Try another one.");
-    } finally {
       setBusy(false);
+      return setProblem("We couldn't read that photo. Try another one.");
     }
+    const url = URL.createObjectURL(blob);
+    latest.current = url;
+    onPhoto({ blob, url });
+    setBusy(false);
+    setChecking(true);
+    const result = await check(blob);
+    if (latest.current !== url) return;
+    onPhoto({ blob, url, check: result });
+    setChecking(false);
   }
+
+  const hard = photo?.check?.problems.find((p) => !p.soft);
+  const soft = photo?.check?.problems.filter((p) => p.soft) ?? [];
+  const shown = hard ? [hard] : soft;
 
   return (
     <FlowShell step="Photo, then occasion">
@@ -90,17 +107,59 @@ export function PhotoStep({
         </p>
       )}
 
-      {photo && (
+      {photo && checking && (
+        <p role="status" className="mt-6">
+          Checking your photo works for a try-on…
+        </p>
+      )}
+      {photo && !checking && shown.length > 0 && (
+        <div role="alert" className="mt-6 bg-surface p-4">
+          {shown.map((p) => (
+            <div key={p.code} className="not-first:mt-4">
+              <p className="text-lead">{p.message}</p>
+              <p className="mt-1">{p.tip}</p>
+            </div>
+          ))}
+          {!hard && <p className="mt-4 text-muted-foreground">It may still work, so you can use it anyway.</p>}
+        </div>
+      )}
+
+      {photo && !checking && (
         <div className="mt-6 flex flex-col gap-2">
-          <button type="button" onClick={onNext} className="btn w-full">
-            Use this photo
-          </button>
-          <label htmlFor={inputId} className="text-link flex min-h-11 cursor-pointer items-center justify-center text-muted-foreground">
-            Choose a different photo
-          </label>
+          {shown.length > 0 ? (
+            <label htmlFor={inputId} className="btn w-full cursor-pointer">
+              Choose a different photo
+            </label>
+          ) : (
+            <button type="button" onClick={onNext} className="btn w-full">
+              Use this photo
+            </button>
+          )}
+          {shown.length > 0 && !hard && (
+            <button type="button" onClick={onNext} className="text-link flex min-h-11 items-center justify-center">
+              Use it anyway
+            </button>
+          )}
+          {shown.length === 0 && (
+            <label htmlFor={inputId} className="text-link flex min-h-11 cursor-pointer items-center justify-center text-muted-foreground">
+              Choose a different photo
+            </label>
+          )}
         </div>
       )}
       <p className="mt-6 text-small text-muted-foreground">Only used to style you. Try-ons are deleted after 24 hours.</p>
     </FlowShell>
   );
+}
+
+/** Ask the server whether the photo will work. A check that can't run never blocks the user. */
+async function check(blob: Blob): Promise<PhotoCheck | undefined> {
+  const form = new FormData();
+  form.set("photo", blob, "photo.jpg");
+  try {
+    const res = await fetch("/api/photo/check", { method: "POST", body: form });
+    return res.ok ? ((await res.json()) as PhotoCheck) : undefined;
+  } catch {
+    return undefined;
+  }
 }
