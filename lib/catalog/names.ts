@@ -12,5 +12,5 @@ export function displayName(name: string, storeName?: string): string {
   // Most real words wins; on a tie the later part, since brands come first
   const best = parts.reduce((a, b) => (words(b) >= words(a) ? b : a), parts[0] ?? name);
   const shouting = best === best.toUpperCase() && /[A-Z]{3}/.test(best);
-  return shouting ? best.toLowerCase().replace(/(^|[\s(-])([a-z])/g, (_, pre, c) => pre + c.toUpperCase()) : best;
+  return shouting ? best.toLowerCase().replace(/(^|[\s("-])([a-z])/g, (_, pre, c) => pre + c.toUpperCase()) : best;
 }
