@@ -10,7 +10,7 @@ This file is the source of truth for the project. Read it at the start of every 
 
 **Tagline:** Tell Wingman the occasion and see yourself ready: a full look from real stores, styled on your selfie and one tap from checkout.
 
-**Flow:** selfie, one sentence about the event, budget tier. The agent builds 2 to 3 full looks (outfit, hairstyle, watch, optional beard) from real Shopify store products, renders them on the selfie with YouCam APIs, scores each with a Fit Check and gives a grooming prep plan from skin analysis. The user can swap items, refine by chat, pick in-stock sizes and tap checkout to open each store's cart pre-filled.
+**Flow:** selfie, one sentence about the event, budget tier. The agent builds 2 to 3 full looks (outfit, watch, optional beard) from real Shopify store products, renders them on the selfie with YouCam APIs, scores each with a Fit Check and gives a grooming prep plan from skin analysis. The user can swap items, refine by chat, pick in-stock sizes and tap checkout to open each store's cart pre-filled.
 
 ## 2. Tech stack
 
@@ -62,7 +62,7 @@ Never guess endpoints or payloads. Use the YouCam MCP server (if connected) or t
 |---|---|---|
 | AI Clothes Virtual Try-On (v3, `garment_category: auto`) | Outfit render | Must |
 | AI Skin Analysis (SD concerns only, do not mix with HD) | Prep plan | Must |
-| AI Hair Style Virtual Try-On | Haircut | Must |
+| AI Hair Style Virtual Try-On | Haircut | Dropped (30 Oct) |
 | AI Watch Virtual Try-On | Watch | Should |
 | AI Beard Style Virtual Try-On | Beard | Should |
 | AI Skin Shade Finder or Skin Tone | Colour matching | Should |
@@ -166,7 +166,7 @@ Routes: `app/api/style`, `app/api/refine`, `app/api/swap`.
 1. Parse occasion to `{ occasion, formality, setting, timeOfDay, budgetTier, maxBudget?, constraints[] }`
 2. Skin analysis and skin tone (cached per selfie)
 3. Select 2 to 3 coherent looks from in-stock catalog items matching tier, formality and occasion; colours complement skin tone
-4. Render: clothes VTO, then hair, watch, beard
+4. Render: clothes VTO, then watch, beard
 5. Fit Check: score out of 10 plus 1 to 2 sentences of reasoning
 6. Prep plan: 3-step night-before grooming routine, no medical claims
 
