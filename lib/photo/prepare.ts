@@ -152,8 +152,8 @@ export async function headShouldersFrom(image: Buffer, photo: PreparedPhoto): Pr
   return cropTo(image, cropBoxes(face, width, height).hair, 1024);
 }
 
-/** Smallest face width (px) in the original photo that still gives usable face crops. */
-const MIN_FACE_PX = 200;
+/** Smallest face width (px) in the original photo the try-on accepts (the photo check warns below 200). */
+const MIN_FACE_PX = 120;
 
 /** Finds the face in the normalised photo; `hash` lets a caller cache the answer. */
 export type FaceLocator = (jpeg: Buffer, width: number, height: number, hash: string) => Promise<Face>;

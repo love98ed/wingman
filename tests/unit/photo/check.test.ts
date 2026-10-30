@@ -37,7 +37,12 @@ describe("problemsFrom", () => {
     expect(codes(good, { ...clear, face_cut_off: true })).toEqual(["FACE_CUT_OFF"]);
     expect(codes(good, { ...clear, shoulders_visible: false })).toEqual(["SHOULDERS_CUT_OFF"]);
     // Small in a small, close photo: zooming in can't help
-    expect(codes({ ...good, width: 600, height: 750 }, { ...clear, face_left: 0.375, face_width: 0.25 })).toEqual(["FACE_TOO_SMALL"]);
+    expect(codes({ ...good, width: 520, height: 650 }, { ...clear, face_left: 0.39, face_width: 0.22 })).toEqual(["FACE_TOO_SMALL"]);
+  });
+
+  it("only warns about a smallish face that zooming can't enlarge", () => {
+    const problems = problemsFrom({ ...good, width: 600, height: 750 }, { ...clear, face_left: 0.375, face_width: 0.25 });
+    expect(problems.map((p) => [p.code, p.soft])).toEqual([["FACE_LOW_RES", true]]);
   });
 
   it("zooms into a person standing too far back instead of rejecting the photo", () => {

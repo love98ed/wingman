@@ -18,7 +18,9 @@ const DARK_BELOW = 60;
 const BRIGHT_ABOVE = 245;
 /** Same limits preparePhoto enforces before any render. */
 const MIN_SIDE = 512;
-const MIN_FACE_PX = 200;
+const MIN_FACE_PX = 120;
+/** Below this the try-on still works, but the face crops for skin analysis are soft. */
+const SHARP_FACE_PX = 200;
 
 export type PhotoMetrics = { width: number; height: number; brightness: number; sharpness: number };
 
@@ -64,7 +66,7 @@ export function zoomFrom(metrics: PhotoMetrics, vision: PhotoVision | null): Box
   if (!vision || vision.people !== 1 || !vision.face_visible || vision.face_cut_off) return null;
   const { width, height } = metrics;
   const face = { x: vision.face_left * width, y: vision.face_top * height, width: vision.face_width * width, height: vision.face_height * height };
-  const box = zoomBox(face, width, height, MIN_FACE_PX);
+  const box = zoomBox(face, width, height, SHARP_FACE_PX);
   return box && { x: box.x / width, y: box.y / height, width: box.width / width, height: box.height / height };
 }
 
@@ -79,7 +81,11 @@ export function problemsFrom(metrics: PhotoMetrics, vision: PhotoVision | null):
       if (vision.face_cut_off) codes.push("FACE_CUT_OFF");
       if (!vision.shoulders_visible) codes.push("SHOULDERS_CUT_OFF");
       // A photo the browser can zoom into is checked again once zoomed
-      if (vision.face_width * metrics.width < MIN_FACE_PX && !zoomFrom(metrics, vision)) codes.push("FACE_TOO_SMALL");
+      const facePx = vision.face_width * metrics.width;
+      if (!zoomFrom(metrics, vision)) {
+        if (facePx < MIN_FACE_PX) codes.push("FACE_TOO_SMALL");
+        else if (facePx < SHARP_FACE_PX) codes.push("FACE_LOW_RES");
+      }
       if (vision.face_covered) codes.push("FACE_COVERED");
       if (!vision.facing_camera) codes.push("NOT_FACING");
     }

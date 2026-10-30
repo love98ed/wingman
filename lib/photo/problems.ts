@@ -33,7 +33,12 @@ export const PHOTO_PROBLEMS = {
   FACE_TOO_SMALL: {
     soft: false,
     message: "You're too far from the camera.",
-    tip: "Move closer so you fill the photo from the waist up.",
+    tip: "Move closer so you fill the photo from the waist up, or use the original photo from your camera.",
+  },
+  FACE_LOW_RES: {
+    soft: true,
+    message: "Your face is a little small in this photo.",
+    tip: "The try-on still works, but grooming tips may be more general. The original photo from your camera works best.",
   },
   FACE_COVERED: {
     soft: true,
