@@ -22,7 +22,6 @@ const look = {
   bottom: "b",
   shoes: "c",
   watch: null,
-  hair: null,
   beard: null,
   why: "Works.",
 };

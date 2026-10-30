@@ -206,7 +206,6 @@ function LookCard({
   onViewCart: () => void;
 }) {
   const grooming = [
-    look.renders.hair && { url: look.renders.hair, label: `Hair: ${look.hair}` },
     look.renders.beard && { url: look.renders.beard, label: `Beard: ${look.beard}` },
   ].filter(Boolean) as { url: string; label: string }[];
   const rendering = !look.renders.outfit && look.renders.errors.length === 0;

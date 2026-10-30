@@ -87,7 +87,7 @@ export const lookTotal = (items: LookItems) =>
 export function pickErrors(
   picks: LookPick[],
   pool: Pool,
-  opts: { maxBudget?: number; hair: string[]; beard: string[] },
+  opts: { maxBudget?: number; beard: string[] },
 ): string[] {
   const errors: string[] = [];
   picks.forEach((pick, i) => {
@@ -101,7 +101,6 @@ export function pickErrors(
       }
       if (!pool[slot].some((p) => p.id === id)) errors.push(`${label}: "${id}" is not in the ${slot} list.`);
     }
-    if (pick.hair && !opts.hair.includes(pick.hair)) errors.push(`${label}: hair "${pick.hair}" is not an allowed style.`);
     if (pick.beard && !opts.beard.includes(pick.beard)) errors.push(`${label}: beard "${pick.beard}" is not an allowed style.`);
     const total = lookTotal(lookItems(pick, pool));
     if (opts.maxBudget != null && total > opts.maxBudget) {

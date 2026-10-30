@@ -30,7 +30,6 @@ const LookPickSchema = z.object({
   bottom: z.string(),
   shoes: z.string(),
   watch: z.string().nullable(),
-  hair: z.string().nullable(),
   beard: z.string().nullable(),
   why: z.string(),
 });

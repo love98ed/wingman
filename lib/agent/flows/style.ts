@@ -2,7 +2,7 @@ import "server-only";
 
 import { AgentError } from "@/lib/agent/errors";
 import type { Look, LookItem, StyleEvent, StyleResult } from "@/lib/agent/events";
-import { BEARD_STYLES, HAIR_STYLES } from "@/lib/agent/grooming";
+import { BEARD_STYLES } from "@/lib/agent/grooming";
 import { memo } from "@/lib/agent/memo";
 import { PRESET_OCCASIONS } from "@/lib/agent/preset-occasions";
 import { allowedFormalities, buildPool, distinctLooks, lookItems, lookTotal, pickErrors, type LookItems } from "@/lib/agent/pick/candidates";
@@ -104,14 +104,14 @@ async function buildLooks(args: {
   });
   emit({ type: "progress", step: "picking", detail: `${products.length} in-stock pieces` });
   const pool = buildPool(products, { ...occasion, seed: photo.hash });
-  const rules = { maxBudget: occasion.maxBudget, hair: HAIR_STYLES, beard: BEARD_STYLES };
+  const rules = { maxBudget: occasion.maxBudget, beard: BEARD_STYLES };
   const select = (errors?: string[]) =>
     selectLooks({ occasion, sentence: args.sentence, pool, face: photo.closeFace, refine: args.refine, errors });
   // Same photo, brief and candidates: the same looks, without asking Claude again. A catalog
   // refresh or stock change alters the candidates, so it misses.
   const candidates = sha256(stableStringify(SLOTS.map((slot) => pool[slot].map((p) => p.id))));
   const picks = await memo(
-    { selfieHash: photo.hash, api: "select-looks", params: { occasion, sentence: args.sentence, refine: args.refine, candidates, model: LLM.agent.model } },
+    { selfieHash: photo.hash, api: "select-looks", params: { occasion, sentence: args.sentence, refine: args.refine, candidates, model: LLM.agent.model, v: 2 } },
     async () => {
       const first = await select();
       const errors = pickErrors(first, pool, rules);
@@ -139,7 +139,8 @@ async function buildLooks(args: {
     tier: TIERS[Math.max(...Object.values(itemsByLook[i]).map((p) => TIERS.indexOf(p!.tier)))],
     why: pick.why,
     items: SLOTS.flatMap((slot) => (itemsByLook[i][slot] ? [toItem(slot, itemsByLook[i][slot]!)] : [])),
-    hair: pick.hair,
+    // No hairstyle suggestions: the hair try-on is no longer offered
+    hair: null,
     beard: pick.beard,
     renders: { errors: [] },
     fitCheck: null,
@@ -154,7 +155,7 @@ async function buildLooks(args: {
       renderLook({
         photo,
         items: itemsByLook[i],
-        hair: pick.hair,
+        hair: null,
         beard: pick.beard,
         onRender: (kind, url) => emit({ type: "render", look: i, kind, url }),
         onFail: (kind, code) => emit({ type: "renderFailed", look: i, kind, code }),

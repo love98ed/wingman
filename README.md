@@ -38,13 +38,12 @@ All at 390px, from a local run with live YouCam renders. Retake with `npm run sc
 | API | What it does in Wingman | Units per call |
 |---|---|---|
 | AI Clothes Virtual Try-On (v3, `garment_category: auto`) | Puts each look's top or jacket on your photo. Also renders every tier in Price Compare and re-renders after a swap. | 2 |
-| AI Hairstyle Generator (preset styles) | Gives each look a haircut that suits the occasion, applied on top of the outfit render | 1 |
 | AI Beard Style Generator | Adds an optional beard style to the look | 2 |
 | AI Skin Analysis (SD concerns) | Reads your skin so the night-before prep plan is about you, not generic tips | 9 for 4 concerns |
 
 Bottoms, shoes and watches appear as product cards rather than renders: a waist-up selfie hides legs and feet, and YouCam's watch try-on needs a separate photo of the back of the hand.
 
-Each API needs different framing, so Wingman takes one photo and the server prepares it: the full photo for clothes, a head-and-shoulders crop for hair, and a close face crop for beard and skin analysis. Claude finds the face so the crops land in the right place. Location data is stripped before anything leaves the server.
+Each API needs different framing, so Wingman takes one photo and the server prepares it: the full photo for clothes and a close face crop for beard and skin analysis. Claude finds the face so the crops land in the right place. Location data is stripped before anything leaves the server.
 
 **Keeping units safe:** every live call reserves its units in Supabase first, and Wingman refuses any call that would pass `YOUCAM_UNIT_LIMIT` (700). Failed tasks release their units. Results are cached by photo, product, API and settings, so a repeat costs nothing; swapping trousers or shoes re-uses the cached render. Building the whole app has used 70 units.
 
@@ -57,7 +56,7 @@ flowchart TD
     C --> D[YouCam Skin Analysis<br/>in the background, never blocks]
     B --> E[Candidate pool<br/>in-stock products in the tier,<br/>from 17 Shopify stores]
     E --> F[Claude picks 2 to 3 looks<br/>ids and budget checked, one retry]
-    F --> G[YouCam renders each look<br/>clothes, then hair, then beard]
+    F --> G[YouCam renders each look<br/>clothes, then beard]
     G --> H[Claude Fit Check<br/>score out of 10 + reason]
     D --> I[Claude prep plan<br/>3 grooming steps, no medical claims]
     H --> P[Looks scoring under 6 dropped]

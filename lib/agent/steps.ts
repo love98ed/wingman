@@ -7,7 +7,7 @@ import { tierPoolLines, type TierPool } from "@/lib/agent/pick/match";
 import { SLOTS } from "@/lib/agent/slots";
 import type { Tier } from "@/lib/catalog/types";
 import { generateStructured } from "@/lib/llm/client";
-import { BEARD_STYLES, HAIR_STYLES } from "./grooming";
+import { BEARD_STYLES } from "./grooming";
 import {
   FitCheckSchema,
   LookPicksSchema,
@@ -136,7 +136,6 @@ export async function selectLooks(args: {
       "outerwear and a watch are optional (use null). Add a watch only when it lifts the look and keeps the total sensible " +
       "for the budget tier; the clothes come first. Prefer one or two stores per look so checkout stays simple. " +
       "Choose colours that flatter the skin tone and colouring you see in his photo. The photo may show glasses; ignore them. " +
-      `hair is one of [${HAIR_STYLES.join(", ")}] or null to keep his current hair. ` +
       `beard is one of [${BEARD_STYLES.join(", ")}] or null to keep his current beard; only change it when it clearly helps. ` +
       "name is 2 to 4 words. why is one sentence on why the look works for him and the occasion. Singapore is hot and humid.",
     content: [

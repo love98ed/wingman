@@ -47,13 +47,12 @@ const pick = (overrides: Partial<LookPick> = {}): LookPick => ({
   bottom: "b1",
   shoes: "s1",
   watch: null,
-  hair: null,
   beard: null,
   why: "Works.",
   ...overrides,
 });
 
-const rules = { hair: ["Modern Slick Back"], beard: ["Circle"] };
+const rules = { beard: ["Circle"] };
 
 describe("allowedFormalities", () => {
   it("lets smart-casual borrow from both sides, the ends from their neighbour only", () => {
@@ -103,7 +102,7 @@ describe("pickErrors", () => {
   const pool = buildPool(catalog, opts);
 
   it("accepts a valid pick", () => {
-    expect(pickErrors([pick(), pick({ top: "t2", watch: "w1", hair: "Modern Slick Back" })], pool, rules)).toEqual([]);
+    expect(pickErrors([pick(), pick({ top: "t2", watch: "w1", beard: "Circle" })], pool, rules)).toEqual([]);
   });
 
   it("rejects ids that are not candidates, or in the wrong slot", () => {
@@ -118,7 +117,7 @@ describe("pickErrors", () => {
   });
 
   it("rejects grooming styles outside the allowed list", () => {
-    expect(pickErrors([pick({ hair: "Rainbow Bob", beard: "Walrus" })], pool, rules)).toHaveLength(2);
+    expect(pickErrors([pick({ beard: "Walrus" })], pool, rules)).toHaveLength(1);
   });
 
   it("rejects looks over maxBudget and repeated tops", () => {
