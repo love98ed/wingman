@@ -4,6 +4,8 @@ import { OCCASION_LOOKS } from "./looks-data";
 
 /** The shirt from the first-date look, as its store shows it: no other section uses this picture. */
 const SHIRT = OCCASION_LOOKS.date.piece;
+/** The store's CDN resizes on request: the tile shows the shirt far larger than the picker's thumbnail. */
+const SHIRT_LARGE = SHIRT.thumb.replace("width=600", "width=1600");
 
 /** Three stages, each tile larger than the one before, so size carries the order. */
 const STAGES = [
@@ -25,7 +27,7 @@ const STAGES = [
     name: "Wear it, buy it",
     body: "Each look on you with a Fit Check, and one cart per store.",
     span: "md:col-span-5",
-    tile: "h-[62vw] md:h-[60vh] bg-white",
+    tile: "h-[62vw] md:h-[60vh] bg-product",
     piece: SHIRT,
   },
 ] as const;
@@ -47,17 +49,16 @@ export function HowItWorks() {
                 className={cn("relative overflow-hidden md:row-start-1 md:self-end", stage.span, stage.tile)}
               >
                 {"piece" in stage ? (
-                  <a href={stage.piece.url} target="_blank" rel="noopener" className="group absolute inset-0">
+                  // Shown larger than the tile so its edges crop the shirt; multiply drops the store's
+                  // white backdrop into the tile's ground
+                  <a href={stage.piece.url} target="_blank" rel="noopener" aria-label={`${stage.piece.name}, ${stage.piece.store}`} className="group absolute inset-0">
                     <Image
-                      src={stage.piece.thumb}
+                      src={SHIRT_LARGE}
                       alt={`${stage.piece.name} from ${stage.piece.store}`}
                       fill
-                      sizes="(min-width: 768px) 40vw, 100vw"
-                      className="object-contain pb-12 transition-transform duration-500 ease-(--ease-out) group-hover:scale-[1.03]"
+                      sizes="(min-width: 768px) 60vw, 100vw"
+                      className="scale-[1.45] object-cover object-[50%_35%] mix-blend-multiply transition-transform duration-700 ease-(--ease-out) group-hover:scale-[1.52]"
                     />
-                    <span className="absolute inset-x-0 bottom-0 bg-background px-5 py-3 text-small text-ivory group-hover:underline md:px-7">
-                      {stage.piece.name}, {stage.piece.store}
-                    </span>
                   </a>
                 ) : (
                   <p className="flex h-full items-end p-5 text-lead md:p-7">{stage.text}</p>
@@ -70,6 +71,11 @@ export function HowItWorks() {
               >
                 <h3 className="subhead">{stage.name}</h3>
                 <p className="mt-1 max-w-[36ch]">{stage.body}</p>
+                {"piece" in stage && (
+                  <a href={stage.piece.url} target="_blank" rel="noopener" className="text-link mt-2 inline-block text-small text-muted-foreground">
+                    {stage.piece.name}, {stage.piece.store}
+                  </a>
+                )}
               </div>
             </li>
           ))}
