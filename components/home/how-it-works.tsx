@@ -2,33 +2,51 @@ import Image from "next/image";
 import { cn } from "@/lib/utils/cn";
 import { OCCASION_LOOKS } from "./looks-data";
 
-/** The shirt from the first-date look, as its store shows it: no other section uses this picture. */
+/** The store's CDN resizes on request: the tiles show each piece far larger than a thumbnail. */
+const CDN = "https://cdn.shopify.com/s/files/1/0092/1944/0718";
 const SHIRT = OCCASION_LOOKS.date.piece;
-/** The store's CDN resizes on request: the tile shows the shirt far larger than the picker's thumbnail. */
-const SHIRT_LARGE = SHIRT.thumb.replace("width=600", "width=1600");
 
-/** Three stages, each tile larger than the one before, so size carries the order. */
+/**
+ * Three stages, each tile larger than the one before, so size carries the order. Each holds one
+ * piece of the first-date look as Colony Clothing shows it (the Fit Check's bill), so the look
+ * assembles from shoes to shirt. None of these pictures appears elsewhere on the page.
+ */
 const STAGES = [
   {
     name: "Snap one photo",
-    body: "Waist up, facing the camera. Your try-ons are deleted after 24 hours.",
+    body: "Waist up, facing the camera. Glasses are fine. Your try-ons are deleted after 24 hours.",
     span: "md:col-span-3",
-    tile: "h-[34vw] md:h-[30vh] bg-surface-raised",
-    text: "One photo. Glasses are fine.",
+    tile: "h-[34vw] md:h-[30vh] bg-product",
+    piece: {
+      name: "Paraboot Coraux",
+      url: "https://colonyclothing.net/products/paraboot-coraux-lis-noir-black",
+      image: `${CDN}/files/image_f9df95bd-bfaf-4347-b380-46cd58b1dbda.png?v=1764818593&width=1200`,
+      fit: "scale-[1.2] group-hover:scale-[1.26] object-cover object-[50%_55%]",
+    },
   },
   {
     name: "Say where you're going",
-    body: "One sentence and a budget. Wingman picks in-stock pieces from local stores.",
+    body: "“First date Friday night, rooftop bar” and a budget. Wingman picks in-stock pieces from local stores.",
     span: "md:col-span-4",
-    tile: "h-[46vw] md:h-[44vh] bg-brass text-background",
-    text: "\u201CFirst date Friday night, rooftop bar, mid-range.\u201D",
+    tile: "h-[46vw] md:h-[44vh] bg-brass",
+    piece: {
+      name: "Baker Pants in black",
+      url: "https://colonyclothing.net/products/8-54701-51",
+      image: `${CDN}/files/DSC05118.webp?v=1764809712&width=1400`,
+      fit: "scale-[1.3] group-hover:scale-[1.36] object-cover object-[50%_40%]",
+    },
   },
   {
     name: "Wear it, buy it",
     body: "Each look on you with a Fit Check, and one cart per store.",
     span: "md:col-span-5",
     tile: "h-[62vw] md:h-[60vh] bg-product",
-    piece: SHIRT,
+    piece: {
+      name: SHIRT.name,
+      url: SHIRT.url,
+      image: SHIRT.thumb.replace("width=600", "width=1600"),
+      fit: "scale-[1.45] group-hover:scale-[1.52] object-cover object-[50%_35%]",
+    },
   },
 ] as const;
 
@@ -42,27 +60,25 @@ export function HowItWorks() {
         <ol className="mt-10 grid gap-7 md:mt-0 md:grid-cols-12 md:gap-x-2.5 md:gap-y-6">
           {STAGES.map((stage, i) => (
             <li key={stage.name} className="contents">
-              {/* Type, and one store photo: the page's try-ons each appear once, in the sections above */}
+              {/* Each piece is shown larger than its tile so the edges crop it; multiply drops the
+                  store's white backdrop into the tile's ground */}
               <div
-                {...("piece" in stage ? { "data-shutter": "" } : { "data-reveal": "" })}
+                data-shutter=""
                 style={{ "--d": `${i * 90}ms` } as React.CSSProperties}
                 className={cn("relative overflow-hidden md:row-start-1 md:self-end", stage.span, stage.tile)}
               >
-                {"piece" in stage ? (
-                  // Shown larger than the tile so its edges crop the shirt; multiply drops the store's
-                  // white backdrop into the tile's ground
-                  <a href={stage.piece.url} target="_blank" rel="noopener" aria-label={`${stage.piece.name}, ${stage.piece.store}`} className="group absolute inset-0">
-                    <Image
-                      src={SHIRT_LARGE}
-                      alt={`${stage.piece.name} from ${stage.piece.store}`}
-                      fill
-                      sizes="(min-width: 768px) 60vw, 100vw"
-                      className="scale-[1.45] object-cover object-[50%_35%] mix-blend-multiply transition-transform duration-700 ease-(--ease-out) group-hover:scale-[1.52]"
-                    />
-                  </a>
-                ) : (
-                  <p className="flex h-full items-end p-5 text-lead md:p-7">{stage.text}</p>
-                )}
+                <a href={stage.piece.url} target="_blank" rel="noopener" aria-label={`${stage.piece.name}, Colony Clothing`} className="group absolute inset-0">
+                  <Image
+                    src={stage.piece.image}
+                    alt={`${stage.piece.name} from Colony Clothing`}
+                    fill
+                    sizes={i === 2 ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 40vw, 100vw"}
+                    className={cn(
+                      "mix-blend-multiply transition-transform duration-700 ease-(--ease-out)",
+                      stage.piece.fit,
+                    )}
+                  />
+                </a>
               </div>
               <div
                 data-reveal
@@ -71,11 +87,9 @@ export function HowItWorks() {
               >
                 <h3 className="subhead">{stage.name}</h3>
                 <p className="mt-1 max-w-[36ch]">{stage.body}</p>
-                {"piece" in stage && (
-                  <a href={stage.piece.url} target="_blank" rel="noopener" className="text-link mt-2 inline-block text-small text-muted-foreground">
-                    {stage.piece.name}, {stage.piece.store}
-                  </a>
-                )}
+                <a href={stage.piece.url} target="_blank" rel="noopener" className="text-link mt-2 inline-block text-small text-muted-foreground">
+                  {stage.piece.name}, Colony Clothing
+                </a>
               </div>
             </li>
           ))}
