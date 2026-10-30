@@ -1,6 +1,6 @@
 import { IN_STOCK_PIECES, STORES } from "./looks-data";
 
-/** The catalog behind every look: the stores by name and what is in stock, set large. */
+/** The catalog behind every look: the stores by name, each linking to its site, and what is in stock, set large. */
 export function Stores() {
   return (
     <section
@@ -29,12 +29,14 @@ export function Stores() {
       <ul aria-label="The stores" className="columns-2 gap-6 md:col-span-6 md:col-start-7 md:self-center">
         {STORES.map((store, i) => (
           <li
-            key={store}
+            key={store.domain}
             data-reveal
             style={{ "--d": `${120 + i * 30}ms` } as React.CSSProperties}
-            className="break-inside-avoid py-2 text-lead"
+            className="break-inside-avoid text-lead"
           >
-            {store}
+            <a href={`https://${store.domain}`} target="_blank" rel="noopener" className="text-link inline-flex min-h-11 items-center">
+              {store.name}
+            </a>
           </li>
         ))}
       </ul>
