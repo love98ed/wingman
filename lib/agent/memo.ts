@@ -4,6 +4,12 @@ import { supabaseAdmin } from "@/lib/supabase/server";
 import { renderCacheKey, type CacheKeyInput } from "@/lib/youcam/cache";
 import { SupabaseRenderCache } from "@/lib/youcam/supabase-stores";
 
+/** A cached JSON result, or null on a miss. Never computes. */
+export async function cached<T>(input: CacheKeyInput): Promise<T | null> {
+  const hit = await new SupabaseRenderCache(supabaseAdmin()).get(renderCacheKey(input));
+  return (hit?.response as T | undefined) ?? null;
+}
+
 /**
  * Cache a JSON result in render_cache under the same key scheme as renders, so repeat
  * requests skip Claude. A cache that can't be read or written never fails the request.

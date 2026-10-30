@@ -4,6 +4,7 @@ import { AgentError } from "@/lib/agent/errors";
 import type { Look, LookItem, StyleEvent, StyleResult } from "@/lib/agent/events";
 import { BEARD_STYLES, HAIR_STYLES } from "@/lib/agent/grooming";
 import { memo } from "@/lib/agent/memo";
+import { PRESET_OCCASIONS } from "@/lib/agent/preset-occasions";
 import { allowedFormalities, buildPool, distinctLooks, lookItems, lookTotal, pickErrors, type LookItems } from "@/lib/agent/pick/candidates";
 import { renderLook } from "@/lib/agent/render";
 import { fromClient, type LookPick, type ParsedOccasion, type RefineRequest, type StyleRequest } from "@/lib/agent/schemas";
@@ -12,13 +13,32 @@ import { fitCheck, parseOccasion, prepPlan, refineOccasion, selectLooks, type Pr
 import { sizeChoices } from "@/lib/cart";
 import { loadCatalog } from "@/lib/catalog/repo";
 import { TIERS, type Product, type Tier } from "@/lib/catalog/types";
+import { LLM } from "@/lib/llm/config";
+import { checkedFace } from "@/lib/photo/check";
 import { locateFace, preparePhoto, type FaceLocator, type PreparedPhoto } from "@/lib/photo/prepare";
+import { sha256 } from "@/lib/utils/hash";
+import { stableStringify } from "@/lib/youcam/cache";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { youcam } from "@/lib/youcam/index";
 
-/** Face box cached per photo, so Price Compare and repeat runs skip the Claude face call. */
+/**
+ * Face box cached per photo, so Price Compare and repeat runs skip the Claude face call. A photo
+ * checked on upload already has one, so styling only asks Claude when the check didn't run.
+ */
 export const cachedFace: FaceLocator = (jpeg, width, height, hash) =>
-  memo({ selfieHash: hash, api: "face-box", params: { width, height } }, () => locateFace(jpeg, width, height));
+  memo({ selfieHash: hash, api: "face-box", params: { width, height } }, async () =>
+    (await checkedFace(hash, width, height)) ?? locateFace(jpeg, width, height),
+  );
+
+/** The occasion chips' sentences are parsed ahead; others are cached by sentence for 24 hours. */
+function parseCached(sentence: string) {
+  const text = sentence.trim();
+  const preset = PRESET_OCCASIONS[text];
+  if (preset) return Promise.resolve(structuredClone(preset));
+  return memo({ selfieHash: sha256(text.toLowerCase()), api: "parse-occasion", params: { model: LLM.agent.model } }, () =>
+    parseOccasion(text),
+  );
+}
 
 export const toItem = (slot: Slot, p: Product): LookItem => ({
   slot,
@@ -87,12 +107,19 @@ async function buildLooks(args: {
   const rules = { maxBudget: occasion.maxBudget, hair: HAIR_STYLES, beard: BEARD_STYLES };
   const select = (errors?: string[]) =>
     selectLooks({ occasion, sentence: args.sentence, pool, face: photo.closeFace, refine: args.refine, errors });
-  let picks = await select();
-  const errors = pickErrors(picks, pool, rules);
-  if (errors.length) {
-    console.warn(`[style] retrying selection: ${errors.join(" ")}`);
-    picks = await select(errors);
-  }
+  // Same photo, brief and candidates: the same looks, without asking Claude again. A catalog
+  // refresh or stock change alters the candidates, so it misses.
+  const candidates = sha256(stableStringify(SLOTS.map((slot) => pool[slot].map((p) => p.id))));
+  const picks = await memo(
+    { selfieHash: photo.hash, api: "select-looks", params: { occasion, sentence: args.sentence, refine: args.refine, candidates, model: LLM.agent.model } },
+    async () => {
+      const first = await select();
+      const errors = pickErrors(first, pool, rules);
+      if (!errors.length) return first;
+      console.warn(`[style] retrying selection: ${errors.join(" ")}`);
+      return select(errors);
+    },
+  );
   // Keep only looks that pass on their own; a still-broken or repeated look is dropped rather than shown.
   const valid: LookPick[] = distinctLooks(picks.filter((p) => pickErrors([p], pool, rules).length === 0));
   if (valid.length === 0) {
@@ -139,14 +166,20 @@ async function buildLooks(args: {
 
   // 5. Fit Check on the renders
   emit({ type: "progress", step: "scoring" });
-  const checks = await fitCheck({
-    occasion,
-    looks: valid.map((pick, i) => ({
-      name: pick.name,
-      items: Object.values(itemsByLook[i]).map((p) => p!.name).join(", "),
-      render: renders[i].outfitImage,
-    })),
-  });
+  const toCheck = valid.map((pick, i) => ({
+    name: pick.name,
+    items: Object.values(itemsByLook[i]).map((p) => p!.name).join(", "),
+    render: renders[i].outfitImage,
+  }));
+  // Renders are cached too, so a repeat run scores the same images: reuse the scores
+  const checkParams = {
+    occasion: [occasion.occasion, occasion.formality, occasion.setting, occasion.timeOfDay],
+    looks: toCheck.map((l) => [l.name, l.items, l.render ? sha256(l.render) : null]),
+    model: LLM.agent.model,
+  };
+  const checks = await memo({ selfieHash: photo.hash, api: "fit-check-looks", params: checkParams }, () =>
+    fitCheck({ occasion, looks: toCheck }),
+  );
   checks.forEach((c, i) => (looks[i].fitCheck = { score: Math.round(c.score * 10) / 10, reasoning: c.reasoning }));
   emit({ type: "fitcheck", checks: looks.map((l) => l.fitCheck!) });
 
@@ -177,7 +210,7 @@ export async function runStyle(
 
   // 1. Occasion, and the photo crops (Claude finds the face)
   emit({ type: "progress", step: "reading" });
-  const [parsed, photo] = await Promise.all([parseOccasion(req.occasion), preparePhoto(photoBytes, cachedFace)]);
+  const [parsed, photo] = await Promise.all([parseCached(req.occasion), preparePhoto(photoBytes, cachedFace)]);
   const occasion: ParsedOccasion = { ...parsed, budgetTier: req.tier, maxBudget: req.maxBudget };
   lap(`parsed ${occasion.occasion}/${occasion.formality}`);
 
@@ -190,7 +223,12 @@ export async function runStyle(
       console.warn(`[style] skin analysis skipped: ${err.message}`);
       return null;
     })
-    .then((skin) => prepPlan({ occasion, skin }).then((plan) => ({ plan, skin })))
+    .then((skin) =>
+      memo(
+        { selfieHash: photo.hash, api: "prep-plan", params: { occasion: occasion.occasion, setting: occasion.setting, timeOfDay: occasion.timeOfDay, skin, model: LLM.light.model } },
+        () => prepPlan({ occasion, skin }),
+      ).then((plan) => ({ plan, skin })),
+    )
     .then((p) => {
       emit({ type: "prep", prepPlan: p.plan, skinAnalysed: p.skin != null });
       return p;

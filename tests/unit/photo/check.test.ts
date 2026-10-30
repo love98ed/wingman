@@ -18,6 +18,10 @@ const clear = {
   face_top: 0.1,
   face_width: 0.2,
   face_height: 0.2,
+  left_eye_x: 0.46,
+  left_eye_y: 0.18,
+  right_eye_x: 0.54,
+  right_eye_y: 0.18,
 };
 const codes = (m = good, v: typeof clear | null = clear) => problemsFrom(m, v).map((p) => p.code);
 
@@ -83,5 +87,17 @@ describe("measurePhoto", () => {
     // Dark is not blurry
     expect(dark.sharpness).toBeGreaterThan(100);
     expect((await measure(await sharp(photo).blur(3).toBuffer())).sharpness).toBeLessThan(65);
+  });
+});
+
+describe("faceFromFractions", () => {
+  it("turns the photo check's face box and eyes into pixels with head tilt", async () => {
+    const { faceFromFractions } = await import("@/lib/photo/prepare");
+    const face = faceFromFractions(
+      { left: 0.4, top: 0.1, width: 0.2, height: 0.25, left_eye_x: 0.45, left_eye_y: 0.2, right_eye_x: 0.55, right_eye_y: 0.2 },
+      2000,
+      2500,
+    );
+    expect(face).toEqual({ x: 800, y: 250, width: 400, height: 625, roll: 0 });
   });
 });

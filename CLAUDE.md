@@ -32,8 +32,11 @@ This file is the source of truth for the project. Read it at the start of every 
 
 | Task | Model | Max tokens |
 |---|---|---|
-| Occasion parsing, look selection, Fit Check, prep plan, refine | `claude-sonnet-5-5` | 1,500 |
+| Occasion parsing, look selection, Fit Check, refine | `claude-sonnet-5-5` | 1,500 |
+| Prep plan (matched Sonnet in a side-by-side test) | `claude-haiku-5-5` | 1,500 |
 | Bulk product tagging (batches of 25) | `claude-haiku-5-5` | 2,000 |
+
+To keep Claude costs down: occasion-chip sentences are parsed ahead (`lib/agent/preset-occasions.ts`), the face box comes from the upload's photo check, and parsing, looks, Fit Check scores and the prep plan are cached per photo and brief in `render_cache` (24 hours).
 
 Put model names in `lib/llm/config.ts`, never inline. Log token usage per call in dev.
 

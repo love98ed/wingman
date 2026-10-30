@@ -42,6 +42,32 @@ const FaceBoxSchema = z.object({
 
 const clamp01 = (n: number) => Math.min(Math.max(n, 0), 1);
 
+/** Face box and pupil centres as fractions of the image, as Claude reports them. */
+export type FaceFractions = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  left_eye_x: number;
+  left_eye_y: number;
+  right_eye_x: number;
+  right_eye_y: number;
+};
+
+/** Fractions into pixels in a `width` x `height` image, with head tilt from the eyes. */
+export function faceFromFractions(f: FaceFractions, width: number, height: number): Face {
+  return {
+    x: Math.round(clamp01(f.left) * width),
+    y: Math.round(clamp01(f.top) * height),
+    width: Math.round(clamp01(f.width) * width),
+    height: Math.round(clamp01(f.height) * height),
+    roll: rollDegrees(
+      { x: f.left_eye_x * width, y: f.left_eye_y * height },
+      { x: f.right_eye_x * width, y: f.right_eye_y * height },
+    ),
+  };
+}
+
 /** Ask Claude for the face box and eye centres. Returns pixels in the image's coordinate space. */
 export async function locateFace(jpeg: Buffer, width: number, height: number): Promise<Face> {
   // Claude sees images best at <= 1568px on the long side.
@@ -67,16 +93,7 @@ export async function locateFace(jpeg: Buffer, width: number, height: number): P
   if (!result.face_found) {
     throw new YouCamError("NO_FACE", "No clear front-facing face found in the photo", undefined, "NO_PERSON");
   }
-  return {
-    x: Math.round(clamp01(result.left) * width),
-    y: Math.round(clamp01(result.top) * height),
-    width: Math.round(clamp01(result.width) * width),
-    height: Math.round(clamp01(result.height) * height),
-    roll: rollDegrees(
-      { x: result.left_eye_x * width, y: result.left_eye_y * height },
-      { x: result.right_eye_x * width, y: result.right_eye_y * height },
-    ),
-  };
+  return faceFromFractions(result, width, height);
 }
 
 async function cropTo(image: Buffer, box: Box, longSide: number, enlarge = false): Promise<Buffer> {

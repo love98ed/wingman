@@ -2,10 +2,10 @@ import "server-only";
 
 import sharp from "sharp";
 import { z } from "zod";
-import { memo } from "@/lib/agent/memo";
+import { cached, memo } from "@/lib/agent/memo";
 import { generateStructured } from "@/lib/llm/client";
 import { zoomBox, type Box } from "./crops";
-import { normalisePhoto } from "./prepare";
+import { faceFromFractions, normalisePhoto, type Face } from "./prepare";
 import { photoProblem, type PhotoCheck, type PhotoProblem } from "./problems";
 
 /**
@@ -37,6 +37,11 @@ const VisionSchema = z.object({
   face_top: z.number().min(0).max(1),
   face_width: z.number().min(0).max(1),
   face_height: z.number().min(0).max(1),
+  /** Pupil centres as fractions; "left" is the eye on the left of the image. Lets styling skip its own face call. */
+  left_eye_x: z.number().min(0).max(1),
+  left_eye_y: z.number().min(0).max(1),
+  right_eye_x: z.number().min(0).max(1),
+  right_eye_y: z.number().min(0).max(1),
 });
 export type PhotoVision = z.infer<typeof VisionSchema>;
 
@@ -85,6 +90,20 @@ export function problemsFrom(metrics: PhotoMetrics, vision: PhotoVision | null):
   return codes.map(photoProblem).sort((a, b) => Number(a.soft) - Number(b.soft));
 }
 
+/** Cache key of a photo's vision check, by the hash of the normalised photo. */
+const checkKey = (hash: string) => ({ selfieHash: hash, api: "photo-check", params: { v: 3 } });
+
+/**
+ * The face box from this photo's earlier check, in pixels of the normalised photo, so styling
+ * doesn't ask Claude again. Null when the photo wasn't checked or the check saw no single face.
+ */
+export async function checkedFace(hash: string, width: number, height: number): Promise<Face | null> {
+  const v = await cached<PhotoVision>(checkKey(hash)).catch(() => null);
+  if (!v || v.people !== 1 || !v.face_visible) return null;
+  const { face_left: left, face_top: top, face_width, face_height } = v;
+  return faceFromFractions({ ...v, left, top, width: face_width, height: face_height }, width, height);
+}
+
 async function lookAtPhoto(normalised: Buffer): Promise<PhotoVision> {
   const preview = await sharp(normalised).resize(1568, 1568, { fit: "inside" }).jpeg({ quality: 85 }).toBuffer();
   return generateStructured({
@@ -103,7 +122,8 @@ async function lookAtPhoto(normalised: Buffer): Promise<PhotoVision> {
           "in the photo. facing_camera is false only when the head or body is clearly turned (profile, three-quarter " +
           "or more). face_covered is true only when a hand, mask, hat brim or hair hides a large part of the face; " +
           "glasses and sunglasses never count. face_left, face_top, face_width and face_height are the face box, hairline " +
-          "to chin and ear to ear, as fractions (0 to 1) of the photo's width and height from the top-left corner.",
+          "to chin and ear to ear, as fractions (0 to 1) of the photo's width and height from the top-left corner. " +
+          "left_eye and right_eye are the centre of each pupil as fractions; left_eye is the eye on the left side of the image.",
       },
     ],
   });
@@ -114,7 +134,7 @@ export async function checkPhoto(input: Buffer): Promise<PhotoCheck> {
   const { normalised, width, height, hash } = await normalisePhoto(input);
   const [metrics, vision] = await Promise.all([
     measurePhoto(normalised, width, height),
-    memo({ selfieHash: hash, api: "photo-check", params: { v: 2 } }, () => lookAtPhoto(normalised)).catch((err: Error) => {
+    memo(checkKey(hash), () => lookAtPhoto(normalised)).catch((err: Error) => {
       console.warn(`[photo-check] vision skipped: ${err.message}`);
       return null;
     }),

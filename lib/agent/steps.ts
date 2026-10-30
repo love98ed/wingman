@@ -140,7 +140,8 @@ export async function selectLooks(args: {
       `beard is one of [${BEARD_STYLES.join(", ")}] or null to keep his current beard; only change it when it clearly helps. ` +
       "name is 2 to 4 words. why is one sentence on why the look works for him and the occasion. Singapore is hot and humid.",
     content: [
-      await imageBlock(args.face, 800),
+      // Only for skin tone and colouring, so small
+      await imageBlock(args.face, 512),
       {
         type: "text",
         text:
@@ -233,7 +234,8 @@ export async function fitCheck(args: {
   const content: Anthropic.ContentBlockParam[] = [];
   for (const [i, look] of args.looks.entries()) {
     content.push({ type: "text", text: `Look ${i + 1}: ${look.name}. Pieces: ${look.items}.` });
-    if (look.render) content.push(await imageBlock(look.render));
+    // Enough to judge fit and colour; up to three per call, so kept small
+    if (look.render) content.push(await imageBlock(look.render, 768));
   }
   content.push({
     type: "text",
@@ -258,7 +260,7 @@ export async function fitCheck(args: {
 /** Step 6: a three-step night-before grooming routine. No medical claims. */
 export async function prepPlan(args: { occasion: ParsedOccasion; skin: string | null }): Promise<PrepPlan> {
   return generateStructured({
-    task: "agent",
+    task: "light",
     label: "prep-plan",
     effort: "low",
     schema: PrepPlanSchema,
