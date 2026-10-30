@@ -211,6 +211,8 @@ function LookCard({
   ].filter(Boolean) as { url: string; label: string }[];
   const rendering = !look.renders.outfit && look.renders.errors.length === 0;
   const [tab, setTab] = useState<"look" | "additional">("look");
+  const onThem = look.items.filter((i) => showsInRender(look, i.slot));
+  const alongside = look.items.filter((i) => !showsInRender(look, i.slot));
   const tabId = `look-${index}`;
 
   return (
@@ -323,27 +325,16 @@ function LookCard({
 
             <p className="mt-5">{look.why}</p>
 
-            {/* Only the outer layer can be tried on (see the README): say which pieces are on you */}
-            {(
-              [
-                ["In the try-on", look.items.filter((i) => showsInRender(look, i.slot))],
-                ["Also in this look", look.items.filter((i) => !showsInRender(look, i.slot))],
-              ] as const
-            ).map(
-              ([title, pieces]) =>
-                pieces.length > 0 && (
-                  <section key={title} className="mt-5">
-                    <h3 className="subhead text-small text-muted-foreground">{title}</h3>
-                    {title === "Also in this look" && (
-                      <p className="mt-1 text-small text-muted-foreground">Picked for the outfit, not shown on you.</p>
-                    )}
-                    <ul className="mt-2 flex flex-col gap-3">
-                      {pieces.map((item) => (
-                        <PieceRow key={item.slot} item={item} />
-                      ))}
-                    </ul>
-                  </section>
-                ),
+            {/* Only the outer layer can be tried on (see the README); the rest of the outfit is under Additional */}
+            {onThem.length > 0 && (
+              <section className="mt-5">
+                <h3 className="subhead text-small text-muted-foreground">In the try-on</h3>
+                <ul className="mt-2 flex flex-col gap-3">
+                  {onThem.map((item) => (
+                    <PieceRow key={item.slot} item={item} />
+                  ))}
+                </ul>
+              </section>
             )}
           </div>
         ) : (
@@ -354,11 +345,22 @@ function LookCard({
                 Swap any piece for one of six in-stock alternatives, or see cheaper ones that go with the rest of the look.
               </p>
               <ul className="mt-3 flex flex-col gap-3">
-                {look.items.map((item) => (
+                {onThem.map((item) => (
                   <PieceRow key={item.slot} item={item} onSwap={onSwap} onCheaper={onCheaper} />
                 ))}
               </ul>
             </section>
+            {alongside.length > 0 && (
+              <section className="mt-5">
+                <h3 className="subhead text-small text-muted-foreground">Also in this look</h3>
+                <p className="mt-1 text-small text-muted-foreground">Picked for the outfit, not shown on you.</p>
+                <ul className="mt-2 flex flex-col gap-3">
+                  {alongside.map((item) => (
+                    <PieceRow key={item.slot} item={item} onSwap={onSwap} onCheaper={onCheaper} />
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
         )}
 
