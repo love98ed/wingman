@@ -137,7 +137,8 @@ export async function selectLooks(args: {
       "for the budget tier; the clothes come first. Prefer one or two stores per look so checkout stays simple. " +
       "Choose colours that flatter the skin tone and colouring you see in his photo. The photo may show glasses; ignore them. " +
       `beard is one of [${BEARD_STYLES.join(", ")}] or null to keep his current beard; only change it when it clearly helps. ` +
-      "name is 2 to 4 words. why is one sentence on why the look works for him and the occasion. Singapore is hot and humid.",
+      "name is 2 to 4 words and describes only what the try-on shows on him: the outerwear when the look has one, " +
+      "otherwise the top. A shirt under a jacket is hidden in the try-on, so never name the look after it. why is one sentence on why the look works for him and the occasion. Singapore is hot and humid.",
     content: [
       // Only for skin tone and colouring, so small
       await imageBlock(args.face, 512),

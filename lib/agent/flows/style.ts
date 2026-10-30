@@ -111,7 +111,7 @@ async function buildLooks(args: {
   // refresh or stock change alters the candidates, so it misses.
   const candidates = sha256(stableStringify(SLOTS.map((slot) => pool[slot].map((p) => p.id))));
   const picks = await memo(
-    { selfieHash: photo.hash, api: "select-looks", params: { occasion, sentence: args.sentence, refine: args.refine, candidates, model: LLM.agent.model, v: 2 } },
+    { selfieHash: photo.hash, api: "select-looks", params: { occasion, sentence: args.sentence, refine: args.refine, candidates, model: LLM.agent.model, v: 3 } },
     async () => {
       const first = await select();
       const errors = pickErrors(first, pool, rules);
