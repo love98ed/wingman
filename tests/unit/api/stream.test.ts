@@ -127,7 +127,7 @@ describe("photoStreamRoute", () => {
 describe("userMessage", async () => {
   const { userMessage } = await import("@/lib/youcam/errors");
   it("names the photo problem behind a YouCam rejection, with a tip", () => {
-    expect(userMessage(new YouCamError("NO_FACE", "x", "error_multi_person"))).toMatch(/more than one person.*crop/i);
+    expect(userMessage(new YouCamError("NO_FACE", "x", "error_multi_person"))).toMatch(/someone else.*crop/i);
     expect(userMessage(new YouCamError("NO_FACE", "x", undefined, "FACE_TOO_SMALL"))).toMatch(/too far.*closer/i);
     expect(userMessage(new YouCamError("BAD_LIGHTING", "x"))).toMatch(/too dark/i);
     expect(userMessage(new YouCamError("QUOTA", "x"))).toBe(friendlyMessage("QUOTA"));

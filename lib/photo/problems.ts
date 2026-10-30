@@ -17,13 +17,13 @@ export const PHOTO_PROBLEMS = {
   },
   MULTIPLE_PEOPLE: {
     soft: false,
-    message: "There's more than one person in this photo.",
-    tip: "Use a photo of just you, or crop the others out first.",
+    message: "Someone else is right next to you in this photo.",
+    tip: "Use a photo of just you, or crop them out first. People in the background are fine.",
   },
   FACE_CUT_OFF: {
     soft: false,
-    message: "Your head is cut off at the edge of the photo.",
-    tip: "Leave a little space above your head and on both sides.",
+    message: "Your face is cut off at the edge of the photo.",
+    tip: "Move so your whole face is in the frame.",
   },
   SHOULDERS_CUT_OFF: {
     soft: false,

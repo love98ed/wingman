@@ -23,10 +23,10 @@ const MIN_FACE_PX = 200;
 export type PhotoMetrics = { width: number; height: number; brightness: number; sharpness: number };
 
 const VisionSchema = z.object({
-  /** People visible, including partly visible ones. */
+  /** People in the foreground, as close to the camera as the main person. Passers-by behind don't count. */
   people: z.number().int().min(0),
   face_visible: z.boolean(),
-  /** Any part of the head (top of hair, chin, ears) cut off by the photo's edge. */
+  /** The face itself (forehead, chin, a cheek) cut off by the photo's edge. Cropped hair or ears are fine. */
   face_cut_off: z.boolean(),
   shoulders_visible: z.boolean(),
   facing_camera: z.boolean(),
@@ -91,7 +91,7 @@ export function problemsFrom(metrics: PhotoMetrics, vision: PhotoVision | null):
 }
 
 /** Cache key of a photo's vision check, by the hash of the normalised photo. */
-const checkKey = (hash: string) => ({ selfieHash: hash, api: "photo-check", params: { v: 3 } });
+const checkKey = (hash: string) => ({ selfieHash: hash, api: "photo-check", params: { v: 4 } });
 
 /**
  * The face box from this photo's earlier check, in pixels of the normalised photo, so styling
@@ -117,8 +117,10 @@ async function lookAtPhoto(normalised: Buffer): Promise<PhotoVision> {
         type: "text",
         text:
           "This photo is for a virtual clothes try-on: one person, waist up, facing the camera. Report what you see. " +
-          "people counts every person visible, even partly. face_cut_off is true when the photo's edge cuts through the " +
-          "head (top of the hair, chin or an ear). shoulders_visible is true when both shoulders and the upper chest are " +
+          "The main person is the largest one nearest the camera; every other field is about them. people counts the " +
+          "people in the foreground, about as close to the camera as the main person; people further back, smaller or " +
+          "out of focus, don't count. face_cut_off is true only when the photo's edge cuts through the main person's " +
+          "face (forehead, chin or a cheek); cropped hair or ears are fine. shoulders_visible is true when both shoulders and the upper chest are " +
           "in the photo. facing_camera is false only when the head or body is clearly turned (profile, three-quarter " +
           "or more). face_covered is true only when a hand, mask, hat brim or hair hides a large part of the face; " +
           "glasses and sunglasses never count. face_left, face_top, face_width and face_height are the face box, hairline " +
