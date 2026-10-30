@@ -93,16 +93,24 @@ export const BUDGETS = [
   {
     tier: "Budget",
     render: "/home/budget.jpg",
+    focus: "50% 32%",
+    phoneZoom: 1,
     piece: { name: "Shawl Collared Linen Shirt", store: "Pharaoh's Horses", price: 198, url: "https://pharaohshorses.co/products/shawl-collared-linen-shirt" },
   },
   {
     tier: "Mid-range",
     render: "/home/mid.jpg",
+    // He stands lower in his frame: crop from the bottom on desktop, and on the narrow phone tiles
+    // (cropped at the sides, not the top) zoom in slightly from his feet to lift his head into line
+    focus: "50% 100%",
+    phoneZoom: 1.13,
     piece: { name: "Napoli Linen Shirt", store: "Colony Clothing", price: 360, url: OCCASION_LOOKS.date.piece.url },
   },
   {
     tier: "Luxury",
     render: "/home/luxury.jpg",
+    focus: "50% 32%",
+    phoneZoom: 1,
     piece: { name: "100% Linen Long Sleeve Shirt", store: "Kevin Seah", price: 500, url: OCCASION_LOOKS.interview.piece.url },
   },
 ] as const;

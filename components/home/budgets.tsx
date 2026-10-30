@@ -27,7 +27,8 @@ export function Budgets() {
                 alt={`A model in the ${b.tier.toLowerCase()} version: ${b.piece.name} from ${b.piece.store}`}
                 fill
                 sizes="33vw"
-                className="object-cover object-[50%_32%]"
+                className="origin-bottom object-cover max-md:scale-(--zoom)"
+                style={{ objectPosition: b.focus, "--zoom": b.phoneZoom } as React.CSSProperties}
               />
             </div>
             <div data-reveal style={{ "--d": `${120 + i * 110}ms` } as React.CSSProperties} className="pt-4 md:px-(--margin) md:pt-5">
