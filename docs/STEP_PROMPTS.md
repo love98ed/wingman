@@ -175,7 +175,7 @@ Do step 12 only. Write README.md in this order:
 5. How the agent works (short diagram in Mermaid)
 6. Tech stack
 7. Setup: clone, env vars, migration, catalog script, mock mode, demo mode
-8. Limitations and future work (Wingman Pay, affiliate links, more stores)
+8. Limitations and future work (Wingman Pay, affiliate links, more stores)  
 9. License (MIT)
 Capture screenshots of every screen at 390px into docs/screenshots/. Commit.
 ```
