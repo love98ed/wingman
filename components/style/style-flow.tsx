@@ -788,9 +788,10 @@ export function StyleFlow({ initialOccasion }: { initialOccasion?: Occasion }) {
       onRefine={parsed ? refine : undefined}
       cart={cart}
       onAddToCart={(look) => {
-        addToCart(look.items);
+        addToCart(look.items.filter((item) => showsInRender(look, item.slot)));
         go("cart");
       }}
+      onAddPiece={(item) => addToCart([item])}
       onViewCart={() => go("cart")}
       focusLook={focusLook}
       hasPrep={prep != null}

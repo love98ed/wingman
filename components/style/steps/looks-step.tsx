@@ -37,6 +37,7 @@ export function LooksStep({
   onRefine,
   cart,
   onAddToCart,
+  onAddPiece,
   onViewCart,
   focusLook = 0,
   hasPrep,
@@ -57,7 +58,9 @@ export function LooksStep({
   onSwap?: (index: number, slot: LookItem["slot"], cheaper?: boolean) => void;
   onRefine?: (message: string) => void;
   cart: CartLine[];
+  /** Adds the pieces in the try-on; the rest of the look goes in only piece by piece, from Additional. */
   onAddToCart: (look: Look) => void;
+  onAddPiece: (item: LookItem) => void;
   onViewCart: () => void;
   /** The card to show first, e.g. the look a piece was just added to. */
   focusLook?: number;
@@ -86,8 +89,10 @@ export function LooksStep({
     onCompare: onCompare && (() => onCompare(i)),
     onSwap: onSwap && ((slot: LookItem["slot"]) => onSwap(i, slot)),
     onCheaper: onSwap && ((slot: LookItem["slot"]) => onSwap(i, slot, true)),
-    inCart: look.items.every((item) => inCart.has(item.id)),
+    inCart: look.items.filter((item) => showsInRender(look, item.slot)).every((item) => inCart.has(item.id)),
+    cartIds: inCart,
     onAddToCart: () => onAddToCart(look),
+    onAddPiece,
     onViewCart,
   });
   const shown = looks[Math.min(active, looks.length - 1)];
@@ -187,7 +192,9 @@ function LookCard({
   onSwap,
   onCheaper,
   inCart,
+  cartIds,
   onAddToCart,
+  onAddPiece,
   onViewCart,
   wide = false,
 }: {
@@ -202,7 +209,9 @@ function LookCard({
   onSwap?: (slot: LookItem["slot"]) => void;
   onCheaper?: (slot: LookItem["slot"]) => void;
   inCart: boolean;
+  cartIds: Set<string>;
   onAddToCart: () => void;
+  onAddPiece: (item: LookItem) => void;
   onViewCart: () => void;
 }) {
   const grooming = [
@@ -355,7 +364,14 @@ function LookCard({
                 <p className="mt-1 text-small text-muted-foreground">Picked for the outfit, not shown on you.</p>
                 <ul className="mt-2 flex flex-col gap-3">
                   {alongside.map((item) => (
-                    <PieceRow key={item.slot} item={item} onSwap={onSwap} onCheaper={onCheaper} />
+                    <PieceRow
+                      key={item.slot}
+                      item={item}
+                      onSwap={onSwap}
+                      onCheaper={onCheaper}
+                      inCart={cartIds.has(item.id)}
+                      onAdd={() => onAddPiece(item)}
+                    />
                   ))}
                 </ul>
               </section>
@@ -380,15 +396,19 @@ function LookCard({
   );
 }
 
-/** One piece of a look: photo, store, name and price linking to the store, and Swap and Cheaper buttons. */
+/** One piece of a look: photo, store, name and price linking to the store, Swap and Cheaper buttons, and Add for pieces not in the try-on. */
 function PieceRow({
   item,
   onSwap,
   onCheaper,
+  inCart,
+  onAdd,
 }: {
   item: LookItem;
   onSwap?: (slot: LookItem["slot"]) => void;
   onCheaper?: (slot: LookItem["slot"]) => void;
+  inCart?: boolean;
+  onAdd?: () => void;
 }) {
   return (
     <li className="flex items-center gap-3 bg-background/40 p-2">
@@ -402,8 +422,23 @@ function PieceRow({
           <span className="block text-small tabular-nums">{sgd(item.price)}</span>
         </span>
       </a>
-      {(onSwap || onCheaper) && (
+      {(onSwap || onCheaper || onAdd) && (
         <span className="flex shrink-0 flex-col gap-1">
+          {onAdd &&
+            (inCart ? (
+              <button type="button" disabled className="btn-quiet">
+                In cart
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onAdd}
+                aria-label={`Add the ${SLOT_LABELS[item.slot].toLowerCase()} to your cart`}
+                className="btn-quiet"
+              >
+                Add
+              </button>
+            ))}
           {onSwap && (
             <button
               type="button"
