@@ -192,9 +192,8 @@ function CartItem({
           <div role="group" aria-labelledby={`qty-${line.id}`} className="flex items-center bg-surface-raised">
             <button
               type="button"
-              onClick={() => onQty(line.id, line.qty - 1)}
-              disabled={line.qty <= 1}
-              aria-label={`One fewer ${name}`}
+              onClick={() => (line.qty <= 1 ? onRemove(line.id) : onQty(line.id, line.qty - 1))}
+              aria-label={line.qty <= 1 ? `Remove ${name}` : `One fewer ${name}`}
               className="grid size-11 place-items-center transition-colors hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent"
             >
               <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
