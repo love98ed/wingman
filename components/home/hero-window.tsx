@@ -118,7 +118,7 @@ export function HeroWindow({ before, after, alt }: Props) {
 
           <h1
             id="hero-heading"
-            className="absolute top-[calc(env(safe-area-inset-top)+4.5rem)] left-(--margin) text-[10vw] min-[900px]:top-auto min-[900px]:bottom-[calc(var(--bottom)-0.08em)] min-[900px]:max-w-[calc(var(--side)-3rem)] min-[900px]:text-[min(calc((32vw-3rem)/5.9),5.5rem)]"
+            className="absolute top-[calc(env(safe-area-inset-top)+4.5rem)] left-(--margin) text-[10vw] min-[900px]:top-auto min-[900px]:bottom-[calc(var(--text-bottom)-0.08em)] min-[900px]:max-w-[calc(var(--side)-3rem)] min-[900px]:text-[min(calc((28vw-3rem)/5.9),5.5rem)]"
           >
             <span className="rise-line">
               <span style={{ "--i": 0 } as React.CSSProperties}>See it</span>
@@ -128,7 +128,7 @@ export function HeroWindow({ before, after, alt }: Props) {
             </span>
           </h1>
 
-          <div className="pointer-events-auto absolute inset-x-(--margin) top-[calc(var(--win-top)+var(--win-h)+1.25rem)] min-[900px]:inset-x-auto min-[900px]:top-auto min-[900px]:right-(--margin) min-[900px]:bottom-(--bottom) min-[900px]:w-[min(calc(var(--side)-3rem),24rem)]">
+          <div className="pointer-events-auto absolute inset-x-(--margin) top-[calc(var(--win-top)+var(--win-h)+1.25rem)] min-[900px]:inset-x-auto min-[900px]:top-auto min-[900px]:right-(--margin) min-[900px]:bottom-(--text-bottom) min-[900px]:w-[min(calc(var(--side)-3rem),24rem)]">
             <p data-load style={{ "--d": "420ms" } as React.CSSProperties} className="max-w-[34ch] text-body">
               Wingman dresses you for the occasion: full looks from Singapore stores, tried on your own photo.
             </p>

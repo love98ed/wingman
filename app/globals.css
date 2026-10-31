@@ -222,18 +222,23 @@
    --p (0 to 1) is set from script; without script the window stays as first drawn. */
 .hero {
   --p: 0;
-  --win-w: min(78vw, 40svh);
+  /* Phone: margin to margin, as tall as the screen allows above the text */
+  --win-w: min(100vw - 2 * var(--margin), (100svh - 22rem) / 1.25);
   --win-h: calc(var(--win-w) * 1.25);
   --win-top: calc(env(safe-area-inset-top) + 9.75rem);
   --side: calc((100% - var(--win-w)) / 2);
   --bottom: calc(100% - var(--win-top) - var(--win-h));
+  --text-bottom: var(--bottom);
   --k: calc(1 - var(--p));
   height: 190svh;
 }
 @media (min-width: 900px) {
+  /* Desktop: the window runs off the bottom edge */
   .hero {
-    --win-w: min(36vw, 62svh);
-    --win-top: calc((100svh - var(--win-h)) / 2);
+    --win-top: 5.5rem;
+    --win-h: calc(100svh - var(--win-top));
+    --win-w: min(44vw, var(--win-h) * 0.8);
+    --text-bottom: 3rem;
     height: 220svh;
   }
 }
